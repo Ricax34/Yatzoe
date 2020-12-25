@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4CAF50"
+    tools:context=".MainActivity">
+
+    <TableLayout
+        android:id="@+id/tableau"
+        android:layout_width="403dp"
+        android:layout_height="406dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/tablerowborder"
+        android:gravity="fill|fill_horizontal|fill_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="400dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/imageView1Un"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_un50" />
+
+            <ImageView
+                android:id="@+id/imageView2Trois"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_trois50" />
+
+            <ImageView
+                android:id="@+id/imageView3Appel"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_appel50" />
+
+            <ImageView
+                android:id="@+id/imageView4Quatre"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_quatre50" />
+
+            <ImageView
+                android:id="@+id/imageView5Six"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_six50" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="400dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/imageView6Deux"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_deux50" />
+
+            <ImageView
+                android:id="@+id/imageView7Carre"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_carre50" />
+
+            <ImageView
+                android:id="@+id/imageView8Sec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_sec50" />
+
+            <ImageView
+                android:id="@+id/imageView9Full"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_full50" />
+
+            <ImageView
+                android:id="@+id/imageView10Cinq"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_cinq50" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="400dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/imageView11Small"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_small50" />
+
+            <ImageView
+                android:id="@+id/imageView12Full"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_full50" />
+
+            <ImageView
+                android:id="@+id/imageView13Yam"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_yam50" />
+
+            <ImageView
+                android:id="@+id/imageView14Appel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_appel50" />
+
+            <ImageView
+                android:id="@+id/imageView15Suite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_suite50" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="400dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/imageView16Six"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_six50" />
+
+            <ImageView
+                android:id="@+id/imageView17Sec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_sec50" />
+
+            <ImageView
+                android:id="@+id/imageView18Suite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_suite50" />
+
+            <ImageView
+                android:id="@+id/imageView19Small"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_small50" />
+
+            <ImageView
+                android:id="@+id/imageView20Un"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_un50" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="400dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/imageView21Trois"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_trois50" />
+
+            <ImageView
+                android:id="@+id/imageView22Deux"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_deux50" />
+
+            <ImageView
+                android:id="@+id/imageView23Carre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_carre50" />
+
+            <ImageView
+                android:id="@+id/imageView24Cinq"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_cinq50" />
+
+            <ImageView
+                android:id="@+id/imageView25Quatre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="auto"
+                android:onClick="onBoxClicked"
+                app:srcCompat="@drawable/ic_quatre50" />
+        </TableRow>
+    </TableLayout>
+
+    <TableRow
+        android:id="@+id/LancerDes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextViewMessage">
+
+        <ImageView
+            android:id="@+id/imageViewDiceNb0"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape600"
+            android:clickable="true"
+            android:onClick="onDiceSelect"
+            app:srcCompat="@drawable/ic_dice1" />
+
+        <ImageView
+            android:id="@+id/imageViewDiceNb1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape600"
+            android:clickable="true"
+            android:onClick="onDiceSelect"
+            app:srcCompat="@drawable/ic_dice2" />
+
+        <ImageView
+            android:id="@+id/imageViewDiceNb2"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape600"
+            android:clickable="true"
+            android:onClick="onDiceSelect"
+            app:srcCompat="@drawable/ic_dice3" />
+
+        <ImageView
+            android:id="@+id/imageViewDiceNb3"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape600"
+            android:clickable="true"
+            android:onClick="onDiceSelect"
+            app:srcCompat="@drawable/ic_dice4" />
+
+        <ImageView
+            android:id="@+id/imageViewDiceNb4"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape600"
+            android:clickable="true"
+            android:onClick="onDiceSelect"
+            app:srcCompat="@drawable/ic_dice5" />
+
+    </TableRow>
+
+    <Button
+        android:id="@+id/buttonStartNewGame"
+        android:layout_width="184dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="startNewGame"
+        android:text="@string/StartButton"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/BoutonLancer"
+        app:layout_constraintStart_toEndOf="@+id/skipButton" />
+
+    <Button
+        android:id="@+id/skipButton"
+        android:layout_width="134dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="onButtonSkipClicked"
+        android:text="@string/skipButton"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/BoutonLancer"
+        android:layout_width="134dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="onButtonClickRollAllSelectedDices"
+        android:text="@string/Bouton_Lancer"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/TextViewMessage"
+        android:layout_width="447dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/selectAllDices"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
+        app:autoSizeMinTextSize="?attr/dialogPreferredPadding"
+        app:autoSizeTextType="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableau" />
+
+    <TextView
+        android:id="@+id/blueMarkerTextView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_pion_bleu_contour_noir"
+        android:gravity="center"
+        android:text="12"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/tableau"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/bluePoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="72sp"
+        app:layout_constraintBottom_toTopOf="@+id/tableau"
+        app:layout_constraintStart_toEndOf="@+id/blueMarkerTextView" />
+
+    <TextView
+        android:id="@+id/redPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="72sp"
+        app:layout_constraintBottom_toTopOf="@+id/tableau"
+        app:layout_constraintEnd_toStartOf="@+id/redMarkerTextView" />
+
+    <TextView
+        android:id="@+id/redMarkerTextView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_pion_rouge_contour_noir"
+        android:gravity="center"
+        android:text="12"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/tableau"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:onClick="showHelp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/TextViewMessage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_help" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="casual"
+        android:text="@string/Human"
+        android:textAllCaps="true"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/blueMarkerTextView"
+        app:layout_constraintStart_toStartOf="@+id/blueMarkerTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="casual"
+        android:text="@string/Droid"
+        android:textAllCaps="true"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/redMarkerTextView"
+        app:layout_constraintStart_toEndOf="@+id/redPoints"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

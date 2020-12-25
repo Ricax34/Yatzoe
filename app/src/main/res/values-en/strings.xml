@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Bouton_Lancer">Throw</string>
+    <string name="StartButton">New game</string>
+    <string name="skipButton">Skip</string>
+    <string name="textview_message">Click on new game</string>
+    <string name="warningMessageThirdTry">Three throws maximum</string>
+    <string name="selectAllDices">Select all dice</string>
+    <string name="blue_turn">It\'s your turn</string>
+    <string name="red_turn">Droid\'s turn</string>
+    <string name="FirstThrow">First throw</string>
+    <string name="SecondThrow">Second throw</string>
+    <string name="ThirdThrow">Third throw</string>
+    <string name="blueWin">You win!</string>
+    <string name="redWin">You lose!</string>
+    <string name="wrongBox">Wrong box</string>
+    <string name="selectWhiteBox">Select a wite box</string>
+    <string name="missedAppel">Missed appel</string>
+    <string name="draw">It\'s a tie!</string>
+    <string name="appelNotPossible">Appel not possible</string>
+    <string name="startNewGameQuestion">New game?</string>
+    <string name="Help1">"Yatzoe is a mix of Yatzee and Tictactoe. Each player has 3 tries to make a figure. One place a marker in the box of the figure obtained. You can also skip your turn. A row of 3 markers makes one point! "</string>
+    <string name="help">Help</string>
+    <string name="Brelan">3 identical dice of the number indicated</string>
+    <string name="Carre">4 of a kind</string>
+    <string name="Yam">5 of a kind</string>
+    <string name="Full">One pair and 3 of a kind</string>
+    <string name="Suite">1, 2, 3, 4, 5 or 2, 3, 4, 5, 6</string>
+    <string name="Small">Sum of dice below 9</string>
+    <string name="Sec1">Carré, Yam,  Full, Suite or Small\nthrowing all dice in one throw</string>
+    <string name="Appel1">Click to call one of the figures above before the 2nd throw\nthen select the figure to be called</string>
+    <string name="Aide">Help</string>
+    <string name="Fin2">The game ends when one of the players runs out of markers or makes a row of 5.\nThe winner has the most points</string>
+    <string name="Fin1">End of game</string>
+    <string name="AppelFigure">Appel: %1$s</string>
+    <string name="Droid">Droid</string>
+    <string name="selectAFigureCall">Select a figure to be called</string>
+    <string name="Human">Humanoid</string>
+    <string name="NewGame">New game</string>
+    <string name="QuitGame">Quit</string>
+</resources>

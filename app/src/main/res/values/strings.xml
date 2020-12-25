@@ -1,0 +1,47 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">Yatzoe</string>
+    <string name="Bouton_Lancer">Lancer</string>
+    <string name="StartButton">Nouveau jeu</string>
+    <string name="skipButton">Passer</string>
+    <string name="textview_message">Cliquez sur nouveau jeu</string>
+    <string name="warningMessageThirdTry">Trois jets maximum!</string>
+    <string name="selectAllDices">Sélectionnez tous les dés</string>
+    <string name="blue_turn">A toi de jouer</string>
+    <string name="red_turn">Au tour du droïde</string>
+    <string name="FirstThrow">Premier jet</string>
+    <string name="SecondThrow">Second jet</string>
+    <string name="ThirdThrow">Troisième jet</string>
+    <string name="blueWin">Gagné!</string>
+    <string name="redWin">Perdu!</string>
+    <string name="wrongBox">Mauvaise case</string>
+    <string name="selectWhiteBox">Selectionner une case  blanche</string>
+    <string name="missedAppel">Appel manqué</string>
+    <string name="draw">Egalité!</string>
+    <string name="appelNotPossible">Appel impossible</string>
+    <string name="startNewGameQuestion">Nouvelle partie?</string>
+    <string name="FullFig" translatable="false">Full</string>
+    <string name="CarreFig" translatable="false">Carre</string>
+    <string name="SecFig" translatable="false">Sec</string>
+    <string name="SmallFig" translatable="false">Small</string>
+    <string name="YamFig" translatable="false">Yam</string>
+    <string name="SuiteFig" translatable="false">Suite</string>
+    <string name="help">Aide</string>
+    <string name="Help1">Yatzoe est un mélange de Yam et de Morpion. Chaque joueur a 3 essai pour réaliser une figure. \nIl place un pion sur la case de la figure réalisée. On peut aussi passer son tour.  3 pions alignés font 1 point!</string>
+    <string name="Brelan">3 dés identiques du nombre indiqué</string>
+    <string name="Carre">4 dés identiques</string>
+    <string name="Yam">5 dés identiques</string>
+    <string name="Full">Une paire et un brelan</string>
+    <string name="Suite">1, 2, 3, 4, 5 ou 2, 3, 4, 5, 6</string>
+    <string name="Small">Somme des dés inférieure à 9</string>
+    <string name="Sec1">Carré, Yam,  Full, Suite ou Small\nen lançant les 5 dés d\'un coup</string>
+    <string name="Appel1">Cliquer pour appeler une  des figures ci-dessus avant le 2nd jet. \nSelectionner ensuite la figure appelée</string>
+    <string name="Aide">Aide</string>
+    <string name="Fin2">Le jeu prend fin lorsque l\'un des joueurs n\'a plus de pion ou bien lorsqu\'il réalise un rang de 5 pions.\nLe gagnant est celui qui a le plus de points</string>
+    <string name="Fin1">Fin du jeu</string>
+    <string name="AppelFigure">Appel: %1$s</string>
+    <string name="Droid">Droïde</string>
+    <string name="selectAFigureCall">Choisissez une figure à appeler</string>
+    <string name="Human">Humanoïde</string>
+    <string name="NewGame">Nouvelle partie</string>
+    <string name="QuitGame">Quitter</string>
+</resources>
