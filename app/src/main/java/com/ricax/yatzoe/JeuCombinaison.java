@@ -28,6 +28,13 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
         return points;
     }
 
+    public void printIdCombinations(){
+        for (int i =0; i<idCombination.length; i++)
+        {
+            aGame.findBoxById(idCombination[i]).afficherBox();
+            System.out.println("");
+        }
+    }
     public Integer getPoints(){
         return combinationPoints;
     }

@@ -128,7 +128,7 @@ class MachinePlayTask implements Runnable {
         potentialPoints+= getPotentialPointsNextTurnPerCoord(aColor, v, 1, h, 0);//Vertically
         potentialPoints+= getPotentialPointsNextTurnPerCoord(aColor, v,1, h, 1);//to bottom right
         potentialPoints+= getPotentialPointsNextTurnPerCoord(aColor, v,1, h, -1);//to bottom left
-        System.out.println("getPotentialNextTurnPointsPerBox: "+aColor+" points:"+potentialPoints);
+       // System.out.println("getPotentialNextTurnPointsPerBox: "+aColor+" points:"+potentialPoints);
         return potentialPoints;
     }
 
@@ -212,14 +212,14 @@ class MachinePlayTask implements Runnable {
             }
         //Sort in ascending order
         Collections.sort(boxIdPointList);
-        System.out.println("getOptimaNextTurnNextThrowBoxPairFromFigureList");
+     /*   System.out.println("getOptimaNextTurnNextThrowBoxPairFromFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
             System.out.println("****debut box***");
             System.out.println(boxIdPointList.get(i));
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
             System.out.println("****fin box***");
-        }
+        }*/
         if (!boxIdPointList.isEmpty())
             return boxIdPointList.get(boxIdPointList.size() - 1);
         else return new BoxPair(0, 0);
@@ -234,14 +234,14 @@ class MachinePlayTask implements Runnable {
         //Sort in ascending order
         Collections.sort(boxIdPointList);
         //Return the last of the list (the best)
-        System.out.println("getOptimalCurrentTurnNextThrowBoxPairFromFigureList");
+   /*     System.out.println("getOptimalCurrentTurnNextThrowBoxPairFromFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
             System.out.println("****debut box***");
             System.out.println(boxIdPointList.get(i));
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
             System.out.println("****fin box***");
-        }
+        }*/
         if (!boxIdPointList.isEmpty())
             return boxIdPointList.get(boxIdPointList.size() - 1);
         else return new BoxPair(0, 0);
@@ -301,14 +301,14 @@ class MachinePlayTask implements Runnable {
 //        System.out.println("Dernier de la liste 2:");
 //        currentGame.findBoxById(boxIdPointList.get(boxIdPointList.size() - 1).getPairId()).afficherBox();
 
-        System.out.println("getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList");
+     /*   System.out.println("getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
             System.out.println("****debut box***");
             System.out.println(boxIdPointList.get(i));
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
             System.out.println("****fin box***");
-        }
+        }*/
         if (!boxIdPointList.isEmpty())
             return boxIdPointList.get(boxIdPointList.size() - 1);
         //Just in case
@@ -326,7 +326,7 @@ class MachinePlayTask implements Runnable {
             tmpPoints = tempGame.countLine(3, aColor, boxId);
             if ((tempGame.fullLine(aColor, boxId))|| (currentGame.redMarkers-1==0)){
                 if (currentGame.redPoints+tmpPoints<currentGame.bluePoints) {
-                    System.out.println("getPointsIfMarkerPlacedOnBox Marquage perdant:"+tmpPoints+"mais -1");
+              //      System.out.println("getPointsIfMarkerPlacedOnBox Marquage perdant:"+tmpPoints+"mais -1");
                     tempGame.findBoxById(boxId).afficherBox();
                     //Si on peut esperer gagner la partie avec les pions qui nous restent on retourne -1
                     return -1;  //Pour le mettre en queue des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
@@ -335,7 +335,7 @@ class MachinePlayTask implements Runnable {
                     // marquer le plus indépendement de la figure obtenue
                 }
                 else if (currentGame.redPoints+tmpPoints>=currentGame.bluePoints){
-                    System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
+            //        System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
                     tempGame.findBoxById(boxId).afficherBox();
                     return 10; //Pour le mettre en tête des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
                 }
@@ -348,7 +348,7 @@ class MachinePlayTask implements Runnable {
             }
             //tempGame.findBoxById(boxId).color = "white";
         }
-        System.out.println("getPointsIfMarkerPlacedOnBox: "+aColor+" points:"+tmpPoints);
+       // System.out.println("getPointsIfMarkerPlacedOnBox: "+aColor+" points:"+tmpPoints);
         return tmpPoints;
     }
 
@@ -385,14 +385,14 @@ class MachinePlayTask implements Runnable {
 
         //Sort boxIdPointList
         Collections.sort(boxIdPointList);
-        System.out.println("getOptimalNextTurnCurrentThrowBoxPairPerFigureList");
+        /*System.out.println("getOptimalNextTurnCurrentThrowBoxPairPerFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
             System.out.println("****debut box***");
             System.out.println(boxIdPointList.get(i));
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
             System.out.println("****fin box***");
-        }
+        }*/
         if (!boxIdPointList.isEmpty())
             return boxIdPointList.get(boxIdPointList.size() - 1);
         else {
@@ -590,10 +590,10 @@ class MachinePlayTask implements Runnable {
             gameCombinationList.add(aGameCombination);
         }
         Collections.sort(gameCombinationList);
-        System.out.println("Nombre de combinaisons possibles: "+gameCombinationList.size());
+        //System.out.println("Nombre de combinaisons possibles: "+gameCombinationList.size());
         for (int i =0; i<gameCombinationList.size(); i++)
         {
-            System.out.println("Combinaison["+i+"]: "+gameCombinationList.get(i).getPoints()+" points");
+          //  System.out.println("Combinaison["+i+"]: "+gameCombinationList.get(i).getPoints()+" points");
         }
         List<JeuCombinaison> bestGameCombinationsList = new ArrayList<>();
         bestGameCombinationsList.add(gameCombinationList.get(gameCombinationList.size()-1));
@@ -648,7 +648,10 @@ class MachinePlayTask implements Runnable {
         //Test de la nouvelle fonction ....ça semble fonctionner...
         if (currentGame.redMarkers<5)
         {
-            System.out.println("Max points additionnels: "+bestCombinationsAvailable("red", currentGame).get(0).getPoints());
+            JeuCombinaison jc = bestCombinationsAvailable("red", currentGame).get(0);
+            System.out.println("Max points additionnels: "+jc.getPoints());
+            System.out.println("Liste des box optimales: ");
+            jc.printIdCombinations();
         }
 
         if (currentGame.throwNb < currentGame.maxThrowNb) {
@@ -667,7 +670,7 @@ class MachinePlayTask implements Runnable {
 
             if (currentGame.throwNb<currentGame.maxThrowNb){
                 if (boxPairTargetCurrentTurnNextThrow.getPairId()>0){
-                    //TODO bug ici
+                    //TODO bug ici???
                     //Ne faire nextthrow que si currenthrow pas posable
                     // ou si on peut LA garder (ex: BRELAN->full ok  mais pas FULL->carre ni Yam ni Sec)
                     if (boxPairTargetCurrentTurnNextThrow.getPairPoints()>=boxPairCurrentTurnCurrentThrow.getPairPoints()){
