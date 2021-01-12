@@ -25,11 +25,11 @@ class BoxPair implements Comparable<BoxPair>{
     private final int id;
     private int points;
 
-     BoxPair(int id, int points){
+    BoxPair(int id, int points){
         this.id=id;
         this.points=points;
     }
-     Integer getPairId(){ return this.id; }
+    Integer getPairId(){ return this.id; }
     void setPairPoints(int p){this.points = p;}
     Integer getPairPoints(){
         return this.points;
@@ -45,7 +45,7 @@ class BoxPair implements Comparable<BoxPair>{
 
     @Override
     public int compareTo(BoxPair bp) {
-            return this.getPairPoints().compareTo(bp.getPairPoints());
+        return this.getPairPoints().compareTo(bp.getPairPoints());
     }
 
 }
