@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Thread.sleep;
 
@@ -319,7 +321,7 @@ class MachinePlayTask implements Runnable {
         int tmpPoints = 0;
         //copie de currentGame
         Jeu tempGame = new Jeu(currentGame);
-        tempGame.findBoxById(boxId).afficherBox();
+       // tempGame.findBoxById(boxId).afficherBox();
         if (currentGame.findBoxById(boxId).color.equals("white")) {
             tempGame.findBoxById(boxId).color = aColor;
             tmpPoints = tempGame.countLine(3, aColor, boxId);
@@ -334,7 +336,7 @@ class MachinePlayTask implements Runnable {
                     // marquer le plus indépendement de la figure obtenue
                 } else if (currentGame.redPoints + tmpPoints >= currentGame.bluePoints) {
                     //        System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
-                    tempGame.findBoxById(boxId).afficherBox();
+                   // tempGame.findBoxById(boxId).afficherBox();
                     return 10; //Pour le mettre en tête des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
                 }
                 /*
@@ -628,6 +630,44 @@ class MachinePlayTask implements Runnable {
         return boxId;
     }
 
+    private boolean figureContainsAlmostYam(Jeu aGame){
+        if (aGame.fiveDices.figureList.contains("carre")|| currentGame.fiveDices.figureList.matches( ".*([123456]).*"))
+            return true;
+        return false;
+    }
+    private ArrayList<String> getPossibleFigureFromdiceSet(Jeu aGame){
+        ArrayList<String> availableFigureListFromDiceSet = new ArrayList<>();
+       // if (aGame.fiveDices.figureList.matches(".*([123456]).*")){        }
+        final Pattern p = Pattern.compile(".*([123456])(carre)(yam)(full)(suite)(small)(sec).*");
+        Matcher m = p.matcher(aGame.fiveDices.figureList);
+        if (m.find()){
+            availableFigureListFromDiceSet.add(m.group());
+            while (m.find())
+                availableFigureListFromDiceSet.add(m.group());
+        }
+        //Maintenant chercher les paires doubles paires presque small presque suite etc ...
+        //comparer avec la liste
+        //TODO continuer ça
+        return availableFigureListFromDiceSet;
+    }
+    private String getTargetFigureTypeFromBestCombinationAvailable(ArrayList<Integer> noDuplicatesArrayListBoxId){
+        String aFigType = null;
+        ArrayList<String> figTypeArrayList = new ArrayList<>();
+        for (int i = 0; i<noDuplicatesArrayListBoxId.size(); i++)
+            figTypeArrayList.add(currentGame.findBoxById(noDuplicatesArrayListBoxId.get(i)).figType);
+        //Yam
+        //Carre
+        //Full
+        //Suite
+        //Small
+        //Brelan
+        //Sec
+        return aFigType;
+    }
+    private String selectDiceFromFigureList(String aFigureList){
+        return aFigureList;
+    }
+
     /*Method where droid choses target from current throw*/
     //Returns the target figtype upon wich we will select the dices next turn if any else returns null string and place the marker if possible
     private String machineChoseFromDices() {
@@ -649,9 +689,9 @@ class MachinePlayTask implements Runnable {
         BoxPair boxPairNextTurnCurrentThrow = getOptimalNextTurnCurrentThrowBoxPairPerFigureList(currentGame.fiveDices.figureList);
 
 
-        //Test de la nouvelle fonction ....ça semble fonctionner...
+        //Test de la nouvelle fonction ....ça pourra fonctionner...
         if (currentGame.redMarkers < 5) {
-            JeuCombinaison jc = bestCombinationsAvailable("red", currentGame).get(0);
+           // JeuCombinaison jc = bestCombinationsAvailable("red", currentGame).get(0);
             List<JeuCombinaison> jclist = bestCombinationsAvailable("red", currentGame);
 
             //Ne récupérer que les combinaisons qui permettent de dépasser ou d'égaler l'adversaire
@@ -667,14 +707,16 @@ class MachinePlayTask implements Runnable {
             ArrayList<Integer> noDuplicatesBoxIdArrayList= new ArrayList<>(setBoxId);
 
             //TODO: verifier gérer le cas où la machine fait un appel, prendre la bonne case.
+            //TODO: en cas d'appel raté gérer l'affichage (verifier si checkformissedappel fonctionne)
+            //TODO: ne pas fermer le jeu (fullline) si on perd (normalement c'est géré dans les combinaisons
+            //TODO: mais vu qu'elles ont fusionné, voir si il faut le re gérer)
+
             //On a fait appel, l'appel n'est pas encore réussi, on tente une dernière fois si l'appel est dans la combinaison
             if (currentGame.throwNb==2 && currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel")) {
                 //récupérer les boxPair correspondant aux appels
                 List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
                 //trouver ceux qui sont dans la liste de la combinaison et faire appel si on en trouve
                 for (int i = 0; i < appelBoxPairList.size(); i++)
-                    //if (jc.isInCombination(appelBoxPairList.get(i).getPairId()))
-                    //if (jc.isCombinationArrayList(appelBoxPairList.get(i).getPairId()))
                     if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId()))
                         return "appel";
             }
@@ -683,14 +725,14 @@ class MachinePlayTask implements Runnable {
                 List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
                 //trouver ceux qui sont dans la liste de la combinaison
                 for (int i = 0; i < appelBoxPairList.size(); i++)
-                    //  if (jc.isInCombination(appelBoxPairList.get(i).getPairId()))
-                    // if(jc.isCombinationArrayList(appelBoxPairList.get(i).getPairId()))
                     if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId()))
                         return machinePlaceMarkerById(appelBoxPairList.get(i).getPairId());
             }
 
-            else if (currentGame.appelClicked && currentGame.throwNb==3 && !currentGame.fiveDices.figureList.equals("Appel"))
+            else if (currentGame.appelClicked && currentGame.throwNb==3 && !currentGame.fiveDices.figureList.equals("Appel")) {
+                checkForMissedAppel();
                 return "blue";
+            }
 
             //sinon si il n'y a pas d'appel, on continue avec les autres box de la combinaison
             if
@@ -698,34 +740,30 @@ class MachinePlayTask implements Runnable {
                     (currentGame.redPoints==currentGame.bluePoints && currentGame.redMarkers==currentGame.blueMarkers) ||
                             currentGame.redPoints<currentGame.bluePoints
             ) {
-                System.out.println("Max points additionnels: " + jc.getPoints());
-                System.out.println("Liste des box optimales: ");
-                //  jc.printIdCombinations();
-                jc.printIdCombinationArrayList();
-                // if (jc.isInCombination(boxPairCurrentTurnCurrentThrow.getPairId()))
-                //if (jc.isCombinationArrayList(boxPairCurrentTurnCurrentThrow.getPairId()))
+                System.out.println("Liste des box optimales par jeu de combinaison: ");
+                for (int i = 0; i<bestjclist.size(); i++){
+                    System.out.println("*********");
+                    System.out.println("Max points additionnels: " +  bestjclist.get(i).getPoints());
+                    bestjclist.get(i).printIdCombinationArrayList();
+                    System.out.println("*********");
+                }
                 if (noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId()))
                     return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
-                //if (jc.isInCombination(boxPairNextTurnCurrentThrow.getPairId()))
-                //if (jc.isCombinationArrayList(boxPairNextTurnCurrentThrow.getPairId()))
                 if (noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId()))
                     return machinePlaceMarkerById(boxPairNextTurnCurrentThrow.getPairId());
-                //if (jc.isInCombination(boxPairTargetCurrentTurnNextThrow.getPairId()))
-                //if (jc.isCombinationArrayList(boxPairTargetCurrentTurnNextThrow.getPairId()))
                 if (noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId()))
                     return currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).figType;
-                //if (jc.isInCombination(boxPairTargetNextTurnNextThrow.getPairId()))
-                //if (jc.isCombinationArrayList(boxPairTargetNextTurnNextThrow.getPairId()))
                 if (noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId()))
                     return currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).figType;
                 //sinon il faut tenter une figure appartenant à la/les combinaisons gagnantes
-                //TODO implémenter: selectionner les dés pour chaque figure de la combinaison gagnante
                 /*
                  * récupérer les figures correspondant aux boxId des combinaisons gagnantes
                  * retourner celle qui convient le mieux en fonction des dés actuels
                  *
                  * */
-
+                //TODO implémenter: selectionner les dés pour chaque figure de la combinaison gagnante
+                //Tenter de selectionner les dés pour avoir une figure de la combinaison
+                return getTargetFigureTypeFromBestCombinationAvailable(noDuplicatesBoxIdArrayList);
             }
         }
 
