@@ -320,10 +320,18 @@ class Jeu {
         if (aBoxPair.getPairId()>0) {
             System.out.println("boxId: "+aBoxPair.getPairId()+" Box[" + this.findBoxById(aBoxPair.getPairId()).v + "]["
                     + this.findBoxById(aBoxPair.getPairId()).h + "]: "
-                    + this.findBoxById(aBoxPair.getPairId()).figType + "->"
-                    + aBoxPair.getPairPoints() + " points");
+                    + this.findBoxById(aBoxPair.getPairId()).figType
+                    +" "
+                    + this.findBoxById(aBoxPair.getPairId()).color
+                    + "->"
+                    + aBoxPair.getPairPoints() + " points"
+                    );
         }
         else System.out.println("null box");
+    }
+
+    void afficherDes(){
+        fiveDices.printDiceSet();
     }
 
     //returns a list of boxpair available for given figureList

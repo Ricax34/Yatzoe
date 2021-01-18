@@ -321,7 +321,7 @@ class MachinePlayTask implements Runnable {
         int tmpPoints = 0;
         //copie de currentGame
         Jeu tempGame = new Jeu(currentGame);
-       // tempGame.findBoxById(boxId).afficherBox();
+        // tempGame.findBoxById(boxId).afficherBox();
         if (currentGame.findBoxById(boxId).color.equals("white")) {
             tempGame.findBoxById(boxId).color = aColor;
             tmpPoints = tempGame.countLine(3, aColor, boxId);
@@ -336,7 +336,7 @@ class MachinePlayTask implements Runnable {
                     // marquer le plus indépendement de la figure obtenue
                 } else if (currentGame.redPoints + tmpPoints >= currentGame.bluePoints) {
                     //        System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
-                   // tempGame.findBoxById(boxId).afficherBox();
+                    // tempGame.findBoxById(boxId).afficherBox();
                     return 10; //Pour le mettre en tête des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
                 }
                 /*
@@ -578,6 +578,12 @@ class MachinePlayTask implements Runnable {
          * Retourner une liste des meilleures combinaisons
          */
         List<Integer> aBoxPairIdList = getFreeBoxIdList(aGame);
+      /* System.out.println("debut getFreeBoxIdList");
+        for (int i = 0; i<aBoxPairIdList.size(); i++)
+            aGame.findBoxById(aBoxPairIdList.get(i)).afficherBox();
+        System.out.println("fin getFreeBoxIdList");
+        */
+
         Combinations aCombination = new Combinations(aGame.redMarkers, aBoxPairIdList);
         aCombination.Combinate();
         List<int[]> combSubsets = aCombination.getSubsets();
@@ -589,17 +595,24 @@ class MachinePlayTask implements Runnable {
             gameCombinationList.add(aGameCombination);
         }
         Collections.sort(gameCombinationList);
-        //System.out.println("Nombre de combinaisons possibles: "+gameCombinationList.size());
+       /*
+        System.out.println("Nombre de combinaisons possibles: "+gameCombinationList.size());
         for (int i = 0; i < gameCombinationList.size(); i++) {
-            //  System.out.println("Combinaison["+i+"]: "+gameCombinationList.get(i).getPoints()+" points");
+              System.out.println("Combinaison["+i+"]: "+gameCombinationList.get(i).getPoints()+" points");
+              gameCombinationList.get(i).printIdCombinationArrayList();
         }
+        */
         List<JeuCombinaison> bestGameCombinationsList = new ArrayList<>();
         bestGameCombinationsList.add(gameCombinationList.get(gameCombinationList.size() - 1));
-        for (int i = 0; i < gameCombinationList.size() - 2; i++) {
+
+        //Bug dans ce bloc?, ne prend pas toutes les combinaisons qui répondent au critère
+        for (int i = 0; i < gameCombinationList.size() - 1; i++) {
             if (gameCombinationList.get(i) == bestGameCombinationsList.get(0))
                 bestGameCombinationsList.add(gameCombinationList.get(i));
         }
-        return bestGameCombinationsList;
+        //return bestGameCombinationsList;
+        //le tri sera fait dans machineChoseFromDice, permet de shunter le bug précédent et de vérifier que toutes les combinaisons gagnantes sont prises en compte
+        return gameCombinationList;
     }
 
     private List<Integer> getFreeBoxIdList(Jeu aGame) {
@@ -635,37 +648,81 @@ class MachinePlayTask implements Runnable {
             return true;
         return false;
     }
-    private ArrayList<String> getPossibleFigureFromdiceSet(Jeu aGame){
+
+    //Lister les figures obtenues avec les dés
+    private ArrayList<String> getAvailableFiguresFromdiceSet(Jeu aGame){
         ArrayList<String> availableFigureListFromDiceSet = new ArrayList<>();
-       // if (aGame.fiveDices.figureList.matches(".*([123456]).*")){        }
-        final Pattern p = Pattern.compile(".*([123456])(carre)(yam)(full)(suite)(small)(sec).*");
+        //trouver les figures éventuelles des dés courants
+        final Pattern p = Pattern.compile(".*([123456])(carre)(yam)(full)(suite)(small)(sec)(appel).*");
         Matcher m = p.matcher(aGame.fiveDices.figureList);
         if (m.find()){
             availableFigureListFromDiceSet.add(m.group());
             while (m.find())
                 availableFigureListFromDiceSet.add(m.group());
         }
-        //Maintenant chercher les paires doubles paires presque small presque suite etc ...
-        //comparer avec la liste
-        //TODO continuer ça
         return availableFigureListFromDiceSet;
     }
-    private String getTargetFigureTypeFromBestCombinationAvailable(ArrayList<Integer> noDuplicatesArrayListBoxId){
+
+    //lister les figures cibles possibles en fonction des dés
+    private ArrayList<String> getPossibleTargetsFromDiceSet(Jeu aGame){
+        ArrayList<String> possibleFigureListFromDiceSet = new ArrayList<>();
+        //Maintenant chercher les paires doubles paires presque small presque suite etc ...
+        if (figureContains4InARow()!=0)
+            if (!possibleFigureListFromDiceSet.contains("suite"))
+                possibleFigureListFromDiceSet.add("suite");
+        if (figureContainsAlmostSmall())
+            if (!possibleFigureListFromDiceSet.contains("small"))
+                possibleFigureListFromDiceSet.add("small");
+        if (figureContainsDoublePair())
+            if (!possibleFigureListFromDiceSet.contains("full"))
+                possibleFigureListFromDiceSet.add("full");
+        if (getSinglePairValue()!=0){
+            possibleFigureListFromDiceSet.add(Integer.toString(getSinglePairValue()));
+        }
+        return possibleFigureListFromDiceSet;
+    }
+
+    //Recupérer les figures de la meilleure combinaison
+    private ArrayList<String> getTargetFigureFromBestCombination(ArrayList<Integer> noDuplicatesArrayListBoxId){
+        //les figures de la combinaison
         String aFigType = null;
         ArrayList<String> figTypeArrayList = new ArrayList<>();
         for (int i = 0; i<noDuplicatesArrayListBoxId.size(); i++)
             figTypeArrayList.add(currentGame.findBoxById(noDuplicatesArrayListBoxId.get(i)).figType);
-        //Yam
-        //Carre
-        //Full
-        //Suite
-        //Small
-        //Brelan
-        //Sec
-        return aFigType;
+        return figTypeArrayList;
     }
-    private String selectDiceFromFigureList(String aFigureList){
-        return aFigureList;
+
+    private ArrayList<String> getCommonListElements(ArrayList<String> list1, ArrayList<String> list2){
+        ArrayList<String> commonElementList = new ArrayList(list2);
+        commonElementList.retainAll(list1);
+        return commonElementList;
+    }
+
+    // retourne la 1ere figure cible commune aux 2 listes, celle des figures possibles et celle de la meilleure combinaison possible
+    private String getTargetFromCombinationAndDice(ArrayList<Integer> noDuplicatesBoxIdArrayList){
+        //ArrayList<String> availableFiguresFromDiceSet = getAvailableFiguresFromdiceSet(currentGame);
+        ArrayList<String> possibleTargetsFromDiceSet = getPossibleTargetsFromDiceSet(currentGame);
+        ArrayList<String> bestCombinationTargetList = getTargetFigureFromBestCombination(noDuplicatesBoxIdArrayList);
+        //1st:  Compare and get the figure availableFiguresFromDiceSet and  bestCombinationTargetList have in common if any,
+        ArrayList<String> commonElementsList = getCommonListElements(possibleTargetsFromDiceSet, bestCombinationTargetList);
+        if (commonElementsList.size()>0)
+            return commonElementsList.get(0);//return 1st element
+        // else throw all dice (target = sec)
+        return "sec";
+    }
+
+    // retourne la 1ere case commune aux 2 listes, celle des figures obtenues et celle de la meilleure combinaison possible
+    private int getBoxIdFromCombinationAndDice(ArrayList<Integer> noDuplicatesBoxIdArrayList){
+        ArrayList<String> availableFiguresFromDiceSet = getAvailableFiguresFromdiceSet(currentGame);
+        ArrayList<String> bestCombinationTargetList = getTargetFigureFromBestCombination(noDuplicatesBoxIdArrayList);
+        ArrayList<String> commonElementsList = getCommonListElements(availableFiguresFromDiceSet, bestCombinationTargetList);
+        if (commonElementsList.size()>0){
+            for (int i=0; i< noDuplicatesBoxIdArrayList.size(); i++){
+                if (currentGame.findBoxById(noDuplicatesBoxIdArrayList.get(i)).figType.equals(commonElementsList.get(0)))
+                    return noDuplicatesBoxIdArrayList.get(i);
+            }
+        }
+        return 0;
     }
 
     /*Method where droid choses target from current throw*/
@@ -691,79 +748,128 @@ class MachinePlayTask implements Runnable {
 
         //Test de la nouvelle fonction ....ça pourra fonctionner...
         if (currentGame.redMarkers < 5) {
-           // JeuCombinaison jc = bestCombinationsAvailable("red", currentGame).get(0);
-            List<JeuCombinaison> jclist = bestCombinationsAvailable("red", currentGame);
+            System.out.println("redmarkers<5");
+            if (currentGame.redPoints<=currentGame.bluePoints){
+                System.out.println("redpPoints<bluePoints!");
+                currentGame.afficherDes();
+                List<JeuCombinaison> jclist = bestCombinationsAvailable("red", currentGame);
+                // System.out.println("Liste des box optimales par jeu de combinaison (jclist): ");
+                // for (int i=0; i<jclist.size(); i++)
+                //    jclist.get(i).printIdCombinationArrayList();
+                //Ne récupérer que les combinaisons qui permettent de dépasser ou d'égaler l'adversaire
+                List<JeuCombinaison> bestjclist = new ArrayList<>();
+                for (int i = 0; i < jclist.size(); i++)
+                    if (jclist.get(i).getPoints() + currentGame.redPoints > currentGame.bluePoints)
+                        bestjclist.add(jclist.get(i));
 
-            //Ne récupérer que les combinaisons qui permettent de dépasser ou d'égaler l'adversaire
-            List<JeuCombinaison> bestjclist = new ArrayList<>();
-            for (int i = 0; i < jclist.size(); i++)
-                if (jclist.get(i).getPoints() + currentGame.redPoints >= currentGame.bluePoints)
-                    bestjclist.add(jclist.get(i));
-
-            //les fusionner sans doublons dans un set puis en faire une liste
-            Set<Integer> setBoxId = new LinkedHashSet<>();
-            for (int i = 0; i < bestjclist.size(); i++)
-                setBoxId.addAll(bestjclist.get(i).getIdCombinationArrayList());
-            ArrayList<Integer> noDuplicatesBoxIdArrayList= new ArrayList<>(setBoxId);
-
-            //TODO: verifier gérer le cas où la machine fait un appel, prendre la bonne case.
-            //TODO: en cas d'appel raté gérer l'affichage (verifier si checkformissedappel fonctionne)
-            //TODO: ne pas fermer le jeu (fullline) si on perd (normalement c'est géré dans les combinaisons
-            //TODO: mais vu qu'elles ont fusionné, voir si il faut le re gérer)
-
-            //On a fait appel, l'appel n'est pas encore réussi, on tente une dernière fois si l'appel est dans la combinaison
-            if (currentGame.throwNb==2 && currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel")) {
-                //récupérer les boxPair correspondant aux appels
-                List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
-                //trouver ceux qui sont dans la liste de la combinaison et faire appel si on en trouve
-                for (int i = 0; i < appelBoxPairList.size(); i++)
-                    if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId()))
-                        return "appel";
-            }
-            //sinon si l'appel est réussi et est dans la combinaison
-            else if (currentGame.appelClicked && currentGame.fiveDices.figureList.equals("Appel")) {
-                List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
-                //trouver ceux qui sont dans la liste de la combinaison
-                for (int i = 0; i < appelBoxPairList.size(); i++)
-                    if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId()))
-                        return machinePlaceMarkerById(appelBoxPairList.get(i).getPairId());
-            }
-
-            else if (currentGame.appelClicked && currentGame.throwNb==3 && !currentGame.fiveDices.figureList.equals("Appel")) {
-                checkForMissedAppel();
-                return "blue";
-            }
-
-            //sinon si il n'y a pas d'appel, on continue avec les autres box de la combinaison
-            if
-            (
-                    (currentGame.redPoints==currentGame.bluePoints && currentGame.redMarkers==currentGame.blueMarkers) ||
-                            currentGame.redPoints<currentGame.bluePoints
-            ) {
-                System.out.println("Liste des box optimales par jeu de combinaison: ");
-                for (int i = 0; i<bestjclist.size(); i++){
+                System.out.println("Liste des box optimales en tout (bestjclist): ");
+                for (int i = 0; i < bestjclist.size(); i++) {
                     System.out.println("*********");
-                    System.out.println("Max points additionnels: " +  bestjclist.get(i).getPoints());
+                    System.out.println("Max points additionnels: " + bestjclist.get(i).getPoints());
                     bestjclist.get(i).printIdCombinationArrayList();
                     System.out.println("*********");
                 }
-                if (noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId()))
-                    return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
-                if (noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId()))
-                    return machinePlaceMarkerById(boxPairNextTurnCurrentThrow.getPairId());
-                if (noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId()))
-                    return currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).figType;
-                if (noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId()))
-                    return currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).figType;
-                //sinon il faut tenter une figure appartenant à la/les combinaisons gagnantes
-                /*
-                 * récupérer les figures correspondant aux boxId des combinaisons gagnantes
-                 * retourner celle qui convient le mieux en fonction des dés actuels
-                 *
-                 * */
-                //TODO implémenter: selectionner les dés pour chaque figure de la combinaison gagnante
-                //Tenter de selectionner les dés pour avoir une figure de la combinaison
-                return getTargetFigureTypeFromBestCombinationAvailable(noDuplicatesBoxIdArrayList);
+
+                //les fusionner sans doublons dans un set puis en faire une liste
+                Set<Integer> setBoxId = new LinkedHashSet<>();
+                for (int i = 0; i < bestjclist.size(); i++)
+                    setBoxId.addAll(bestjclist.get(i).getIdCombinationArrayList());
+                ArrayList<Integer> noDuplicatesBoxIdArrayList = new ArrayList<>(setBoxId);
+
+                //TODO: verifier gérer le cas où la machine fait un appel, prendre la bonne case.
+                //TODO: en cas d'appel raté gérer l'affichage (verifier si checkformissedappel fonctionne)
+                //TODO: ne pas fermer le jeu (fullline) si on perd (normalement c'est géré dans les combinaisons
+                //TODO: mais vu qu'elles ont fusionné, voir si il faut le re gérer)
+
+                //On a fait appel, l'appel n'est pas encore réussi, on tente une dernière fois si l'appel est dans la combinaison
+                if (currentGame.throwNb == 2 && currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel")) {
+                    System.out.println("Gestion appel1");
+                    //récupérer les boxPair correspondant aux appels
+                    List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
+                    //trouver ceux qui sont dans la liste de la combinaison et faire appel si on en trouve
+                    for (int i = 0; i < appelBoxPairList.size(); i++)
+                        if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId())) {
+                            System.out.println("Gestion appel2");
+                            return "appel";
+                        }
+                }
+                //sinon si l'appel est réussi et est dans la combinaison
+                else if (currentGame.appelClicked && currentGame.fiveDices.figureList.equals("Appel")) {
+                    List<BoxPair> appelBoxPairList = currentGame.getListBoxPairColorPerFigure("appel", "white");
+                    //trouver ceux qui sont dans la liste de la combinaison
+                    for (int i = 0; i < appelBoxPairList.size(); i++)
+                        if (noDuplicatesBoxIdArrayList.contains(appelBoxPairList.get(i).getPairId())) {
+                            System.out.println("Gestion appel 3");
+                            return machinePlaceMarkerById(appelBoxPairList.get(i).getPairId());
+                        }
+                } else if (currentGame.appelClicked && currentGame.throwNb == 3 && !currentGame.fiveDices.figureList.equals("Appel")) {
+                    System.out.println("Gestion appel 4");
+                    checkForMissedAppel();
+                    return "blue";
+                }
+
+                //sinon si il n'y a pas d'appel, on continue avec les autres box de la combinaison
+                if
+                (
+                        (currentGame.redPoints == currentGame.bluePoints && currentGame.redMarkers == currentGame.blueMarkers) ||
+                                currentGame.redPoints < currentGame.bluePoints
+                ) {
+
+                    //1: placer ou tenter une des figures/cases selectionnées si elle est aussi dans la combinaison
+                    if (noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId())) {
+                        System.out.println("Placer: noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId())");
+                        currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).afficherBox();
+                        System.out.println("----------------------------------------------------");
+                        return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
+                    }
+                    if (noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId())) {
+                        System.out.println("Placer: noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId())");
+                        currentGame.findBoxById(boxPairNextTurnCurrentThrow.getPairId()).afficherBox();
+                        System.out.println("----------------------------------------------------");
+                        return machinePlaceMarkerById(boxPairNextTurnCurrentThrow.getPairId());
+                    }
+                    if (currentGame.throwNb < 3)
+                        if (noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId())) {
+                            System.out.println("Target: noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId())");
+                            currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).afficherBox();
+                            System.out.println("----------------------------------------------------");
+                            return currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).figType;
+                        }
+                    if (currentGame.throwNb < 3)
+                        if (noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId())) {
+                            System.out.println("Target:noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId())");
+                            currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).afficherBox();
+                            System.out.println("----------------------------------------------------");
+                            return currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).figType;
+                        }
+
+                    //2: sinon placer une des éventuelles autres figures obtenues si elle est dans la combinaison
+                    int boxId = getBoxIdFromCombinationAndDice(noDuplicatesBoxIdArrayList);
+                    if (boxId > 0) {
+                        System.out.println("debut getBoxIdFromCombinationAndDice > 0");
+                        currentGame.findBoxById(boxId).afficherBox();
+                        System.out.println("----------------------------------------------------");
+                        return machinePlaceMarkerById(boxId);
+                    }
+                    //3: sinon il faut tenter une figure appartenant à la/les combinaisons gagnantes
+                    /*
+                     * récupérer les figures correspondant aux boxId des combinaisons gagnantes
+                     * retourner celle qui convient le mieux en fonction des dés actuels
+                     *
+                     * */
+                    //Tenter de selectionner les dés pour avoir une figure de la combinaison
+                    else if (currentGame.throwNb < 3) {
+                        System.out.println("debut getTargetFromCombinationAndDice");
+                        String targetFromCombinationAndDice = getTargetFromCombinationAndDice(noDuplicatesBoxIdArrayList);
+                        System.out.println("targetFromCombinationAndDice: " + targetFromCombinationAndDice);
+                        System.out.println("----------------------------------------------------");
+                        //return getTargetFromCombinationAndDice(noDuplicatesBoxIdArrayList);
+                        return targetFromCombinationAndDice;
+                    }
+                }
+                //Voir si on a suffisamment de pions restants pour poser même si cela ne correspond pas à la liste
+                //sinon on passe le tour
+                return "blue";
             }
         }
 
@@ -809,23 +915,25 @@ class MachinePlayTask implements Runnable {
 
             //2:placer maintenant pour pouvoir peut être marquer à un tour suivant.
             if (boxPairNextTurnCurrentThrow.getPairId()>0)
-                if (boxPairNextTurnCurrentThrow.getPairPoints()>0)//verifier cela
+                if (boxPairNextTurnCurrentThrow.getPairPoints()>0)// verifier cela
                     return machinePlaceMarkerById(boxPairNextTurnCurrentThrow.getPairId());
 
             //3: Améliorer figure pour placer au jet suivant et pouvoir peut être marquer à un tour suivant
             if (currentGame.throwNb<currentGame.maxThrowNb)
                 if (boxPairTargetNextTurnNextThrow.getPairId()>0)
-                    if (boxPairTargetNextTurnNextThrow.getPairPoints()>0)
+                    if (boxPairTargetNextTurnNextThrow.getPairPoints()>0)//TODO semble que cela exclue les cases qui pourraient apporter des points avec 3 pions à placer (3 cases blanches)
                         return currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).figType;
 
 
             //TODO: vérifier avant que cela nous permet de marquer plus tard ou que cela ne nous gâche pas de pions en cas de fin de jeu serrée
             //TODO decommenter la ligne qui suit quand tout sera implémenté
-            if (!checkMarkerSpoilByBoxId(boxPairCurrentTurnCurrentThrow.getPairId())){
-                System.out.println("Pas de gâchis, on pose!");
-                return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
-            }
-            else System.out.println("Quel gâchis, on ne pose pas!");
+            //    if (!checkMarkerSpoilByBoxId(boxPairCurrentTurnCurrentThrow.getPairId())){
+            //         System.out.println("Pas de gâchis, on pose!");
+            //TODO pour l'instant on laisse poser il faut toutefois vérifier que le TODO précédent soit fait
+            return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
+            //     }
+            //     else System.out.println("Quel gâchis, on ne pose pas!");
+
         }
 
         //Pas de figure posable au jet courant on tente d'améliorer la figure:

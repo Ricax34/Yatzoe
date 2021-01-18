@@ -58,16 +58,12 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
         for (int i =0; i<idCombination.length; i++)
         {
             aGame.findBoxById(idCombination[i]).afficherBox();
-            System.out.println("");
         }
     }
 
     public void printIdCombinationArrayList(){
         for (int i =0; i<idCombinationArrayList.size(); i++)
-        {
             aGame.findBoxById(idCombinationArrayList.get(i)).afficherBox();
-            System.out.println("");
-        }
     }
 
     public boolean isInCombination(int boxId){

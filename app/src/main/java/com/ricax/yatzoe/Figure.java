@@ -89,7 +89,6 @@ class Figure {
             aDoubleArray[i][1] = temp[1];
         }
     }
-
     //set list of figures obtained from the diceSet
     void setListOfFiguresFromDiceSet(){
         //populate tempDiceSetIndValues with the result of the throw
@@ -182,5 +181,12 @@ class Figure {
             return String.valueOf(this.tempDiceSetIndValues[2][1]);
         }
         return "";
+    }
+
+    public void printDiceSet(){
+        String des = "";
+        for (int i =0; i<5; i++)
+            des+=Integer.toString(diceSet[i].value)+" ";
+        System.out.println(des);
     }
 }
