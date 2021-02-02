@@ -55,7 +55,7 @@ class Box {
     }
 
     public void afficherBox(){
-        System.out.println(v+" "+h+" "+figType+" "+color+" "+checked);
+   //     System.out.println("("+v+", "+h+")"+" "+figType+" "+color+" "+checked);
+        System.out.println("("+v+", "+h+")"+" "+figType);
     }
-
 }

@@ -24,28 +24,63 @@ package com.ricax.yatzoe;
 class BoxPair implements Comparable<BoxPair>{
     private final int id;
     private int points;
+    private int oponentPoints;
 
-    BoxPair(int id, int points){
+    BoxPair(int id, int points, int oponentPoints){
         this.id=id;
         this.points=points;
+        this.oponentPoints= oponentPoints;
     }
+
     Integer getPairId(){ return this.id; }
     void setPairPoints(int p){this.points = p;}
     Integer getPairPoints(){
         return this.points;
     }
+    void setOponentPoints(int p){this.oponentPoints=p;}
+    Integer getOponentPoints(){return  this.oponentPoints;}
 
+    //  @Override
+  /*  boolean equals(BoxPair bp){
+        return this.id == bp.id;
+    }
+*/
+ /*   @Override
+    public boolean equals(Object bp){
+        if (bp==null)
+            return false;
+        if(this==bp)
+            return true;
+        if ((bp instanceof BoxPair) &&(((BoxPair)bp).getPairId()==this.id)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public int hashCode(){
+        int result =0;
+        result = (int) (id/11);
+        return result;
+    }
+*/
     @Override
     public String toString() {
         return "BoxPair{" +
                 "id=" + id +
                 ", points=" + points +
+                ", oponentPoints=" + oponentPoints+
                 '}';
     }
 
     @Override
     public int compareTo(BoxPair bp) {
-        return this.getPairPoints().compareTo(bp.getPairPoints());
+        //first compare points
+        if (bp.getPairPoints()!=this.getPairPoints())
+            return this.getPairPoints().compareTo(bp.getPairPoints());
+            //else compare oponentsPoints
+        else
+            return this.getOponentPoints().compareTo(bp.getOponentPoints());
     }
 
 }

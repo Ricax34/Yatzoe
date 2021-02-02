@@ -354,103 +354,103 @@ class Jeu {
         List<BoxPair> aBoxPairList = new ArrayList<>();
         if (aFigure.equals("1")) {
             if ((this.checkerBox[0][0].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][0].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[0][0].id, 0, 0));
             }
             if ((this.checkerBox[3][4].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][4].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[3][4].id, 0, 0));
             }
         }
         if (aFigure.equals("2")) {
             if ((this.checkerBox[1][0].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][0].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[1][0].id, 0, 0));
             }
             if ((this.checkerBox[4][1].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][1].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[4][1].id, 0, 0));
             }
         }
         if (aFigure.equals("3")) {
             if ((this.checkerBox[0][1].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][1].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[0][1].id, 0, 0));
             }
             if ((this.checkerBox[4][0].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][0].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[4][0].id, 0, 0));
             }
         }
         if (aFigure.equals("4")) {
             if ((this.checkerBox[0][3].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][3].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[0][3].id, 0, 0));
             }
             if ((this.checkerBox[4][4].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][4].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[4][4].id, 0, 0));
             }
         }
         if (aFigure.equals("5")) {
             if ((this.checkerBox[1][4].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][4].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[1][4].id, 0, 0));
             }
             if ((this.checkerBox[4][3].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][3].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[4][3].id, 0, 0));
             }
         }
         if (aFigure.equals("6")) {
             if ((this.checkerBox[0][4].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][4].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[0][4].id, 0, 0));
             }
             if ((this.checkerBox[3][0].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][0].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[3][0].id, 0, 0));
             }
         }
         if (aFigure.equals("Appel")) {
             if ((this.checkerBox[0][2].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][2].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[0][2].id, 0, 0));
             }
             if ((this.checkerBox[2][3].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][3].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[2][3].id, 0, 0));
             }
         }
         if (aFigure.equals("Carre")) {
             if ((this.checkerBox[1][1].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][1].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[1][1].id, 0, 0));
             }
             if ((this.checkerBox[4][2].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][2].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[4][2].id, 0, 0));
             }
         }
         if (aFigure.equals("Sec")) {
             if ((this.checkerBox[1][2].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][2].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[1][2].id, 0, 0));
             }
             if ((this.checkerBox[3][1].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][1].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[3][1].id, 0, 0));
             }
         }
         if (aFigure.equals("Full")) {
             if ((this.checkerBox[1][3].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][3].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[1][3].id, 0, 0));
             }
             if ((this.checkerBox[2][1].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][1].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[2][1].id, 0, 0));
             }
         }
         if (aFigure.equals("Small")) {
             if ((this.checkerBox[2][0].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][0].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[2][0].id, 0, 0));
             }
             if ((this.checkerBox[3][3].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][3].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[3][3].id, 0, 0));
             }
         }
         if (aFigure.equals("Suite")) {
             if ((this.checkerBox[2][4].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][4].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[2][4].id, 0, 0));
             }
             if ((this.checkerBox[3][2].color.equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][2].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[3][2].id, 0, 0));
             }
         }
         if (aFigure.equals("Yam")) {
             if (this.checkerBox[2][2].color.equals(aColor)) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][2].id, 0));
+                aBoxPairList.add(new BoxPair(this.checkerBox[2][2].id, 0, 0));
             }
         }
         return aBoxPairList;
