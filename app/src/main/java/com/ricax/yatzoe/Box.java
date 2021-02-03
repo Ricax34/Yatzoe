@@ -54,6 +54,11 @@ class Box {
         this.v = vert;
     }
 
+    @Override
+    public String toString(){
+        return "("+v+", "+h+")"+" "+figType;
+    }
+
     public void afficherBox(){
    //     System.out.println("("+v+", "+h+")"+" "+figType+" "+color+" "+checked);
         System.out.println("("+v+", "+h+")"+" "+figType);

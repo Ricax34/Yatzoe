@@ -25,20 +25,26 @@ class BoxPair implements Comparable<BoxPair>{
     private final int id;
     private int points;
     private int oponentPoints;
-
+    private boolean isFullLine = false;
+    private boolean isOponentFullLine = false;
     BoxPair(int id, int points, int oponentPoints){
         this.id=id;
         this.points=points;
         this.oponentPoints= oponentPoints;
+       // this.isFullLine=isFullLine;
     }
 
-    Integer getPairId(){ return this.id; }
-    void setPairPoints(int p){this.points = p;}
-    Integer getPairPoints(){
+    public Integer getPairId(){ return this.id; }
+    public void setPairPoints(int p){this.points = p;}
+    public Integer getPairPoints(){
         return this.points;
     }
-    void setOponentPoints(int p){this.oponentPoints=p;}
-    Integer getOponentPoints(){return  this.oponentPoints;}
+    public void setOponentPoints(int p){this.oponentPoints=p;}
+    public Integer getOponentPoints(){return  this.oponentPoints;}
+    public boolean isFullLine(){return isFullLine;}
+    public boolean isOponentFullLine(){return isOponentFullLine;}
+    public  void setFullLine(boolean isFullLine){this.isFullLine=isFullLine;}
+    public void setOponentFullLine(boolean isOponentFullLine){this.isOponentFullLine=isOponentFullLine;}
 
     //  @Override
   /*  boolean equals(BoxPair bp){
@@ -70,13 +76,15 @@ class BoxPair implements Comparable<BoxPair>{
                 "id=" + id +
                 ", points=" + points +
                 ", oponentPoints=" + oponentPoints+
+                ", isFullLine: "+ isFullLine+
+                ", isOponentFulline"+ isOponentFullLine+
                 '}';
     }
 
     @Override
     public int compareTo(BoxPair bp) {
         //first compare points
-        if (bp.getPairPoints()!=this.getPairPoints())
+        if (!bp.getPairPoints().equals(this.getPairPoints()))
             return this.getPairPoints().compareTo(bp.getPairPoints());
             //else compare oponentsPoints
         else
