@@ -27,7 +27,7 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
     private ArrayList<BoxPair> setBoxPairCombinationArrayList(int [] idCombination){
         ArrayList<BoxPair> aBoxPairCombinationList = new ArrayList<>();
         for (int value : idCombination) {
-            BoxPair tmpBoxPair = new BoxPair(value, 0, 0);
+            BoxPair tmpBoxPair = new BoxPair(new Box("", "white", 0, 0, value), 0, 0);
             aBoxPairCombinationList.add(tmpBoxPair);
         }
         return aBoxPairCombinationList;
@@ -45,7 +45,7 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
                 boxPairCombinationArrayList.set(i, tmpBoxPair);
             }
 
-            aGame.findBoxById(boxPairCombinationArrayList.get(i).getPairId()).color=aColor;
+            aGame.findBoxById(boxPairCombinationArrayList.get(i).getPairId()).setColor(aColor);
             //TODO verifier le calcul des points de chaque boxPair (ne correspond pas au nb de pts REEL obtenus par la boxPair avec TOUTE la combinaison)
             int tmpPoints= aGame.countLine(3, aColor, boxPairCombinationArrayList.get(i).getPairId());
             points+= tmpPoints;
@@ -60,17 +60,17 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
             BoxPair tmpBp = boxPairCombinationArrayList.get(i);
             int tmpId = boxPairCombinationArrayList.get(i).getPairId();
            //Calcul des points et des fullLine pour chaque box et pour chaque couleur
-            tmpGame.findBoxById(tmpId).color=aColor;
+            tmpGame.findBoxById(tmpId).setColor(aColor);
             if (tmpGame.countLine(5, aColor, tmpId)>0)
                 tmpBp.setFullLine(true);
             tmpBp.setPairPoints(tmpGame.countLine(3, aColor, tmpId));
 
-            tmpGame.findBoxById(tmpId).color=oponentColor;
+            tmpGame.findBoxById(tmpId).setColor(oponentColor);
             if (tmpGame.countLine(5, oponentColor, tmpId)>0)
                 tmpBp.setOponentFullLine(true);
             tmpBp.setOponentPoints(tmpGame.countLine(3, oponentColor, tmpId));
             //remise à blanc avant de passer à la box suivante
-            tmpGame.findBoxById(tmpId).color="white";
+            tmpGame.findBoxById(tmpId).setColor("white");
         }
     }
 

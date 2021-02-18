@@ -31,6 +31,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView1Un"
                 app:srcCompat="@drawable/ic_un50" />
 
             <ImageView
@@ -40,6 +41,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView2Trois"
                 app:srcCompat="@drawable/ic_trois50" />
 
             <ImageView
@@ -49,6 +51,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView3Appel"
                 app:srcCompat="@drawable/ic_appel50" />
 
             <ImageView
@@ -58,6 +61,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView4Quatre"
                 app:srcCompat="@drawable/ic_quatre50" />
 
             <ImageView
@@ -67,6 +71,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView5Six"
                 app:srcCompat="@drawable/ic_six50" />
         </TableRow>
 
@@ -81,6 +86,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView6Deux"
                 app:srcCompat="@drawable/ic_deux50" />
 
             <ImageView
@@ -90,6 +96,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView7Carre"
                 app:srcCompat="@drawable/ic_carre50" />
 
             <ImageView
@@ -99,6 +106,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView8Sec"
                 app:srcCompat="@drawable/ic_sec50" />
 
             <ImageView
@@ -108,6 +116,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView9Full"
                 app:srcCompat="@drawable/ic_full50" />
 
             <ImageView
@@ -117,6 +126,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView10Cinq"
                 app:srcCompat="@drawable/ic_cinq50" />
         </TableRow>
 
@@ -131,6 +141,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView11Small"
                 app:srcCompat="@drawable/ic_small50" />
 
             <ImageView
@@ -139,6 +150,7 @@
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:onClick="onBoxClicked"
+                android:tag="imageView12Full"
                 app:srcCompat="@drawable/ic_full50" />
 
             <ImageView
@@ -147,6 +159,7 @@
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="auto"
+                android:tag="imageView13Yam"
                 android:onClick="onBoxClicked"
                 app:srcCompat="@drawable/ic_yam50" />
 
@@ -156,6 +169,7 @@
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="auto"
+                android:tag="imageView14Appel"
                 android:onClick="onBoxClicked"
                 app:srcCompat="@drawable/ic_appel50" />
 
@@ -166,6 +180,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView15Suite"
                 app:srcCompat="@drawable/ic_suite50" />
         </TableRow>
 
@@ -180,6 +195,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView16Six"
                 app:srcCompat="@drawable/ic_six50" />
 
             <ImageView
@@ -188,6 +204,7 @@
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:onClick="onBoxClicked"
+                android:tag="imageView17Sec"
                 app:srcCompat="@drawable/ic_sec50" />
 
             <ImageView
@@ -197,6 +214,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView18Suite"
                 app:srcCompat="@drawable/ic_suite50" />
 
             <ImageView
@@ -205,6 +223,7 @@
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:onClick="onBoxClicked"
+                android:tag="imageView19Small"
                 app:srcCompat="@drawable/ic_small50" />
 
             <ImageView
@@ -214,6 +233,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView20Un"
                 app:srcCompat="@drawable/ic_un50" />
         </TableRow>
 
@@ -228,6 +248,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView21Trois"
                 app:srcCompat="@drawable/ic_trois50" />
 
             <ImageView
@@ -237,6 +258,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView22Deux"
                 app:srcCompat="@drawable/ic_deux50" />
 
             <ImageView
@@ -246,6 +268,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView23Carre"
                 app:srcCompat="@drawable/ic_carre50" />
 
             <ImageView
@@ -255,6 +278,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView24Cinq"
                 app:srcCompat="@drawable/ic_cinq50" />
 
             <ImageView
@@ -264,6 +288,7 @@
                 android:clickable="true"
                 android:focusable="auto"
                 android:onClick="onBoxClicked"
+                android:tag="imageView25Quatre"
                 app:srcCompat="@drawable/ic_quatre50" />
         </TableRow>
     </TableLayout>
@@ -514,6 +539,22 @@
         app:layout_constraintEnd_toStartOf="@+id/blueMarkerTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <ImageView
+        android:id="@+id/diceCheatButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="342dp"
+        android:clickable="true"
+        android:onClick="onButtonDiceCheatClicked"
+        app:layout_constraintBottom_toTopOf="@+id/LancerDes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tableau"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,13 +24,14 @@
 package com.ricax.yatzoe;
 
 class Box {
-    String figType;
-    String color="white";
+    private String figType = "";
+    private String color="white";
     private boolean checked = false;
-    final int h;
-    final int v;
-    int id;
+     int h = 0;
+     int v = 0;
+    private int id = 0;
 
+    public Box(){}
     //Constructeur de copie
     public Box (Box aBox){
         figType=aBox.figType;
@@ -53,6 +54,14 @@ class Box {
         this.h = hor;
         this.v = vert;
     }
+
+    public int getId(){
+        return id;
+    }
+
+    public String getColor(){return color;}
+    public void setColor(String aColor){ color=aColor; }
+    public String getFigType(){ return figType; }
 
     @Override
     public String toString(){

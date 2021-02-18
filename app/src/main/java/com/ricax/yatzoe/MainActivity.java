@@ -42,9 +42,12 @@ import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity {
 
-    boolean flagCheat = false;
+    boolean boxFlagCheat = false;
     boolean blueFlagCheat = false;
     boolean redFlagCheat = false;
+    boolean diceCheat = false;
+  //  boolean throwDiceCheat = false;
+    int diceCheatIdx=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setOrangeBackgroundBlueOrRed(ImageView v){
-        switch (game.findBoxById(v.getId()).color) {
+        switch (game.findBoxById(v.getId()).getColor()) {
             case "blue": {
                 v.setBackgroundResource(R.drawable.ic_semitransparentbackgroundpionbleucontour_appel);
                 break;
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         //Ungray appelFigBoxView
         ImageView appelOrFigBoxView = findViewById(appelOrFigBoxId);
         appelOrFigBoxView.setBackgroundResource(0);
-        switch (game.findBoxById(appelOrFigBoxId).color) {
+        switch (game.findBoxById(appelOrFigBoxId).getColor()) {
             case "blue": {
                 Resources res = getApplicationContext().getResources();
                 Drawable pionBleu = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_bleu_contour_noir, null);
@@ -211,9 +214,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBoxFigureAppelClicked(View v) {
-        if ((game.findBoxById(v.getId()).figType.matches(".*(Full|Suite|Carre|Sec|Yam|Small).*"))) {
+        if ((game.findBoxById(v.getId()).getFigType().matches(".*(Full|Suite|Carre|Sec|Yam|Small).*"))) {
             if (game.appelRegistered.isEmpty()) {
-                game.appelRegistered = game.findBoxById(v.getId()).figType;
+                game.appelRegistered = game.findBoxById(v.getId()).getFigType();
                 game.appelFigTypeBoxId = v.getId();
                 ImageView figAppelTypeView = findViewById(game.appelFigTypeBoxId);
 
@@ -237,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     //Fetch the previously clicked Box and un-gray it
                     ungrayAppelBoxOrFigAppelBoxToPreviousState(game.appelFigTypeBoxId);
                     //Gray and register the new one
-                    game.appelRegistered = game.findBoxById(v.getId()).figType;
+                    game.appelRegistered = game.findBoxById(v.getId()).getFigType();
                     //remember the Box we clicked on and gray it
                     game.appelFigTypeBoxId = v.getId();
                     ImageView figAppelTypeView = findViewById(game.appelFigTypeBoxId);
@@ -251,7 +254,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBoxClicked(View v) {
-        if (flagCheat){
+        if (diceCheat){
+           // System.out.println("throwDiceCheat="+throwDiceCheat);
+//            if (diceCheatIdx<5 && !throwDiceCheat && game.throwNb==0){
+                if (diceCheatIdx<5 && game.throwNb==0){
+                String tagToString = v.getTag().toString();
+                switch (tagToString) {
+                    case "imageView1Un": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=1;
+                        System.out.println("dice1 value: "+game.fiveDices.diceSet[diceCheatIdx].value);
+                        break;
+                    }
+                    case "imageView6Deux": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=2;
+                        break;
+                    }
+                    case "imageView2Trois": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=3;
+                        break;
+                    }
+                    case "imageView4Quatre": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=4;
+                        break;
+                    }
+                    case "imageView10Cinq": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=5;
+                        break;
+                    }
+                    case "imageView5Six": {
+                        game.fiveDices.diceSet[diceCheatIdx].value=6;
+                        break;
+                    }
+                }
+                System.out.println("dice value: "+game.fiveDices.diceSet[diceCheatIdx].value);
+                updateOneDice(game.fiveDices.diceSet[diceCheatIdx].id, game.fiveDices.diceSet[diceCheatIdx].value);
+                diceCheatIdx++;
+            }
+            if (diceCheatIdx==5){
+                diceCheatIdx=0;
+               // throwDiceCheat=true;
+                game.changeTurnColor("red");
+            }
+        }
+
+        else if (boxFlagCheat){
             Resources res = getApplicationContext().getResources();
             Box clickedBox = game.findBoxById(v.getId());
             ImageView uneCase = findViewById(v.getId());
@@ -259,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
             if (blueFlagCheat){
                 Drawable pionBleu = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_bleu_contour_noir, null);
                 uneCase.setBackground(pionBleu);
-                clickedBox.color = "blue";
+                clickedBox.setColor("blue");
                 game.blueMarkers--;
                 TextView blueMarkerTV = findViewById(R.id.blueMarkerTextView);
                 blueMarkerTV.setText(String.format("%s", game.blueMarkers));
@@ -270,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             else if (redFlagCheat){
                 Drawable pionRouge = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_rouge_contour_noir, null);
                 uneCase.setBackground(pionRouge);
-                clickedBox.color = "red";
+                clickedBox.setColor("red");
                 game.redMarkers--;
                 TextView redMarkerTV = findViewById(R.id.redMarkerTextView);
                 redMarkerTV.setText(String.format("%s", game.redMarkers));
@@ -283,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             Box clickedBox = game.findBoxById(v.getId());
             //Check whether it is an appel called or un-called + gray or un-gray Boxes
             if (game.throwNb == 1) {
-                if (game.findBoxById(v.getId()).figType.equals("Appel")) {
+                if (game.findBoxById(v.getId()).getFigType().equals("Appel")) {
                     if (!game.getListBoxPairColorPerFigure("Appel", "white").isEmpty())
                         onBoxAppelClicked(v);
                     else {
@@ -294,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 //Then if it is an appel, check which Figure is called or un-called (Box figtype appel (un)selected)
                 else if (game.appelClicked) {
                     onBoxFigureAppelClicked(v);
-                } else if ((game.fiveDices.figureList.contains(clickedBox.figType)) && (clickedBox.color.equals("white"))) {//If it is not an appel
+                } else if ((game.fiveDices.figureList.contains(clickedBox.getFigType())) && (clickedBox.getColor().equals("white"))) {//If it is not an appel
                     placeMarker(v);
                 }
                 else {
@@ -303,11 +349,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (game.throwNb > 1) {
-                if ((game.appelClicked) && (game.findBoxById(v.getId()).figType.equals("Appel"))) {//We've asked an appel  + we clicked on an appel Box
+                if ((game.appelClicked) && (game.findBoxById(v.getId()).getFigType().equals("Appel"))) {//We've asked an appel  + we clicked on an appel Box
                     if (game.fiveDices.figureList.equals("Appel")) {//Appel is OK
                         //the current Box is an appel one, ungray the one that was grayed on turn 1 and the appel figType Box as well
                         //and reset the clicked Boxes to their previous state
-                        if (clickedBox.color.equals("white")) {
+                        if (clickedBox.getColor().equals("white")) {
                             //place the marker on the current clicked appel Box
                             placeMarker(v);
 
@@ -319,11 +365,11 @@ public class MainActivity extends AppCompatActivity {
                         TextView textview_Message = findViewById(R.id.TextViewMessage);
                         textview_Message.setText(getResources().getIdentifier("missedAppel", "string", getPackageName()));
                     }
-                } else if ((game.appelClicked) && (!game.findBoxById(v.getId()).figType.equals("Appel"))) {
+                } else if ((game.appelClicked) && (!game.findBoxById(v.getId()).getFigType().equals("Appel"))) {
                     TextView textview_Message = findViewById(R.id.TextViewMessage);
                     textview_Message.setText(getResources().getIdentifier("wrongBox", "string", getPackageName()));
                 } else {
-                    if ((!game.appelClicked) && (game.fiveDices.figureList.contains(clickedBox.figType)) && (clickedBox.color.equals("white"))) {
+                    if ((!game.appelClicked) && (game.fiveDices.figureList.contains(clickedBox.getFigType())) && (clickedBox.getColor().equals("white"))) {
                         placeMarker(v);
                     } else {
                         TextView textview_Message = findViewById(R.id.TextViewMessage);
@@ -336,110 +382,33 @@ public class MainActivity extends AppCompatActivity {
 
     private int cheat(int v, int h, String color){
         if (color.equals("blue")){
-            game.checkerBox[v][h].color="blue";
+            game.checkerBox[v][h].setColor("blue");
             game.blueMarkers--;
-            return game.countLine(3, "blue", game.checkerBox[v][h].id);
+            return game.countLine(3, "blue", game.checkerBox[v][h].getId());
         }
         else if (color.equals("red")){
-            game.checkerBox[v][h].color="red";
+            game.checkerBox[v][h].setColor("red");
             game.redMarkers--;
-            return game.countLine(3, "red", game.checkerBox[v][h].id);
+            return game.countLine(3, "red", game.checkerBox[v][h].getId());
         }
         return 0;
     }
 
     public void onButtonCheatClicked(View v){
-        //     game.fiveDices.figureList="SmallSuiteSecFullCarreAppelYam123456";
-        //game.fiveDices.figureList="";
-        //    int bPoints = 0;
-        //   int rPoints = 0 ;
-
- /*       game.checkerBox[0][0].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[0][0].id);
-        game.redMarkers--;
-        game.checkerBox[0][2].color="blue";
-        bPoints += game.countLine(3, "blue", game.checkerBox[0][3].id);
-        game.blueMarkers--;
-        game.checkerBox[0][4].color="blue";
-        bPoints += game.countLine(3, "blue", game.checkerBox[0][4].id);
-        game.blueMarkers--;
-        game.checkerBox[3][2].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[3][2].id);
-        game.redMarkers--;
-        game.checkerBox[3][3].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[3][3].id);
-        game.redMarkers--;
-        game.checkerBox[4][1].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[4][1].id);
-        game.redMarkers--;
-        game.checkerBox[4][2].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[4][2].id);
-        game.redMarkers--;
-        game.checkerBox[4][3].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[4][3].id);
-        game.redMarkers--;
-        game.checkerBox[4][4].color="red";
-        rPoints += game.countLine(3, "red", game.checkerBox[4][4].id);
-        game.redMarkers--;
-*/
-  /*
-        rPoints+= cheat(0, 0, "red");
-        rPoints+= cheat(0, 2, "red");
-        rPoints+= cheat(0, 3, "red");
-        rPoints+= cheat(0, 4, "red");
-        rPoints+= cheat(2, 0, "red");
-        rPoints+= cheat(3, 0, "red");
-        rPoints+= cheat(4, 1, "red");
-        rPoints+= cheat(4, 2, "red");
-        bPoints+= cheat(1, 0, "blue");
-        bPoints+= cheat(1, 1, "blue");
-        bPoints+= cheat(1, 2, "blue");
-        bPoints+= cheat(2, 2, "blue");
-        bPoints+= cheat(2, 3, "blue");
-        bPoints+= cheat(3, 1, "blue");
-      //  bPoints+= cheat(3, 3, "blue");
-        bPoints+= cheat(3, 4, "blue");
-        bPoints+= cheat(4, 3, "blue");
-
-        game.bluePoints+=bPoints;
-        game.redPoints+=rPoints;
-
-        Resources res = getApplicationContext().getResources();
-
-        Drawable pionBleu = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_bleu_contour_noir, null);
-        TextView bluePointsTV = findViewById(R.id.bluePoints);
-        bluePointsTV.setText(String.format("%s", game.bluePoints));
-        TextView blueMarkerTV = findViewById(R.id.blueMarkerTextView);
-        blueMarkerTV.setText(String.format("%s", game.blueMarkers));
-
-        Drawable pionRouge = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_rouge_contour_noir, null);
-        TextView redPointsTV = findViewById(R.id.redPoints);
-        redPointsTV.setText(String.format("%s", game.redPoints));
-        TextView redMarkerTV = findViewById(R.id.redMarkerTextView);
-        redMarkerTV.setText(String.format("%s", game.redMarkers));
-
-        for (int i =0; i<5; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (game.checkerBox[i][j].color.equals("blue")) {
-                    ImageView uneCase = findViewById(game.checkerBox[i][j].id);
-                    uneCase.setBackground(pionBleu);
-                } else if (game.checkerBox[i][j].color.equals("red")) {
-                    ImageView uneCase = findViewById(game.checkerBox[i][j].id);
-                    uneCase.setBackground(pionRouge);
-                }
-            }
-        }
-        */
-        System.out.println("onButtonCheatClicked1 flagCheat:"+flagCheat);
-        if (!flagCheat) {
-            flagCheat=true;
+        System.out.println("onButtonCheatClicked1 flagCheat:"+boxFlagCheat);
+        if (!boxFlagCheat) {
+            boxFlagCheat=true;
+            ImageView boxFlagCheatView = findViewById(v.getId());
+            boxFlagCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
             TextView blueMarkersTextview = findViewById(R.id.blueMarkerTextView);
             blueMarkersTextview.setClickable(true);
             TextView redMarkersTextview = findViewById(R.id.redMarkerTextView);
             redMarkersTextview.setClickable(true);
         }
         else{
-            flagCheat=false;
+            boxFlagCheat=false;
+            ImageView boxFlagCheatView = findViewById(v.getId());
+            boxFlagCheatView.clearColorFilter();
             TextView blueMarkersTextview = findViewById(R.id.blueMarkerTextView);
             blueMarkersTextview.setClickable(false);
             blueFlagCheat=false;
@@ -447,12 +416,12 @@ public class MainActivity extends AppCompatActivity {
             redMarkersTextview.setClickable(false);
             redFlagCheat=false;
         }
-        System.out.println("onButtonCheatClicked2 flagCheat:"+flagCheat);
+        System.out.println("onButtonCheatClicked2 flagCheat:"+boxFlagCheat);
     }
 
     public void onColorMarkersNbTVClicked(View v){
-        if (flagCheat){
-            System.out.println("flagCheat: "+flagCheat);
+        if (boxFlagCheat){
+            System.out.println("flagCheat: "+boxFlagCheat);
             if (v.getTag().toString().equals("blueMarkerTextView")){
                 blueFlagCheat=true;
                 redFlagCheat=false;
@@ -470,6 +439,16 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("No cheats!");
     }
 
+    public void onButtonDiceCheatClicked (View v){
+        diceCheat= !diceCheat;
+        ImageView diceCheatView = findViewById(v.getId());
+        if (diceCheat)
+            diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
+        else
+            diceCheatView.clearColorFilter();
+        System.out.println("diceCheat="+diceCheat);
+    }
+
     public void placeMarkerById(int id){
         placeMarker(findViewById(id));
     }
@@ -478,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
         Resources res = getApplicationContext().getResources();
         Box clickedBox = game.findBoxById(v.getId());
         //Gerer le cas ou c'est un appel reussi
-        if (game.findBoxById(v.getId()).figType.equals("Appel")){
+        if (game.findBoxById(v.getId()).getFigType().equals("Appel")){
             ungrayAppelBoxOrFigAppelBoxToPreviousState(game.appelBoxId);
             try{
                 sleep(300);
@@ -498,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
             Drawable pionBleu = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_bleu_contour_noir, null);
             ImageView uneCase = findViewById(v.getId());
             uneCase.setBackground(pionBleu);
-            clickedBox.color = "blue";
+            clickedBox.setColor("blue");
             TextView textview_Message = findViewById(R.id.TextViewMessage);
             textview_Message.setText(getResources().getIdentifier("red_turn", "string", getPackageName()));
             for (int i = 0; i < 5; i++) {
@@ -523,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
             Drawable pionRouge = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_rouge_contour_noir, null);
             ImageView uneCase = findViewById(v.getId());
             uneCase.setBackground(pionRouge);
-            clickedBox.color = "red";
+            clickedBox.setColor("red");
             TextView textview_Message = findViewById(R.id.TextViewMessage);
             textview_Message.setText(getResources().getIdentifier("blue_turn", "string", getPackageName()));
             for (int i = 0; i < 5; i++) {

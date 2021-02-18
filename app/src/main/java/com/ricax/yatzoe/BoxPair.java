@@ -22,19 +22,25 @@
 package com.ricax.yatzoe;
 
 class BoxPair implements Comparable<BoxPair>{
-    private final int id;
+    private Box aBox;
     private int points;
     private int oponentPoints;
+    private int allPossiblePoints=0;
+    private int nextTurnPossiblePoints=0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
-    BoxPair(int id, int points, int oponentPoints){
-        this.id=id;
+
+    BoxPair(Box aBox, int points, int oponentPoints){
+        this.aBox = aBox;
         this.points=points;
         this.oponentPoints= oponentPoints;
-       // this.isFullLine=isFullLine;
     }
 
-    public Integer getPairId(){ return this.id; }
+    public Integer getPairId(){
+        return this.aBox.getId();
+    }
+    public Box getBox(){return aBox;};
+    public String getFigType(){return aBox.getFigType(); }
     public void setPairPoints(int p){this.points = p;}
     public Integer getPairPoints(){
         return this.points;
@@ -45,6 +51,10 @@ class BoxPair implements Comparable<BoxPair>{
     public boolean isOponentFullLine(){return isOponentFullLine;}
     public  void setFullLine(boolean isFullLine){this.isFullLine=isFullLine;}
     public void setOponentFullLine(boolean isOponentFullLine){this.isOponentFullLine=isOponentFullLine;}
+    public void setAllPossiblePoints(int allPossiblePoints){this.allPossiblePoints=allPossiblePoints;}
+    public Integer getAllPossiblePoints(){return allPossiblePoints;}
+    public void setNextTurnPossiblePoints(int p){this.nextTurnPossiblePoints=p;}
+    public Integer getNextTurnPossiblePoints(){return nextTurnPossiblePoints;}
 
     //  @Override
   /*  boolean equals(BoxPair bp){
@@ -73,20 +83,25 @@ class BoxPair implements Comparable<BoxPair>{
     @Override
     public String toString() {
         return "BoxPair{" +
-                "id=" + id +
-                ", points=" + points +
-                ", oponentPoints=" + oponentPoints+
-                ", isFullLine: "+ isFullLine+
-                ", isOponentFulline"+ isOponentFullLine+
-                '}';
+                "box =" + aBox +
+                ", pts=" + points +
+                ", ntpP=" + nextTurnPossiblePoints+
+                ", apP=" + allPossiblePoints+
+                ", oPts=" + oponentPoints+
+                ", isFL: "+ isFullLine+
+                ", isOFL "+ isOponentFullLine+
+                "}\n";
     }
 
     @Override
     public int compareTo(BoxPair bp) {
-        //first compare points
+        //first compare points and so on ....
         if (!bp.getPairPoints().equals(this.getPairPoints()))
             return this.getPairPoints().compareTo(bp.getPairPoints());
-            //else compare oponentsPoints
+        else if (!bp.getNextTurnPossiblePoints().equals(this.getNextTurnPossiblePoints()))
+            return this.getNextTurnPossiblePoints().compareTo(bp.getNextTurnPossiblePoints());
+        else if (!bp.getAllPossiblePoints().equals(this.getAllPossiblePoints()))
+            return this.getAllPossiblePoints().compareTo(bp.getAllPossiblePoints());
         else
             return this.getOponentPoints().compareTo(bp.getOponentPoints());
     }
