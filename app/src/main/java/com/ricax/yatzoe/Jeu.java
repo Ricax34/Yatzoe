@@ -26,8 +26,11 @@ package com.ricax.yatzoe;
 // class Jeu
 
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +42,7 @@ class Jeu {
     final Box[][] checkerBox;
     int throwNb = 0;
     int maxThrowNb = 3;
-
+    ArrayList<Integer> diceArrayList = new ArrayList<>();
     //Human player's color got to modify this somehow
     String couleur = "blue";
     boolean appelClicked = false; //First: User clicked on appel imageView
@@ -81,19 +84,16 @@ class Jeu {
         blueMarkers = game.blueMarkers;
         redPoints = game.redPoints;
         bluePoints = game.bluePoints;
+        diceArrayList= game.diceArrayList;
     }
 
 
-   public  Box findBoxById(int aBoxId) {
+    public  Box findBoxById(int aBoxId) {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < 5; j++)
                 if (checkerBox[i][j].getId() == aBoxId)
                     return checkerBox[i][j];
         return null;
-    }
-
-    void toggleSelectDice(int i) {
-        this.fiveDices.diceSet[i].toggleDiceSelected();
     }
 
 
@@ -231,8 +231,31 @@ class Jeu {
         new Thread(new MachinePlayTask(this, mainActivity)).start();
     }
 
+    public void setDiceArrayListRandomValue(){
+        diceArrayList.add(1 + (int) (Math.random() * 6));
+    }
+
+    void toggleSelectDice(int i) {
+        this.fiveDices.diceSet[i].toggleDiceSelected();
+    }
+
+    private int getRandomValue(){
+        if (diceArrayList.isEmpty())
+            setDiceArrayListRandomValue();
+        int value = diceArrayList.get(0);
+        diceArrayList.remove(0);
+        return value;
+    }
+    //  private  static Random random =  new Random() ;
     private void rollOneDice(int i) {
-        fiveDices.diceSet[i].value = 1 + (int) (Math.random() * ((6 - 1) + 1));
+        //SecureRandom secureRandomGenerator = SecureRandom.getInstance("SHA1PRNG", "SUN");
+        SecureRandom secureRandomGenerator = new SecureRandom();
+        int randInRange = secureRandomGenerator.nextInt(6);
+        fiveDices.diceSet[i].value=randInRange+1;
+        // fiveDices.diceSet[i].value=getRandomValue();
+        //      fiveDices.diceSet[i].value = 1 + (int) (Math.random() * 6);
+        //           fiveDices.diceSet[i].value=ThreadLocalRandom.current().nextInt(5)+1;
+        //    fiveDices.diceSet[i].value=1+random.nextInt(6) ;
     }
 
     boolean throwDices() {
@@ -270,8 +293,8 @@ class Jeu {
             }
         }
         //DEBUG
- //       if (couleur.equals("blue"))
- //           fiveDices.figureList="SmallSuiteSecFullCarreAppelYam123456";
+        //       if (couleur.equals("blue"))
+        //           fiveDices.figureList="SmallSuiteSecFullCarreAppelYam123456";
         //DEBUG
         return true;
     }
@@ -343,7 +366,7 @@ class Jeu {
                     + this.findBoxById(aBoxPair.getPairId()).getColor()
                     + "->"
                     + aBoxPair.getPairPoints() + " points"
-                    );
+            );
         }
         else System.out.println("null box");
     }

@@ -186,6 +186,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    int oldTargetID=0;
+    public void showMachineTarget(int targetID){
+        if (oldTargetID>0) {
+            ImageView oldTargetView = findViewById(oldTargetID);
+            oldTargetView.clearColorFilter();
+        }
+        oldTargetID=targetID;
+        ImageView targetView = findViewById(targetID);
+        targetView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_purple));
+    }
+
     public void onBoxAppelClicked(View v){
         //It is an appel toggled ON or OFF-using-the-same-Box
         //game.appelClicked Devrait être 0 depuis machienPlayTask
@@ -212,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     public void onBoxFigureAppelClicked(View v) {
+        //TODO: fix Attempt to invoke virtual method 'int android.view.View.getId()' on a null object reference
         if ((game.findBoxById(v.getId()).getFigType().matches(".*(Full|Suite|Carre|Sec|Yam|Small).*"))) {
             if (game.appelRegistered.isEmpty()) {
                 game.appelRegistered = game.findBoxById(v.getId()).getFigType();
@@ -326,6 +337,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else if (game.couleur.equals("blue")) {
+            //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire
+            game.setDiceArrayListRandomValue();
             Box clickedBox = game.findBoxById(v.getId());
             //Check whether it is an appel called or un-called + gray or un-gray Boxes
             if (game.throwNb == 1) {
@@ -450,6 +463,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void placeMarkerById(int id){
+        //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire
+        game.setDiceArrayListRandomValue();
         placeMarker(findViewById(id));
     }
 
@@ -674,6 +689,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDiceSelect(View v) {
         if (game.couleur.equals("blue")){
+            //Chaque fois que l'on clique sur un dé on prépare une valeur aléatoire
+            game.setDiceArrayListRandomValue();
             ImageView dice = findViewById(v.getId());
             String diceName = dice.getResources().getResourceEntryName(dice.getId());
             switch (diceName) {
