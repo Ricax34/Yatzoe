@@ -183,10 +183,11 @@ class Figure {
         return "";
     }
 
-    public void printDiceSet(){
+    public String printDiceSet(){
         String des = "";
         for (int i =0; i<5; i++)
             des+=Integer.toString(diceSet[i].value)+" ";
-        System.out.println(des);
+      //  System.out.println(des);
+        return des;
     }
 }

@@ -27,7 +27,9 @@ package com.ricax.yatzoe;
 
 
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -53,6 +55,10 @@ class Jeu {
     int redMarkers = 12, blueMarkers = 12;
     int redPoints = 0, bluePoints = 0;
 
+    //pour logger
+    Date aujourdhui=new Date();
+    SimpleDateFormat formater =  new SimpleDateFormat("yyyyMMddH-Hmmss");
+    public String dateFormat = formater.format(aujourdhui);
 
     Jeu(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -337,9 +343,9 @@ class Jeu {
         System.out.println();
     }
 
-    public void printSelectedDice(){
+    public String printSelectedDice(){
         System.out.println("**SelectedDice**");
-        for (int i=0; i<5; i++)
+       /* for (int i=0; i<5; i++)
         {
             System.out.print(this.fiveDices.diceSet[i].value+" ");
         }
@@ -351,8 +357,21 @@ class Jeu {
             else
                 System.out.print("o ");
         }
-        System.out.println();
-
+        System.out.println();*/
+        String selectedDiceSet="\n";
+        for (int i=0; i<5; i++)
+        {
+            selectedDiceSet+=Integer.toString(this.fiveDices.diceSet[i].value)+" ";
+        }
+        selectedDiceSet+="\n";
+        for (int i=0; i<5; i++)
+        {
+            if (this.fiveDices.diceSet[i].isSelected)
+                selectedDiceSet+="x ";
+            else
+                selectedDiceSet+="o ";
+        }
+        return selectedDiceSet;
     }
 
     void terminate() { this.couleur = "white"; }
@@ -371,8 +390,8 @@ class Jeu {
         else System.out.println("null box");
     }
 
-    void afficherDes(){
-        fiveDices.printDiceSet();
+    String afficherDes(){
+        return fiveDices.printDiceSet();
     }
 
     //returns a list of boxpair available for given figureList

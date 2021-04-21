@@ -46,7 +46,6 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
             }
 
             aGame.findBoxById(boxPairCombinationArrayList.get(i).getPairId()).setColor(aColor);
-            //TODO verifier le calcul des points de chaque boxPair (ne correspond pas au nb de pts REEL obtenus par la boxPair avec TOUTE la combinaison)
             int tmpPoints= aGame.countLine(3, aColor, boxPairCombinationArrayList.get(i).getPairId());
             points+= tmpPoints;
         }

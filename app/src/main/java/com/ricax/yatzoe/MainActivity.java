@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (tagToString) {
                     case "imageView1Un": {
                         game.fiveDices.diceSet[diceCheatIdx].value=1;
-                        System.out.println("dice1 value: "+game.fiveDices.diceSet[diceCheatIdx].value);
+                        //System.out.println("dice1 value: "+game.fiveDices.diceSet[diceCheatIdx].value);
                         break;
                     }
                     case "imageView6Deux": {
@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                System.out.println("dice value: "+game.fiveDices.diceSet[diceCheatIdx].value);
+                //System.out.println("dice value: "+game.fiveDices.diceSet[diceCheatIdx].value);
                 updateOneDice(game.fiveDices.diceSet[diceCheatIdx].id, game.fiveDices.diceSet[diceCheatIdx].value);
                 diceCheatIdx++;
             }
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onButtonCheatClicked(View v){
-        System.out.println("onButtonCheatClicked1 flagCheat:"+boxFlagCheat);
+        //System.out.println("onButtonCheatClicked1 flagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
             boxFlagCheat=true;
             ImageView boxFlagCheatView = findViewById(v.getId());
@@ -429,23 +429,23 @@ public class MainActivity extends AppCompatActivity {
             redMarkersTextview.setClickable(false);
             redFlagCheat=false;
         }
-        System.out.println("onButtonCheatClicked2 flagCheat:"+boxFlagCheat);
+        //System.out.println("onButtonCheatClicked2 flagCheat:"+boxFlagCheat);
     }
 
     public void onColorMarkersNbTVClicked(View v){
         if (boxFlagCheat){
-            System.out.println("flagCheat: "+boxFlagCheat);
+            //System.out.println("flagCheat: "+boxFlagCheat);
             if (v.getTag().toString().equals("blueMarkerTextView")){
                 blueFlagCheat=true;
                 redFlagCheat=false;
-                System.out.println("blueFlagCheat: "+blueFlagCheat);
-                System.out.println("redFlagCheat: "+redFlagCheat);
+                //System.out.println("blueFlagCheat: "+blueFlagCheat);
+                //System.out.println("redFlagCheat: "+redFlagCheat);
             }
             else if (v.getTag().toString().equals("redMarkerTextView")){
                 redFlagCheat=true;
                 blueFlagCheat=false;
-                System.out.println("blueFlagCheat: "+blueFlagCheat);
-                System.out.println("redFlagCheat: "+redFlagCheat);
+                //System.out.println("blueFlagCheat: "+blueFlagCheat);
+                //System.out.println("redFlagCheat: "+redFlagCheat);
             }
         }
         else
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
             diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
         else
             diceCheatView.clearColorFilter();
-        System.out.println("diceCheat="+diceCheat);
+        //System.out.println("diceCheat="+diceCheat);
     }
 
     public void placeMarkerById(int id){

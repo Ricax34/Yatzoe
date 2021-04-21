@@ -21,14 +21,28 @@
 
 package com.ricax.yatzoe;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Thread.sleep;
+import static java.security.AccessController.getContext;
 
 class MachinePlayTask implements Runnable {
     private final Jeu currentGame;
@@ -58,7 +72,6 @@ class MachinePlayTask implements Runnable {
                 syncFiveDicesSelectionWithUI(); //show machine selecting dices
                 if (currentGame.throwNb < currentGame.maxThrowNb) {
                     if ((!mainActivity.diceCheat)||currentGame.throwNb>0) {//cette condition est pour le cheat, à enlever + tard
-//                        mainActivity.throwDiceCheat=false;
                         currentGame.throwDices();
                         try {
                             sleep(1000);
@@ -69,10 +82,7 @@ class MachinePlayTask implements Runnable {
                         syncFiveDicesResultsWithUI();//Shows dice results
                     }
                     else{//ce bloc est pour le cheat
-                        System.out.println("dice cheat1!");
-                       /* while (mainActivity.throwDiceCheat){
-                            //just wait till dice are set and flag is up
-                        }*/
+                        //System.out.out.println("dice cheat1!");
                         currentGame.throwNb++;
                         currentGame.fiveDices.figureList="";
                         currentGame.fiveDices.setListOfFiguresFromDiceSet();
@@ -119,22 +129,159 @@ class MachinePlayTask implements Runnable {
 
     /*****Methods that help droid sort all possibilities*******/
     //Adds potential future points per given figtype to given ArrayList of BoxPairs
-    //TODO verifier setBoxWeight ici
     private void listAddNextTurnBoxPairIDPointsPerFigure(Jeu aGame, ArrayList<BoxPair> boxIdPointList, String figureList, String aFigure, int v1, int h1, int v2, int h2) {
         if (figureList.contains(aFigure)) {
             if (aGame.checkerBox[v1][h1].getColor().equals("white")) {
-                //BoxPair boxIdPoint1 = new BoxPair(aGame.checkerBox[v1][h1], getPotentialNextTurnPointsPerBox(aGame, "red", aGame.checkerBox[v1][h1]), getPotentialNextTurnPointsPerBox(aGame, "blue", aGame.checkerBox[v1][h1]));
                 BoxPair boxIdPoint1 = new BoxPair(aGame.checkerBox[v1][h1], 0, 0);
                 setBoxWeight(aGame, boxIdPoint1, "red");
                 boxIdPointList.add(boxIdPoint1);
             }
             if (aGame.checkerBox[v2][h2].getColor().equals("white")) {
-                // BoxPair boxIdPoint2 = new BoxPair(aGame.checkerBox[v2][h2], getPotentialNextTurnPointsPerBox(aGame,"red", aGame.checkerBox[v2][h2]), getPotentialNextTurnPointsPerBox(aGame,"blue", aGame.checkerBox[v2][h2]));
                 BoxPair boxIdPoint2 = new BoxPair(aGame.checkerBox[v2][h2], 0, 0);
                 setBoxWeight(aGame, boxIdPoint2, "red");
                 boxIdPointList.add(boxIdPoint2);
             }
         }
+    }
+
+//retourne la proba modulo 50 (sort of)
+    public int getModulo50Prob(double proba){
+        //int roundProba = (int) Math.round(proba);
+        for (int i =0; i<20; i++)
+            if (proba>=i*50 && proba<(i+1)*50){
+                System.out.println("getModulo50Prob de "+proba+": "+i);
+                return i;
+            }
+        return 0;
+    }
+
+    //retourner le float calculer les probas (faits certains mais beaucoup pompés d'une page web  albert Franck etude systématique du yams)
+    public int getProbByThrownNb(int throwNb, double prob1jet, double prob2jets){
+
+        if (throwNb==1) {
+            System.out.println("prob2Jets: "+prob2jets+ " "+(int )(prob2jets*1000));
+            return getModulo50Prob(prob2jets*1000);
+        }
+        else {
+            System.out.println("prob1Jet: "+prob1jet+ " "+(int )(prob1jet*1000));
+            return getModulo50Prob(prob1jet*1000);
+        }
+    }
+
+    public int getFigProb2(Jeu aGame, Box targetBox){
+        String targetFigure=targetBox.getFigType();
+        System.out.println("targetFigure: "+targetFigure);
+        String currFig=aGame.fiveDices.figureList;
+        System.out.println("currFig: "+currFig);
+        int throwNb=aGame.throwNb;//TODO Bug ici thrownb doit être le nombre de jets possibles pour le calcul de la proba
+
+        if (targetFigure.equals("Yam")){
+            if (figureContainsPair(aGame)){
+                if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    if (currFig.contains("Carre"))
+                        return getProbByThrownNb(throwNb, (double)1/6, (double)11/36);//0.1666 et 0.3055
+                    else
+                        return getProbByThrownNb(throwNb, (double)1/36, (double)121/1296);//0.0277 et 0.0933
+                }
+                else return getProbByThrownNb(throwNb, (double)6/100, (double)11/100); //a calculer 6% et 11%
+            }
+            else return getProbByThrownNb(throwNb, (double)1/1296, (double)2/1296); // 0.0007 et 0.00015 singleton ->yam a calculer
+        }
+
+        else if (targetFigure.equals("Carre")){
+            if (figureContainsPair(aGame)) {
+                if (currFig.matches(".*(1|2|3|4|5|6).*"))
+                    return getProbByThrownNb(throwNb, (double)11 / 36, (double)671 / 1296);//0.3055 et 0.5177
+                else
+                    return getProbByThrownNb(throwNb, (double)2 / 27, (double)22 / 100);//0.0740 et 22%
+            }
+            else return getProbByThrownNb(throwNb, (double)5 / 324, (double)8 / 100);//0.154 et 8%
+        }
+
+        else if (targetFigure.equals("Full")){
+            if (figureContainsDoublePair(aGame))
+                return getProbByThrownNb(throwNb, (double)1/3, (double)5/9);//0.3333 et 0.5555
+            else if (figureContainsSinglePair(aGame))
+                return getProbByThrownNb(throwNb, (double)21/216, (double)89/324);//0.0972 et 0.2746
+                //TODO else  calcul singleton->full
+            else
+                return getProbByThrownNb(throwNb, (double)300/7776, (double)600/7776); //0.0385 et 0.0771
+            //Calculer prob full sec en 2 coups
+        }
+        else if (targetFigure.matches(".*(1|2|3|4|5|6).*")){
+            if (figureContainsPair(aGame)){
+                if ((getPairValues(aGame, true, false)==Integer.parseInt(targetFigure))
+                        || (getPairValues(aGame, false, true)==Integer.parseInt(targetFigure))){
+                    return getProbByThrownNb(throwNb, (double)91/216, (double)62/100); //0.4212 et 62%
+                }
+            }
+            else if (figureContainsSingleValue(aGame, Integer.parseInt(targetFigure)))
+                return getProbByThrownNb(throwNb, (double)25/216, (double)28/100);//0.1157 et 28%
+            else
+                return getProbByThrownNb(throwNb, (double)1200/7776, (double)2400/7776);//0.1543 et 0.3086 A calculer pour 2 jets
+        }
+
+        else if (targetFigure.equals("Suite")) {
+            if (figureContains4InARow(aGame)==2)
+                return getProbByThrownNb(throwNb, (double)1/3, (double)5/9);//0.3333 et 0.5555
+            else if (figureContains4InARow(aGame)==1)
+                return getProbByThrownNb(throwNb, (double)1/6, (double)11/36);//0.1666 et 0.3055
+            else if (figureContainsSingleValue(aGame, 5)){
+                if (figureContainsSingleValue(aGame, 4)) {
+                    if (figureContainsSingleValue(aGame, 2))
+                        return getProbByThrownNb(throwNb, (double)1/9, (double)5/18);//0.1111 et 0.2777
+                    else
+                        return getProbByThrownNb(throwNb, (double)1/18, (double)91/486);//0.0555 et 0.1872
+                }
+                else if (figureContainsSingleValue(aGame, 6))
+                    return getProbByThrownNb(throwNb, (double)1/36, (double)6/100);//0.1666 et 6%
+                else
+                    return getProbByThrownNb(throwNb, (double)1/27, (double)1/27);//0.0370  et 0.0370 ??pas de 2éme valeur trouvée je laisse celle du 1er jet
+            }
+            else if (figureContainsSingleValue(aGame, 6))
+                return getProbByThrownNb(throwNb, (double)1/54, (double)6/100); //0.0185 et 6%
+        }
+        //Continuer pour les small
+        else if (targetFigure.equals("Small")){
+            int sumOfDice=0;
+            //nb de 1, 2, 3 et 4
+            int nbOf1 =0;
+            int nbOf2=0;
+            int nbOf3=0;
+            int nbOf4=0;
+            for (int i=0; i<5; i++) {
+                if (aGame.fiveDices.tempDiceSetIndValues[i][1]==1)
+                    nbOf1++;
+                else  if (aGame.fiveDices.tempDiceSetIndValues[i][1]==2)
+                    nbOf2++;
+                else  if (aGame.fiveDices.tempDiceSetIndValues[i][1]==3)
+                    nbOf3++;
+                else  if (aGame.fiveDices.tempDiceSetIndValues[i][1]==4)
+                    nbOf4++;
+                sumOfDice += aGame.fiveDices.tempDiceSetIndValues[i][1];
+            }
+            if (sumOfDice>8){
+                if (nbOf1==4)
+                    return getProbByThrownNb(throwNb, (double)4/6, (double)30/36); //0.6666 et 0.8333 ???
+                else if (nbOf1==3 && nbOf2==1)
+                    return getProbByThrownNb(throwNb, (double)3/6, (double)27/36);//0.5 et 0.75
+                else if ((nbOf1==3 && nbOf3==1)|| (nbOf1==2 && nbOf2==2))
+                    return getProbByThrownNb(throwNb, (double)2/6, (double)20/36);//0.3333 et 0.5555
+                else if ((nbOf1==3 && nbOf4==1)||(nbOf1==2 && nbOf2==1 && nbOf3==1))
+                    return getProbByThrownNb(throwNb, (double)1/6, (double)11/36);//0.1666 et 0.3055
+                else if (nbOf1==3 && nbOf2==0)
+                    return getProbByThrownNb(throwNb, (double)10/36, (double)620/1296);//0.2777 et 0.4782
+                else if (nbOf1==2 && nbOf2==1)
+                    return getProbByThrownNb(throwNb, (double)6/36, (double)326/1296);//0.1666 et 0.2515
+                else if (nbOf1==2)
+                    return getProbByThrownNb(throwNb, (double)7/216, (double)676/46656);//0.0324 et 0.0144
+                else return (int)((double)1/100*1000);// 0.0100proba minus pas la peine de calculer
+            }
+        }
+        else if (targetFigure.equals("Sec"))
+            return getProbByThrownNb(throwNb, (double)703/7776,  (double)10438847/60466176);//0.0904 et 0.1726
+        System.out.println("toto");
+        return 0;
     }
 
     //returns potential next turn poinst per box
@@ -168,10 +315,11 @@ class MachinePlayTask implements Runnable {
         aBoxPair.setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, oponentColor, aBox));
         aBoxPair.setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, aColor, aBox ));
         aBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
+        aBoxPair.setProbability(getFigProb2(aGame, aBox));
         //cibler en  priorité la case qui pourrait faire gagner l'adversaire en cas de fullLine
         if (aBoxPair.getOponentPoints()==10)
         {
-            System.out.println("cible l'anti fullLine");
+            //System.out.out.println("cible l'anti fullLine");
             aBoxPair.setPairPoints(10);
         }
     }
@@ -184,7 +332,7 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")) oponentColor="blue";
         else if (aColor.equals("blue")) oponentColor="red";
         else return 0;
-        ArrayList<BoxPair> allPossibleBoxpairs = new ArrayList<>();
+        //      ArrayList<BoxPair> allPossibleBoxpairs = new ArrayList<>();
         //horizontal
         for (int span=-2; span<3; span++){
             if (checkBoxColorWhithinBound(v, h+span, oponentColor, tempGame))
@@ -192,7 +340,7 @@ class MachinePlayTask implements Runnable {
             if (checkBoxColorWhithinBound(v, h+span, "white", tempGame)){
                 if (h+span>=0&&h+span<5){
                     tempGame.checkerBox[v][h+span].setColor(aColor);
-                    allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v][h+span], 0, 0));
+                    //                  allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v][h+span], 0, 0));
                 }
             }
         }
@@ -203,7 +351,7 @@ class MachinePlayTask implements Runnable {
             if (checkBoxColorWhithinBound(v+span, h, "white", tempGame)){
                 if ((v+span>=0 && v+span<5)){
                     tempGame.checkerBox[v+span][h].setColor(aColor);
-                    allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v+span][h], 0, 0));
+                    //                   allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v+span][h], 0, 0));
                 }
             }
         }
@@ -214,7 +362,7 @@ class MachinePlayTask implements Runnable {
             if (checkBoxColorWhithinBound(v+span, h+span, "white", tempGame)){
                 if (((v+span>=0 && v+span<5))&&  ((h+span>=0 && h+span<5))){
                     tempGame.checkerBox[v+span][h+span].setColor(aColor);
-                    allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v+span][h+span], 0, 0));
+                    //                 allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v+span][h+span], 0, 0));
                 }
             }
         }
@@ -225,7 +373,7 @@ class MachinePlayTask implements Runnable {
             if (checkBoxColorWhithinBound(v-span, h+span, "white", tempGame))
                 if (((v-span>=0 && v-span<5))&&  ((h+span>=0 && h+span<5))){
                     tempGame.checkerBox[v-span][h+span].setColor(aColor);
-                    allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v-span][h+span], 0, 0));
+                    //                  allPossibleBoxpairs.add(new BoxPair(tempGame.checkerBox[v-span][h+span], 0, 0));
                 }
         }
         /*
@@ -237,6 +385,7 @@ class MachinePlayTask implements Runnable {
 
         return tempGame.countLine(3, aColor, aBox.getId());
     }
+
 
 
     //Checks if the coord are within bounds of the board
@@ -321,9 +470,9 @@ class MachinePlayTask implements Runnable {
             }
         //Sort in ascending order
         Collections.sort(tmpOptimalBoxPairList);
-        System.out.println("Debut NextTurnNextThrow tmpOptimalBoxPairList:");
-        System.out.println(tmpOptimalBoxPairList);
-        System.out.println("fin affichage NextTurnNextThrow tmpOptimalBoxPairList");
+        //System.out.out.println("Debut NextTurnNextThrow tmpOptimalBoxPairList:");
+        //System.out.out.println(tmpOptimalBoxPairList);
+        //System.out.out.println("fin affichage NextTurnNextThrow tmpOptimalBoxPairList");
      /*   System.out.println("getOptimaNextTurnNextThrowBoxPairFromFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
@@ -344,15 +493,33 @@ class MachinePlayTask implements Runnable {
         ArrayList <BoxPair> tmpOptimalBoxPairList =  new ArrayList<>(optimalBoxPairList);
         //Add points and oponentPoints if marker placed on boxes
         for (int i = 0; i < tmpOptimalBoxPairList.size(); i++) {
-            // tmpOptimalBoxPairList.get(i).setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, "red", tmpOptimalBoxPairList.get(i).getBox()));
-            // tmpOptimalBoxPairList.get(i).setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, "blue", tmpOptimalBoxPairList.get(i).getBox()));
             setBoxWeight(aGame, tmpOptimalBoxPairList.get(i),"red" );
         }
         //Sort in ascending order
         Collections.sort(tmpOptimalBoxPairList);
-        System.out.println("Debut CurrentTurnNextThrow tmpOptimalBoxPairList:");
-        System.out.println(tmpOptimalBoxPairList);
-        System.out.println("fin affichage CurrentTurnNextThrow tmpOptimalBoxPairList");
+        //Ne tenter le yam que si on ne peut rien tenter d'autre ou bien si on peut tenter aussi le carré ou le full
+        if (tmpOptimalBoxPairList.size()>1)
+            if (tmpOptimalBoxPairList.get(tmpOptimalBoxPairList.size() - 1).getFigType().equals("Yam"))
+            {
+                ArrayList<String> boxPairFigList= new ArrayList<>();
+                for (int i =0; i< tmpOptimalBoxPairList.size(); i++){
+                    boxPairFigList.add(tmpOptimalBoxPairList.get(i).getFigType());
+                }
+                if (!boxPairFigList.contains("Full")&&!boxPairFigList.contains("Carre")
+                        &&!boxPairFigList.contains("1")&&!boxPairFigList.contains("2")
+                        &&!boxPairFigList.contains("3")&&!boxPairFigList.contains("4")
+                        &&!boxPairFigList.contains("5")&&!boxPairFigList.contains("6")){
+                    Collections.swap(tmpOptimalBoxPairList,tmpOptimalBoxPairList.size() - 1, tmpOptimalBoxPairList.size() - 2 );
+                    System.out.println("Swapped yam!");
+                    //TODO: faire en sorte qu'on tente le yam ET le brelan possible en même tps! (sans detruire la possibilité de faire le BON brelan)
+                    //Ex: 22244-> tenter les 4 si c'est mieux que les 2 (genre pas possible ou points=0 pour le brelan de 2)
+                }
+            }
+
+
+        //System.out.println("Debut CurrentTurnNextThrow tmpOptimalBoxPairList:");
+        //System.out.println(tmpOptimalBoxPairList);
+        //System.out.println("fin affichage CurrentTurnNextThrow tmpOptimalBoxPairList");
         //Return the last of the list (the best)
    /*     System.out.println("getOptimalCurrentTurnNextThrowBoxPairFromFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
@@ -362,6 +529,7 @@ class MachinePlayTask implements Runnable {
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
             System.out.println("****fin box***");
         }*/
+
         if (!tmpOptimalBoxPairList.isEmpty())
             return tmpOptimalBoxPairList.get(tmpOptimalBoxPairList.size() - 1);
         else return new BoxPair(new Box(), 0, 0);
@@ -400,7 +568,7 @@ class MachinePlayTask implements Runnable {
     //Returns the best  BoxPair (id+immediate points) for a given figureList
     private BoxPair getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList(Jeu aGame) {
         String figureList= aGame.fiveDices.figureList;
-        System.out.println("getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList->aGame.fiveDices.figureList:"+aGame.fiveDices.figureList);
+        //System.out.println("getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList->aGame.fiveDices.figureList:"+aGame.fiveDices.figureList);
         ArrayList<BoxPair> boxPairPointList = new ArrayList<>();
         //check points per figure
         //Mettre appel en premier pour ne pas se faire shunter par appel
@@ -449,10 +617,10 @@ class MachinePlayTask implements Runnable {
             System.out.println("****fin box***");
         }*/
         if (!boxPairPointList.isEmpty()){
-            System.out.println("Fin 1 getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList: boxPairId="+boxPairPointList.get(boxPairPointList.size() - 1).getPairId());
+            //System.out.println("Fin 1 getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList: boxPairId="+boxPairPointList.get(boxPairPointList.size() - 1).getPairId());
             return boxPairPointList.get(boxPairPointList.size() - 1);
         }
-        System.out.println(" Fin2 getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList");
+        //System.out.println(" Fin2 getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList");
         //Just in case
         return new BoxPair(new Box(), 0, 0);
     }
@@ -472,17 +640,17 @@ class MachinePlayTask implements Runnable {
                         ||
                         ((tempGame.bluePoints + tmpPoints < tempGame.redPoints)&& aColor.equals("blue")))
                 {
-                    System.out.println("getPointsIfMarkerPlacedOnBox Marquage perdant:"+tmpPoints+"mais -1");
-                    tempGame.findBoxById(boxId).afficherBox();
-                    System.out.println("fin getPointsIfMarkerPlacedOnBox Marquage perdant");
+                    //System.out.println("getPointsIfMarkerPlacedOnBox Marquage perdant:"+tmpPoints+"mais -1");
+                    //tempGame.findBoxById(boxId).afficherBox();
+                    //System.out.println("fin getPointsIfMarkerPlacedOnBox Marquage perdant");
                     //Si on peut esperer gagner la partie avec les pions qui nous restent on retourne -1
                     return -1;  //Pour le mettre en queue des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
                     // pour passer le tour
                 } else if (((tempGame.redPoints + tmpPoints > tempGame.bluePoints)&& aColor.equals("red"))||
                         ((tempGame.bluePoints + tmpPoints > tempGame.redPoints)&& aColor.equals("blue"))) {
-                    System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
-                    tempGame.findBoxById(boxId).afficherBox();
-                    System.out.println("fin getPointsIfMarkerPlacedOnBox Marquage gagnant");
+                    //System.out.println("getPointsIfMarkerPlacedOnBox Marquage gagnant:"+tmpPoints+" mais 10");
+                    //tempGame.findBoxById(boxId).afficherBox();
+                    //System.out.println("fin getPointsIfMarkerPlacedOnBox Marquage gagnant");
                     return 10; //Pour le mettre en tête des choix dans getOptimalCurrentTurnCurrentThrowBoxPairPerFigureList
                 }
                 /*
@@ -534,10 +702,10 @@ class MachinePlayTask implements Runnable {
         /*System.out.println("getOptimalNextTurnCurrentThrowBoxPairPerFigureList");
         for (int i = 0; i< boxIdPointList.size(); i++)
         {
-            System.out.println("****debut box***");
-            System.out.println(boxIdPointList.get(i));
+            //System.out.println("****debut box***");
+            //System.out.println(boxIdPointList.get(i));
             currentGame.findBoxById(boxIdPointList.get(i).getPairId()).afficherBox();
-            System.out.println("****fin box***");
+            //System.out.println("****fin box***");
         }*/
         if (!boxPairPointList.isEmpty())
             return boxPairPointList.get(boxPairPointList.size() - 1);
@@ -551,7 +719,7 @@ class MachinePlayTask implements Runnable {
             for (int i = 0; i < aBoxPairList.size(); i++) {
                 currentGame.afficherBoxPair(aBoxPairList.get(i));
             }
-        System.out.println(" ");
+        //System.out.println(" ");
     }
 
     private ArrayList<BoxPair> getPossibleTargetBoxpairsFromFigureListFromDiceSet(Jeu aGame){
@@ -631,14 +799,14 @@ class MachinePlayTask implements Runnable {
         if (figureContainsDoublePair(aGame)) {
             if (aGame.throwNb == 1) {
                 if (!boxPairListContains(boxPairPointList, "Appel")){
-                    System.out.println("add appel figureContainsDoublePair");
+                    //System.out.println("add appel figureContainsDoublePair");
                     boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Appel", "white"));
                 }
             }
             //Pour les brelans
             int valIdx1 = aGame.fiveDices.tempDiceSetIndValues[1][1];
             int valIdx3 = aGame.fiveDices.tempDiceSetIndValues[3][1];
-            System.out.println("double paire:"+valIdx1+"-"+valIdx3);
+            //System.out.println("double paire:"+valIdx1+"-"+valIdx3);
             if (!boxPairListContains(boxPairPointList, Integer.toString(valIdx1))) {
                 boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valIdx1), "white"));
             }
@@ -657,9 +825,14 @@ class MachinePlayTask implements Runnable {
                     boxPairPointList.addAll(currentGame.getListBoxPairColorPerFigure("Yam", "white"));
             }*/
         }
+
+        //TODO pb avec la suite, ne la tente pas alors qu'il devrait (4 2 5 3 5 choisi yam!)Image sur portable
 //presque suite->suite
+        //En jeu normal (nb de pions rouges>5 ou points rouges>points bleus, on ne tente la suite que si on a 2 possibilités de réussite: 1 et 6)
+        //j'ai désactivé la possibilité de de tenter la suite en cas de possibilité unique
         if (!aFigureList.contains("Suite"))//Pour tenter des suites
-            if (figureContains4InARow(aGame) != 0) {
+            //if (figureContains4InARow(aGame) != 0) {
+            if (figureContains4InARow(aGame) == 2) {
                 //si figureContains4InARow()==1 alors voir si on ne peut pas tenter un brelan plutôt
                 // car si figureContains4InARow==1 alors seule autre possibilite=singlepaire ou rien
                 // si figureContains4InARow==2 alors tenter suite
@@ -667,15 +840,15 @@ class MachinePlayTask implements Runnable {
                     if (!boxPairListContains(boxPairPointList, "Appel"))
                         boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Appel", "white"));
                 }
-                if (figureContains4InARow(aGame) == 2) {
+                //     if (figureContains4InARow(aGame) == 2) {
+                if (!boxPairListContains(boxPairPointList, "Suite"))
+                    boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Suite", "white"));
+                //     }
+                //See if we'd better try a brelan instead if we've got a pair
+              /*  if (figureContains4InARow(aGame) == 1) {
                     if (!boxPairListContains(boxPairPointList, "Suite"))
                         boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Suite", "white"));
-                }
-                if (figureContains4InARow(aGame) == 1) {
-                    //See if we'd better try a brelan instead if we've got a pair
-                    if (!boxPairListContains(boxPairPointList, "Suite"))
-                        boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Suite", "white"));
-                }
+                }*/
             }
         //TODO conflit à surveiller  avec le full ici, si double paire on prépare le yam/carre AUSSI. Si les points y sont supérieurs ou égaux(?)
         // , le full n'est pas tenté ALORS QU'il est PLUS FACILE A OBTENIR....exemple : 1 5 6 6 1 premier jet, tout est relancé et boxPairTargetCurrentTurnNextThrow: (2, 2) Yam (dernier de la liste)
@@ -693,7 +866,7 @@ class MachinePlayTask implements Runnable {
             }
             //Ne tenter le yam ou le carre que si on ne tente pas le full
             if (!boxPairListContains(boxPairPointList,"Full")){
-                System.out.println("carre yam?");
+                //System.out.println("carre yam?");
                 if (!aFigureList.contains("Carre")) {
                     if (!boxPairListContains(boxPairPointList, "Carre"))
                         boxPairPointList.addAll(aGame.getListBoxPairColorPerFigure("Carre", "white"));
@@ -719,7 +892,7 @@ class MachinePlayTask implements Runnable {
         ArrayList<String> boxIdPointFigTypeList = new ArrayList<>();
         for (int i = 0; i<boxPairPointList.size(); i++)
             boxIdPointFigTypeList.add(aGame.findBoxById(boxPairPointList.get(i).getPairId()).getFigType());
-        System.out.println("boxIdNextTurn PointFigTypeList: "+boxIdPointFigTypeList);
+        //System.out.println("boxIdNextTurn PointFigTypeList: "+boxIdPointFigTypeList);
         return boxPairPointList;
     }
 
@@ -802,9 +975,9 @@ class MachinePlayTask implements Runnable {
 
     //Lister les figures obtenues avec les dés
     private ArrayList<String> getAvailableFiguresFromdiceSet(Jeu aGame){
-        System.out.println("getAvailableFiguresFromdiceSet");
-        System.out.println("currentGame.fiveDices.figureList: "+currentGame.fiveDices.figureList);
-        System.out.println("aGame.fiveDices.figureList: "+aGame.fiveDices.figureList);
+        //System.out.println("getAvailableFiguresFromdiceSet");
+        // System.out.println("currentGame.fiveDices.figureList: "+currentGame.fiveDices.figureList);
+        //System.out.println("aGame.fiveDices.figureList: "+aGame.fiveDices.figureList);
         ArrayList<String> availableFigureListFromDiceSet = new ArrayList<>();
         //trouver les figures éventuelles des dés courants
         final Pattern p = Pattern.compile("([123456])|(Carre)|(Yam)|(Full)|(Suite)|(Small)|(Sec)|(Appel)");
@@ -865,7 +1038,7 @@ class MachinePlayTask implements Runnable {
 
         //  for (int i  = 0; i < possibleFigureListFromDiceSet.size(); i++)
         //     System.out.println(possibleFigureListFromDiceSet.get(i));
-        System.out.println(possibleFigureListFromDiceSet);
+        System.out.println("possibleFigureListFromDiceSet: "+possibleFigureListFromDiceSet);
         System.out.println("fin getPossibleTargetsFromDiceSet");
         return possibleFigureListFromDiceSet;
     }
@@ -885,7 +1058,7 @@ class MachinePlayTask implements Runnable {
     }*/
 
     private ArrayList<String> getTargetFigureFromBestCombination(ArrayList<BoxPair> noDuplicatesArrayListBoxPair){
-        System.out.println("getTargetFigureFromBestCombination");
+        //System.out.println("getTargetFigureFromBestCombination");
         //les figures de la combinaison
         ArrayList<String> TargetFigurefigTypeArrayList = new ArrayList<>();
         for (int i = 0; i<noDuplicatesArrayListBoxPair.size(); i++)
@@ -893,110 +1066,92 @@ class MachinePlayTask implements Runnable {
                 TargetFigurefigTypeArrayList.add(currentGame.findBoxById(noDuplicatesArrayListBoxPair.get(i).getPairId()).getFigType());
         // for (int i = 0; i<figTypeArrayList.size(); i++)
         //     System.out.println(figTypeArrayList.get(i));
-        System.out.println("TargetFigurefigTypeArrayList: "+ TargetFigurefigTypeArrayList);
-        System.out.println("fin getTargetFigureFromBestCombination");
+        //System.out.println("TargetFigurefigTypeArrayList: "+ TargetFigurefigTypeArrayList);
+        //System.out.println("fin getTargetFigureFromBestCombination");
         return TargetFigurefigTypeArrayList;
     }
 
-    private ArrayList<String> getCommonListElements(ArrayList<String> list1, ArrayList<String> list2){
-        ArrayList<String> commonElementList = new ArrayList<>(list2);
-        commonElementList.retainAll(list1);
-        return commonElementList;
+    private ArrayList<String> getCommonListElements(ArrayList<String> diceList, ArrayList<String> combinationList){
+        //ne conserve que les elements de combinationList qui sont aussi dans diceList
+        //Je suppose que l'ordre et conservé ...pas sûr
+        System.out.println("debut getCommonListElements");
+        combinationList.retainAll(diceList);
+        System.out.println("getCommonListElements: "+combinationList);
+        System.out.println("fin getCommonListElements");
+        return combinationList;
     }
 
     // retourne la 1ere figure cible commune aux 2 listes, celle des figures possibles et celle de la meilleure combinaison possible
     private String getTargetFromCombinationAndDice(ArrayList<BoxPair> noDuplicatesBoxPairArrayList){
-        System.out.println("Debut getTargetFromCombinationAndDice");
+        //System.out.println("Debut getTargetFromCombinationAndDice");
         ArrayList<String> possibleTargetsFromDiceSet = getPossibleTargetFiguresFromDiceSet(currentGame);
         ArrayList<String> bestCombinationTargetList = getTargetFigureFromBestCombination(noDuplicatesBoxPairArrayList);
         //1st:  Compare and get the figure availableFiguresFromDiceSet and  bestCombinationTargetList have in common if any,
         ArrayList<String> commonElementsList = getCommonListElements(possibleTargetsFromDiceSet, bestCombinationTargetList);
         if (commonElementsList.size()>0)
             return commonElementsList.get(commonElementsList.size()-1);//return last element (best)
-            // else throw all dice (target = sec)
-        else System.out.println("getTargetFromCombinationAndDice: pas d'élément commun, on retourne sec");
-        System.out.println("Fin getTargetFromCombinationAndDice");
+        // else throw all dice (target = sec)
+        //else System.out.println("getTargetFromCombinationAndDice: pas d'élément commun, on retourne sec");
+        //System.out.println("Fin getTargetFromCombinationAndDice");
         return "sec";
     }
 
-    // retourne la 1ere case commune aux 2 listes, celle des figures obtenues et celle de la meilleure combinaison possible
-  /*  private int getBoxIdFromCombinationAndDice(ArrayList<BoxPair> noDuplicatesBoxPairIdArrayList){
-        ArrayList<String> availableFiguresFromDiceSet = getAvailableFiguresFromdiceSet(currentGame);
-        ArrayList<String> bestCombinationTargetList = getTargetFigureFromBestCombination(noDuplicatesBoxPairIdArrayList);
-        ArrayList<String> commonElementsList = getCommonListElements(availableFiguresFromDiceSet, bestCombinationTargetList);
-        if (commonElementsList.size()>0){
-            for (int i=0; i< noDuplicatesBoxPairIdArrayList.size(); i++){
-                if (currentGame.findBoxById(noDuplicatesBoxPairIdArrayList.get(i)).figType.equals(commonElementsList.get(0)))
-                    return noDuplicatesBoxPairIdArrayList.get(i);
-            }
-        }
-        return 0;
-    }*/
 
     private BoxPair getAvailableBoxPairFromCombinationAndDice(ArrayList<BoxPair> noDuplicatesBoxIdArrayList){
-        System.out.println("Debut getAvailableBoxPairFromCombinationAndDice");
+        //System.out.println("Debut getAvailableBoxPairFromCombinationAndDice");
         ArrayList<String> availableFiguresFromDiceSet = getAvailableFiguresFromdiceSet(currentGame);
         // System.out.println("availableFiguresFromDiceSet: "+availableFiguresFromDiceSet);
         ArrayList<String> bestCombinationTargetList = getTargetFigureFromBestCombination(noDuplicatesBoxIdArrayList);
         //System.out.println("bestCombinationTargetList "+ bestCombinationTargetList);
         ArrayList<String> commonElementsList = getCommonListElements(availableFiguresFromDiceSet, bestCombinationTargetList);
 
-      /*  //purger noDuplicatesBoxIdArrayList des box qui fullLinent à perte
-        Iterator it = noDuplicatesBoxIdArrayList.iterator();
-        while (it.hasNext()){
-            BoxPair nextBp = (BoxPair) it.next();
-            if (nextBp.isFullLine()&& (nextBp.getPairPoints()+currentGame.redPoints<currentGame.bluePoints)){
-                System.out.print("On retire la box:"+currentGame.findBoxById(nextBp.getPairId()).toString()+" ");
-                System.out.println(nextBp.toString());
-                it.remove();
-            }
-            //Elimination des box qui ne rapportent pas de point alors que l'ennemi en a en réserve
-            else if(maxBluePointsPossible>maxRedPointsPossible)
-                if (nextBp.getPairPoints()==0)
-                    it.remove();
-        }*/
-
         //maintenant rechercher les correspondances entre les figures obtenues et la meilleure combinaison. Retourner la meilleure (fin de list)
         if (commonElementsList.size()>0){
             for (int i=0; i< noDuplicatesBoxIdArrayList.size(); i++){
                 if (currentGame.findBoxById(noDuplicatesBoxIdArrayList.get(i).getPairId()).getFigType().equals(commonElementsList.get(commonElementsList.size()-1))){
-                    System.out.println("Fin getAvailableBoxPairFromCombinationAndDice");
+                    //System.out.println("Fin getAvailableBoxPairFromCombinationAndDice");
                     return noDuplicatesBoxIdArrayList.get(i);
                 }
             }
         }
         //Sinon retourner un null
         BoxPair nullBoxPair = new BoxPair(new Box(),0,0);
-        System.out.println("getAvailableBoxPairFromCombinationAndDice :BoxPair NULL");
+        //System.out.println("getAvailableBoxPairFromCombinationAndDice :BoxPair NULL");
         return nullBoxPair;
     }
 
     private void purgeFullLineBoxPairArrayList (ArrayList<BoxPair> noDuplicatesBoxIdArrayList, int maxRedPointsPossible, int maxBluePointsPossible){
-        System.out.println("purgeBoxPairArrayList");
+        //System.out.println("purgeBoxPairArrayList");
         //purger noDuplicatesBoxIdArrayList des box qui fullLinent à perte
         Iterator it = noDuplicatesBoxIdArrayList.iterator();
         while (it.hasNext()){
             BoxPair nextBp = (BoxPair) it.next();
-            if (nextBp.isFullLine()&& (nextBp.getPairPoints()+currentGame.redPoints<currentGame.bluePoints)){
-                System.out.print("On retire la box (FullLine):"+currentGame.findBoxById(nextBp.getPairId()).toString()+" ");
-                System.out.println(nextBp.toString());
+            if (nextBp.isFullLine() && (nextBp.getPairPoints()+currentGame.redPoints<currentGame.bluePoints)){
+                //System.out.print("On retire la box (FullLine):"+currentGame.findBoxById(nextBp.getPairId()).toString()+" ");
+                //System.out.println(nextBp.toString());
                 it.remove();
             }
             //Elimination des box qui ne rapportent pas de point alors que l'ennemi en a en réserve
             else if(maxBluePointsPossible>maxRedPointsPossible)
                 if (nextBp.getPairPoints()==0){
-                    System.out.print("On retire la box (points=0):"+currentGame.findBoxById(nextBp.getPairId()).toString()+" ");
+                    //System.out.print("On retire la box (points=0):"+currentGame.findBoxById(nextBp.getPairId()).toString()+" ");
                     it.remove();
                 }
         }
-        System.out.println("Fin de purgeBoxPairArrayList");
+        //System.out.println("Fin de purgeBoxPairArrayList");
     }
     /*Method where droid choses target from current throw*/
     //Returns the target figtype upon wich we will select the dices next turn if any else returns null string and place the marker if possible
     private String machineChoseFromDices() {
         System.out.println("#########################################################################################");
-        currentGame.printSelectedDice();
-        
+        String diceSet = currentGame.afficherDes();
+        System.out.println(diceSet);
+        String selectedDiceSet = currentGame.printSelectedDice();
+        System.out.println(selectedDiceSet);
+        //appendLog(diceSet);
+        appendLog(gameStateToString());
+        appendLog(selectedDiceSet);
+
         //TODO revoir la procédure de decision, c'est pas clair!
         //Recensement des figures posables et/ou améliorables en fonction des dés courants
         ArrayList<BoxPair> optimalNextThrowBoxPairList = getListOptimalNextThrowBoxpairFromFigureList(currentGame);
@@ -1005,7 +1160,9 @@ class MachinePlayTask implements Runnable {
         //TODO ABSOLUMENT implémenter la selection de cases (target ou à poser) qui empêchent les bleus de gagner si elles sont possibles après le 1er jet
         //TODO genre il faut le 2 et on a un 2 ou deux 2 au jet courant -> chercher le brelan de 2 en priorité
         //Points éventuels au tour courant en fonction des dés actuels si on sélectionne + relance avec copie de la liste
-        BoxPair boxPairTargetCurrentTurnNextThrow = getOptimalCurrentTurnNextThrowBoxPairFromFigureList(currentGame, new ArrayList<>(optimalNextThrowBoxPairList));
+        BoxPair boxPairTargetCurrentTurnNextThrow = new BoxPair(new Box(), 0, 0);
+        if (currentGame.throwNb<3)
+            boxPairTargetCurrentTurnNextThrow = getOptimalCurrentTurnNextThrowBoxPairFromFigureList(currentGame, new ArrayList<>(optimalNextThrowBoxPairList));
         //Points éventuels à un tour suivant en fonction des dés actuels si on sélectionne + relance avec copie de la liste
         BoxPair boxPairTargetNextTurnNextThrow = getOptimalNextTurnNextThrowBoxPairFromFigureList(currentGame, new ArrayList<>(optimalNextThrowBoxPairList));
         //Point immédiats au tour courant si on place maintenant
@@ -1014,27 +1171,66 @@ class MachinePlayTask implements Runnable {
         BoxPair boxPairNextTurnCurrentThrow = getOptimalNextTurnCurrentThrowBoxPairPerFigureList(currentGame);
 
         System.out.println("boxPairCurrentTurnCurrentThrow: ");
-        if (boxPairCurrentTurnCurrentThrow.getPairId()>0)
-            currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).afficherBox();
+        if (boxPairCurrentTurnCurrentThrow.getPairId()>0){
+            System.out.println("boxPairCurrentTurnCurrentThrow: "+ boxPairCurrentTurnCurrentThrow.toString());
+            appendLog("boxPairCurrentTurnCurrentThrow: "+ boxPairCurrentTurnCurrentThrow.toString());
+        }
 
         System.out.println("boxPairNextTurnCurrentThrow: ");
-        if (boxPairNextTurnCurrentThrow.getPairId()>0)
-            currentGame.findBoxById(boxPairNextTurnCurrentThrow.getPairId()).afficherBox();
+        if (boxPairNextTurnCurrentThrow.getPairId()>0){
+            System.out.println("boxPairNextTurnCurrentThrow: "+boxPairNextTurnCurrentThrow.toString());
+            appendLog("boxPairNextTurnCurrentThrow: "+boxPairNextTurnCurrentThrow.toString());
+        }
 
         System.out.println("boxPairTargetCurrentTurnNextThrow: ");
-        if (boxPairTargetCurrentTurnNextThrow.getPairId()>0)
-            currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).afficherBox();
+        if (currentGame.throwNb<3)
+            if (boxPairTargetCurrentTurnNextThrow.getPairId()>0){
+                System.out.println("boxPairTargetCurrentTurnNextThrow: "+boxPairTargetCurrentTurnNextThrow.toString());
+                appendLog("boxPairTargetCurrentTurnNextThrow: "+boxPairTargetCurrentTurnNextThrow.toString());
+            }
 
         System.out.println("boxPairTargetNextTurnNextThrow: ");
-        if (boxPairTargetNextTurnNextThrow.getPairId()>0)
-            currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).afficherBox();
-        //Test de la nouvelle fonction ....ça pourra fonctionner...
-        if (currentGame.redMarkers < 5) {
-            System.out.println("redmarkers<5");
-            if (currentGame.redPoints<=currentGame.bluePoints){
-                System.out.println("redpPoints<=bluePoints!");
-                // currentGame.afficherDes();
-                //currentGame.printSelectedDice();
+        if (boxPairTargetNextTurnNextThrow.getPairId()>0){
+            System.out.println("boxPairTargetNextTurnNextThrow: "+boxPairTargetNextTurnNextThrow.toString());
+            appendLog("boxPairTargetNextTurnNextThrow: "+boxPairTargetNextTurnNextThrow.toString());
+        }
+
+
+        if ((currentGame.redMarkers < 5)||(currentGame.blueMarkers<5)) {
+            System.out.println("markers<5");
+            List<JeuCombinaison> jcRedList = bestCombinationsAvailable("red", currentGame);
+            int maxRedPointsPossible = 0;
+            if (!jcRedList.isEmpty())
+                maxRedPointsPossible=jcRedList.get(jcRedList.size()-1).getPoints();
+
+            List<JeuCombinaison> jcBlueList = bestCombinationsAvailable("blue", currentGame);
+            int maxBluePointsPossible = 0;
+            if (!jcBlueList.isEmpty())
+                maxBluePointsPossible=jcBlueList.get(jcBlueList.size()-1).getPoints();
+
+            //TODO: améliorer les conditions d'entrée en mode "AGRESSIF": si les bleus peuvent gagner alors, jouer agressivement
+            if (maxRedPointsPossible + currentGame.redPoints<currentGame.bluePoints){
+                System.out.println("Victoire rouge impossible!");
+                appendLog("max redpoints: "+maxRedPointsPossible + currentGame.redPoints+" bluePoints: "+currentGame.bluePoints
+                        +"\n Victoire rouge impossible!");
+            }
+            else if (maxRedPointsPossible > currentGame.bluePoints+maxBluePointsPossible){
+                System.out.println("Victoire bleue impossible!");
+                appendLog("max bluepoints: "+maxBluePointsPossible + currentGame.bluePoints+" redPoints: "+currentGame.redPoints
+                        +"\n Victoire bleue impossible!");
+            }
+            else {
+                System.out.println("Les 2 peuvent encore gagner!");
+                appendLog("max bluepoints: "+maxBluePointsPossible + currentGame.bluePoints
+                        +" maxRedPoints: "+maxRedPointsPossible+ currentGame.redPoints
+                        +"\n Victoire bleue impossible!");
+            }
+            if (currentGame.redPoints+maxRedPointsPossible<=currentGame.bluePoints+maxBluePointsPossible)
+            //ou bien si les bleus peuvent gagner au tour suivant->viser la case coupable
+            //ou bien si les bleus peuvent passer en tete au tour suivant->viser la case coupable
+            {
+                System.out.println("redpPoints+maxRedPointsPossible<=bluePoints+maxBluePointsPossible!");
+               /*
                 List<JeuCombinaison> jcRedList = bestCombinationsAvailable("red", currentGame);
                 int maxRedPointsPossible = 0;
                 if (!jcRedList.isEmpty())
@@ -1044,6 +1240,7 @@ class MachinePlayTask implements Runnable {
                 int maxBluePointsPossible = 0;
                 if (!jcBlueList.isEmpty())
                     maxBluePointsPossible=jcBlueList.get(jcBlueList.size()-1).getPoints();
+                */
 
                 // System.out.println("Liste des box optimales par jeu de combinaison (jclist): ");
                 // for (int i=0; i<jclist.size(); i++)
@@ -1082,12 +1279,15 @@ class MachinePlayTask implements Runnable {
 
                 Collections.sort(noDuplicatesBoxPairArrayList);
                 purgeFullLineBoxPairArrayList(noDuplicatesBoxPairArrayList, maxRedPointsPossible, maxBluePointsPossible);
-                System.out.println("noDuplicatesBoxPairArrayList:");
-                for (int i =0; i<noDuplicatesBoxPairArrayList.size(); i++)
-                    currentGame.findBoxById(noDuplicatesBoxPairArrayList.get(i).getPairId()).afficherBox();
-                System.out.println("*********");
+                //System.out.println("noDuplicatesBoxPairArrayList:");
+                //  for (int i =0; i<noDuplicatesBoxPairArrayList.size(); i++)
+                //     currentGame.findBoxById(noDuplicatesBoxPairArrayList.get(i).getPairId()).afficherBox();
+                //System.out.println("*********");
                 //TODO: verifier gérer le cas où la machine fait un appel, prendre la bonne case.
-
+                appendLog("noDuplicatesBoxPairArrayList");
+                for (int i =0; i<noDuplicatesBoxPairArrayList.size(); i++)
+                    appendLog(currentGame.findBoxById(noDuplicatesBoxPairArrayList.get(i).getPairId()).toString());
+                appendLog("fin de noDuplicatesBoxPairArrayList");
                 //On a fait appel, l'appel n'est pas encore réussi, on tente une dernière fois si l'appel est dans la combinaison
                 if (currentGame.throwNb == 2 && currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel")) {
                     System.out.println("Gestion appel1");
@@ -1124,71 +1324,84 @@ class MachinePlayTask implements Runnable {
                 ) {
 
                     //1: placer ou tenter une des figures/cases selectionnées si elle est aussi dans la combinaison
-                    if (!noDuplicatesBoxPairArrayList.isEmpty())
+                    if (!noDuplicatesBoxPairArrayList.isEmpty()){
                         if (noDuplicatesBoxPairArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId())) {
                             System.out.println("Placer: noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId())");
                             currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).afficherBox();
                             System.out.println("----------------------------------------------------");
-                            if (boxPairCurrentTurnCurrentThrow.getPairPoints()!=-1){
+                            appendLog("Placer: noDuplicatesBoxIdArrayList.contains(boxPairCurrentTurnCurrentThrow.getPairId()) "
+                                    +currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).toString());
+                            if (boxPairCurrentTurnCurrentThrow.getPairPoints() != -1) {
                                 return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
                             }
                         }
-                    if (!noDuplicatesBoxPairArrayList.isEmpty())
+                        // if (!noDuplicatesBoxPairArrayList.isEmpty())
                         if (noDuplicatesBoxPairArrayList.contains(boxPairNextTurnCurrentThrow.getPairId())) {
                             System.out.println("Placer: noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId())");
                             currentGame.findBoxById(boxPairNextTurnCurrentThrow.getPairId()).afficherBox();
                             System.out.println("----------------------------------------------------");
-                            if (boxPairNextTurnCurrentThrow.getPairPoints()!=-1){
+                            appendLog("Placer: noDuplicatesBoxIdArrayList.contains(boxPairNextTurnCurrentThrow.getPairId()) "
+                                    +currentGame.findBoxById(boxPairNextTurnCurrentThrow.getPairId()).toString());
+                            if (boxPairNextTurnCurrentThrow.getPairPoints() != -1) {
                                 return machinePlaceMarkerById(boxPairNextTurnCurrentThrow.getPairId());
                             }
                         }
-                    if (currentGame.throwNb < currentGame.maxThrowNb)
-                        if (!noDuplicatesBoxPairArrayList.isEmpty())
+                        if (currentGame.throwNb < currentGame.maxThrowNb)
+                            // if (!noDuplicatesBoxPairArrayList.isEmpty())
                             if (noDuplicatesBoxPairArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId())) {
                                 System.out.println("Target: noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId())");
                                 currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).afficherBox();
                                 System.out.println("----------------------------------------------------");
+                                appendLog("Target: noDuplicatesBoxIdArrayList.contains(boxPairTargetCurrentTurnNextThrow.getPairId()) "
+                                        + currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).toString() );
                                 showTargetUI(boxPairTargetCurrentTurnNextThrow.getPairId());
                                 return currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).getFigType();
                             }
-                    if (currentGame.throwNb < currentGame.maxThrowNb)
-                        if (!noDuplicatesBoxPairArrayList.isEmpty())
+                        if (currentGame.throwNb < currentGame.maxThrowNb)
+                            //  if (!noDuplicatesBoxPairArrayList.isEmpty())
                             if (noDuplicatesBoxPairArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId())) {
                                 System.out.println("Target:noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId())");
                                 currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).afficherBox();
                                 System.out.println("----------------------------------------------------");
+                                appendLog("Target:noDuplicatesBoxIdArrayList.contains(boxPairTargetNextTurnNextThrow.getPairId()) "
+                                        +currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).toString());
                                 showTargetUI(boxPairTargetNextTurnNextThrow.getPairId());
                                 return currentGame.findBoxById(boxPairTargetNextTurnNextThrow.getPairId()).getFigType();
                             }
 
-                    //2: sinon placer une des éventuelles autres figures obtenues si elle est dans la combinaison
-                    BoxPair AvailableBoxPairFromCombinationAndDiceBoxPair = getAvailableBoxPairFromCombinationAndDice(noDuplicatesBoxPairArrayList);
-                    if (AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId() > 0) {
-                        System.out.print("AvailableBoxPairFromCombinationAndDiceBoxPair: ");
-                        currentGame.findBoxById(AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId()).afficherBox();
-                        return machinePlaceMarkerById(AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId());
-                    }
-                    //3: sinon il faut tenter une figure appartenant à la/les combinaisons gagnantes
-                    /*
-                     * récupérer les figures correspondant aux boxId des combinaisons gagnantes
-                     * retourner celle qui convient le mieux en fonction des dés actuels
-                     *
-                     * */
-                    //Tenter de selectionner les dés pour avoir une figure de la combinaison
-                    if (currentGame.throwNb < currentGame.maxThrowNb) {
-                        String targetFromCombinationAndDice = getTargetFromCombinationAndDice(noDuplicatesBoxPairArrayList);
-                        System.out.println("targetFromCombinationAndDice: "+ targetFromCombinationAndDice);
-                        for (int i= noDuplicatesBoxPairArrayList.size()-1; i>=0; i--){
-                            if (noDuplicatesBoxPairArrayList.get(i).getFigType().equals(targetFromCombinationAndDice))
-                                showTargetUI(noDuplicatesBoxPairArrayList.get(i).getPairId());
+                        //2: sinon placer une des éventuelles autres figures obtenues si elle est dans la combinaison
+                        BoxPair AvailableBoxPairFromCombinationAndDiceBoxPair = getAvailableBoxPairFromCombinationAndDice(noDuplicatesBoxPairArrayList);
+                        if (AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId() > 0) {
+                            System.out.print("AvailableBoxPairFromCombinationAndDiceBoxPair: ");
+                            currentGame.findBoxById(AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId()).afficherBox();
+                            appendLog("AvailableBoxPairFromCombinationAndDiceBoxPair: "
+                                    +currentGame.findBoxById(AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId()).toString());
+                            return machinePlaceMarkerById(AvailableBoxPairFromCombinationAndDiceBoxPair.getPairId());
                         }
-                        return targetFromCombinationAndDice;
+                        //3: sinon il faut tenter une figure appartenant à la/les combinaisons gagnantes
+                        /*
+                         * récupérer les figures correspondant aux boxId des combinaisons gagnantes
+                         * retourner celle qui convient le mieux en fonction des dés actuels
+                         *
+                         * */
+                        //Tenter de selectionner les dés pour avoir une figure de la combinaison
+                        if (currentGame.throwNb < currentGame.maxThrowNb) {
+                            String targetFromCombinationAndDice = getTargetFromCombinationAndDice(noDuplicatesBoxPairArrayList);
+                            System.out.println("targetFromCombinationAndDice: " + targetFromCombinationAndDice);
+                            //Montrer la case cible
+                            appendLog("targetFromCombinationAndDice: " + targetFromCombinationAndDice);
+                            for (int i = noDuplicatesBoxPairArrayList.size() - 1; i >= 0; i--) {
+                                if (noDuplicatesBoxPairArrayList.get(i).getFigType().equals(targetFromCombinationAndDice))
+                                    showTargetUI(noDuplicatesBoxPairArrayList.get(i).getPairId());
+                            }
+                            return targetFromCombinationAndDice;
+                        }
                     }
-                    //on relance tout
-                    if (currentGame.throwNb < currentGame.maxThrowNb){
-                        System.out.println("retourne sec");
-                        return "sec";
-                    }
+                    else//noDuplicatesBoxPairArrayList.isEmpty()->on relance tout
+                        if (currentGame.throwNb < currentGame.maxThrowNb){
+                            System.out.println("retourne sec");
+                            return "sec";
+                        }
                     //sinon on passe le tour
                     System.out.println("blue");
                     return "blue";
@@ -1208,7 +1421,7 @@ class MachinePlayTask implements Runnable {
         //Si on a une boxPair à placer maintenant
         if (boxPairCurrentTurnCurrentThrow.getPairId()>0)
         {
-            System.out.println("boxPairCurrentTurnCurrentThrow.getPairId()>0");
+            System.out.println("-2 boxPairCurrentTurnCurrentThrow.getPairId()>0");
             //Si appel réussi, placer le pion
             if (currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).getFigType().equals("Appel")){
                 System.out.println("-2: boxPairCurrentTurnCurrentThrow.getPairId()).figType.equals(Appel)");
@@ -1227,19 +1440,24 @@ class MachinePlayTask implements Runnable {
 
                     //Ne faire nextthrow que si currenthrow pas posable
                     // ou si on peut LA garder (ex: BRELAN->full ok  mais pas FULL->carre ni Yam ni Sec)
+                    //TODO pourquoi le small sec n'est pas posé? Voir log 202104190-03227.txt
                     if (boxPairTargetCurrentTurnNextThrow.getPairPoints()>=boxPairCurrentTurnCurrentThrow.getPairPoints())
                     {
+                        appendLog("boxPairTargetCurrentTurnNextThrow.getPairPoints()>=boxPairCurrentTurnCurrentThrow.getPairPoints()");
                         System.out.println("boxPairTargetCurrentTurnNextThrow.getPairPoints()>=boxPairCurrentTurnCurrentThrow.getPairPoints()");
                         if (!((currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).getFigType().equals("Full"))||
                                 (currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).getFigType().equals("Yam"))||
+                                //Rajout du small pour corriger le bug  ci dessus
+                                (currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).getFigType().equals("Small"))||
                                 (currentGame.findBoxById(boxPairCurrentTurnCurrentThrow.getPairId()).getFigType().equals("Sec"))))
                         {
-                            System.out.println("-1: currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).figType="+currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).getFigType());
+                            //System.out.println("-1: currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).figType="+currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).getFigType());
                             showTargetUI(boxPairTargetCurrentTurnNextThrow.getPairId());
                             return currentGame.findBoxById(boxPairTargetCurrentTurnNextThrow.getPairId()).getFigType();
                         }
                         else {
                             System.out.println("-1: return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId())");
+                            //Sinon on place la figure
                             return machinePlaceMarkerById(boxPairCurrentTurnCurrentThrow.getPairId());
                         }
                     }
@@ -1448,7 +1666,7 @@ class MachinePlayTask implements Runnable {
     }
 
     private void selectForYam(Jeu aGame) {
-        System.out.println("Select for yam1");
+        //System.out.println("Select for yam1");
         if (aGame.fiveDices.figureList.contains("Carre")) {
             for (int i = 0; i < 5; i++)
                 aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[i][0]].isSelected = false;
@@ -1476,11 +1694,11 @@ class MachinePlayTask implements Runnable {
                 Collections.sort(pairs);
                 if (pairs.size()>0){
                     selectForBrelan(aGame, Integer.valueOf(pairs.get(pairs.size()-1).getFigType()));
-                    System.out.println("select for yam1: "+Integer.valueOf(pairs.get(pairs.size()-1).getFigType()));
+                    //System.out.println("select for yam1: "+Integer.valueOf(pairs.get(pairs.size()-1).getFigType()));
                 }
             }
             else {
-                System.out.println("select for yam2: "+getFirstAvailablePairValue(aGame));
+                //System.out.println("select for yam2: "+getFirstAvailablePairValue(aGame));
                 selectForBrelan(aGame, getFirstAvailablePairValue(aGame));
             }
         }
@@ -1526,7 +1744,7 @@ class MachinePlayTask implements Runnable {
 
     private void selectForAppel(Jeu aGame){
         if (aGame.throwNb==2){
-            System.out.println("Select for appel au "+aGame.appelRegistered);
+            //System.out.println("Select for appel au "+aGame.appelRegistered);
             switch (aGame.appelRegistered){
                 case "Full":
                     selectForFull(aGame);
@@ -1554,15 +1772,15 @@ class MachinePlayTask implements Runnable {
                 selectForFull(aGame);
                 appel(aGame, "Full");
             }
+            else if (aGame.fiveDices.figureList.matches( ".*(1|2|3|4|5|6|Carre).*")){
+                selectForCarre(aGame);//On peut aussi partir d'un carre pour appeler un carre
+                appel(aGame,"Carre");
+            }
             else if (figureContains4InARow(aGame)!=0){
                 selectForSuite(aGame);
                 appel(aGame, "Suite");
             }
 //             else  if (stringMatcher(aGame.fiveDices.figureList, ".*1|2|3|4|5|6|Carre.*")){
-            else if (aGame.fiveDices.figureList.matches( ".*(1|2|3|4|5|6|Carre).*")){
-                selectForCarre(aGame);//On peut aussi partir d'un carre pour appeler un carre
-                appel(aGame,"Carre");
-            }
             else if (figureContainsAlmostSmall(aGame)){
                 selectForSmall(aGame);
                 appel(aGame, "Small");
@@ -1615,6 +1833,17 @@ class MachinePlayTask implements Runnable {
             for (int i = 0; i < 4; i++)
                 if (aGame.fiveDices.tempDiceSetIndValues[i][1] == aGame.fiveDices.tempDiceSetIndValues[i + 1][1])
                     return aGame.fiveDices.tempDiceSetIndValues[i][1];
+        }
+        return 0;
+    }
+
+    //Choisir SOIT 1ere paire SOIT 2nde paire
+    private int getPairValues(Jeu aGame, boolean firstPair, boolean secondPair){
+        if (firstPair)
+            return getSinglePairValue(aGame);
+        else if (secondPair){
+            if (figureContainsDoublePair(aGame))
+                return aGame.fiveDices.tempDiceSetIndValues[3][1];
         }
         return 0;
     }
@@ -1697,7 +1926,7 @@ class MachinePlayTask implements Runnable {
         int idx1 = getMissingIdxForSuite(aGame,0);
         int idx2 = getMissingIdxForSuite(aGame,1);
         if ((idx1!=-1) && (idx2!=-1)){
-            return 2;
+            return 2;//Manquent 1 OU 6 (on a 2345)
         }
         if ((idx1!=-1) || (idx2!=-1)){
             return 1;
@@ -1765,7 +1994,7 @@ class MachinePlayTask implements Runnable {
     private void appel(Jeu aGame, String figureAppel){
         // si jet = 1 et appel possible alors appel figure
         // montrer sur UI: click sur appel, click sur figure
-        System.out.println("appel au "+figureAppel);
+        //System.out.println("appel au "+figureAppel);
         if (aGame.throwNb==1){
             //Arbitraire: voir si on peut récupérer la case appel souhaitée par la machine
             final int appelBoxId = aGame.checkerBox[0][2].getId();
@@ -1791,7 +2020,7 @@ class MachinePlayTask implements Runnable {
                         break;
                     }
             final int figureAppelId=tempAppelBoxFigTypeId;
-            System.out.println("figureAppelId="+figureAppelId);
+            //System.out.println("figureAppelId="+figureAppelId);
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1883,6 +2112,157 @@ class MachinePlayTask implements Runnable {
         return "blue";
     }
 
+
+    public void appendLog(String text)
+    {
+        Context context = mainActivity.getApplicationContext();
+        File path= context.getExternalFilesDir(null);
+        File logFile = new File(path, "YatzoeLog"+currentGame.dateFormat+".txt");
+        //  FileOutputStream stream = null;
+        //  try {
+        //      stream = new FileOutputStream(logFile);
+        //  } catch (FileNotFoundException e) {
+        //      e.printStackTrace();
+        //  }
+        try {
+            //    stream.write(text.getBytes());
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write raté: " + e.toString());
+            e.printStackTrace();
+        }
+        // finally {
+        //     try {
+        //         stream.close();
+        //     } catch (IOException e) {
+        //         e.printStackTrace();
+        //     }
+        // }
+/******************************/
+       /*
+               //File logFile = new File("/storage/6632-6634/Documents/YatzoeLog.txt");
+       if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+      /*  String filename = "YatzoeLog.txt";
+        File file = new File(Environment.getExternalStorageDirectory(), filename);
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(file);
+            fos.write(new String("Write on SD Card").getBytes());
+            fos.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        } catch (IOException e) {
+            System.out.println(e);
+        }*/
+    }
+
+    public void writeToFile(String data)
+    {
+        // Get the directory for the user's public pictures directory.
+        /*final File path =
+                Environment.getExternalStoragePublicDirectory
+                        (
+                                //Environment.DIRECTORY_PICTURES
+                                Environment.DIRECTORY_DCIM + "/YourFolder/"
+                        );
+
+        // Make sure the path directory exists.
+        if(!path.exists())
+        {
+            // Make it, if it doesn't exit
+            path.mkdirs();
+        }
+
+        final File file = new File(path, "config.txt");*/
+
+        String path = Environment.getExternalStorageDirectory() + File.separator  + "YatzoeDebugFolder";
+        // Create the folder.
+        System.out.println("path: "+path);
+        File folder = new File(path);
+        folder.mkdirs();
+
+        // Create the file.
+        // Date aujourdhui=new Date();
+        // SimpleDateFormat formater =  new SimpleDateFormat("yyyyMMddH-Hmmss");
+        //dateFormat est en variable globale dans jeu
+        //  String dateFormat = formater.format(aujourdhui);
+
+        File file = new File(folder, "YatzoeDebug-"+currentGame.dateFormat+".txt");
+        // File file = new File(folder, "YatzoeDebug.txt");
+        // Save your stream, don't forget to flush() it before closing it.
+        try
+        {
+            file.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(data);
+
+            myOutWriter.close();
+
+            fOut.flush();
+            fOut.close();
+        }
+        catch (IOException e)
+        {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+    public String gameStateToString(){
+        String gameState="";
+        if (currentGame.throwNb==1){
+            gameState+="\nbleus: "+currentGame.blueMarkers+" "+currentGame.bluePoints+"  rouges: "+currentGame.blueMarkers+" "+currentGame.redPoints;
+            // gameState+="\n_____";
+            for (int ligne=0; ligne<5; ligne++)
+            {
+                gameState+="\n|";
+                for (int col=0; col<5; col++)
+                {
+                    if (currentGame.checkerBox[ligne][col].getColor().equals("blue"))
+                        gameState+="b";
+                    else if (currentGame.checkerBox[ligne][col].getColor().equals("red"))
+                        gameState+="r";
+                    else
+                        gameState+=" ";
+                }
+                gameState+="|";
+            }
+            //gameState+="\n_____";
+        }
+        if (currentGame.throwNb==2 && currentGame.appelClicked)
+            gameState+="\nappel: "+currentGame.appelRegistered;
+        return gameState;
+    }
 }
 //TODO ajouter strategie pour empecher l'autre de marquer -->fait mais pas vérifié
 //TODO ajouter strategie pour ne pas gâcher ses pions (skip) -->fait mais pas vérifié entièrement

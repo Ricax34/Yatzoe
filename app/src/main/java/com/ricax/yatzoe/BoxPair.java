@@ -27,6 +27,7 @@ class BoxPair implements Comparable<BoxPair>{
     private int oponentPoints;
     private int allPossiblePoints=0;
     private int nextTurnPossiblePoints=0;
+    private int probability=0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
 
@@ -55,7 +56,9 @@ class BoxPair implements Comparable<BoxPair>{
     public Integer getAllPossiblePoints(){return allPossiblePoints;}
     public void setNextTurnPossiblePoints(int p){this.nextTurnPossiblePoints=p;}
     public Integer getNextTurnPossiblePoints(){return nextTurnPossiblePoints;}
-
+    public Integer getProbability(){return this.probability;}
+    public void setProbability(int probability){ this.probability=probability;}
+    public int foo() {return 4;}
     //  @Override
   /*  boolean equals(BoxPair bp){
         return this.id == bp.id;
@@ -83,14 +86,15 @@ class BoxPair implements Comparable<BoxPair>{
     @Override
     public String toString() {
         return "BoxPair{" +
-                "box =" + aBox +
-                ", pts=" + points +
-                ", ntpP=" + nextTurnPossiblePoints+
-                ", apP=" + allPossiblePoints+
-                ", oPts=" + oponentPoints+
-                ", isFL: "+ isFullLine+
-                ", isOFL "+ isOponentFullLine+
-                "}\n";
+                "box =" + aBox
+                + ", pts=" + points
+                + ", ntpP=" + nextTurnPossiblePoints
+                + ", apP=" + allPossiblePoints
+                + ", oPts=" + oponentPoints
+                + ", pb="+probability
+                + ", isFL: "+ isFullLine
+                + ", isOFL "+ isOponentFullLine
+                + "}\n";
     }
 
     @Override
@@ -98,12 +102,14 @@ class BoxPair implements Comparable<BoxPair>{
         //first compare points and so on ....
         if (!bp.getPairPoints().equals(this.getPairPoints()))
             return this.getPairPoints().compareTo(bp.getPairPoints());
+        else if (!bp.getProbability().equals(this.getProbability()))
+            return this.getProbability().compareTo(bp.getProbability());
         else if (!bp.getNextTurnPossiblePoints().equals(this.getNextTurnPossiblePoints()))
             return this.getNextTurnPossiblePoints().compareTo(bp.getNextTurnPossiblePoints());
         else if (!bp.getAllPossiblePoints().equals(this.getAllPossiblePoints()))
             return this.getAllPossiblePoints().compareTo(bp.getAllPossiblePoints());
-        else
+        else // if (! bp.getOponentPoints().equals(this.getOponentPoints()))
             return this.getOponentPoints().compareTo(bp.getOponentPoints());
+  //     else return this.getProbability().compareTo(bp.getProbability());
     }
-
 }
