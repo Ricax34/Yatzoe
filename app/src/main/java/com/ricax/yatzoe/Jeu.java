@@ -56,8 +56,8 @@ class Jeu {
     int redPoints = 0, bluePoints = 0;
 
     //pour logger
-    Date aujourdhui=new Date();
-    SimpleDateFormat formater =  new SimpleDateFormat("yyyyMMddH-Hmmss");
+    Date aujourdhui = new Date();
+    SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddH-Hmmss");
     public String dateFormat = formater.format(aujourdhui);
 
     Jeu(MainActivity mainActivity) {
@@ -90,11 +90,11 @@ class Jeu {
         blueMarkers = game.blueMarkers;
         redPoints = game.redPoints;
         bluePoints = game.bluePoints;
-        diceArrayList= game.diceArrayList;
+        diceArrayList = game.diceArrayList;
     }
 
 
-    public  Box findBoxById(int aBoxId) {
+    public Box findBoxById(int aBoxId) {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < 5; j++)
                 if (checkerBox[i][j].getId() == aBoxId)
@@ -237,7 +237,7 @@ class Jeu {
         new Thread(new MachinePlayTask(this, mainActivity)).start();
     }
 
-    public void setDiceArrayListRandomValue(){
+    public void setDiceArrayListRandomValue() {
         diceArrayList.add(1 + (int) (Math.random() * 6));
     }
 
@@ -245,19 +245,20 @@ class Jeu {
         this.fiveDices.diceSet[i].toggleDiceSelected();
     }
 
-    private int getRandomValue(){
+    private int getRandomValue() {
         if (diceArrayList.isEmpty())
             setDiceArrayListRandomValue();
         int value = diceArrayList.get(0);
         diceArrayList.remove(0);
         return value;
     }
+
     //  private  static Random random =  new Random() ;
     private void rollOneDice(int i) {
         //SecureRandom secureRandomGenerator = SecureRandom.getInstance("SHA1PRNG", "SUN");
         SecureRandom secureRandomGenerator = new SecureRandom();
         int randInRange = secureRandomGenerator.nextInt(6);
-        fiveDices.diceSet[i].value=randInRange+1;
+        fiveDices.diceSet[i].value = randInRange + 1;
         // fiveDices.diceSet[i].value=getRandomValue();
         //      fiveDices.diceSet[i].value = 1 + (int) (Math.random() * 6);
         //           fiveDices.diceSet[i].value=ThreadLocalRandom.current().nextInt(5)+1;
@@ -270,7 +271,7 @@ class Jeu {
             fiveDices.setListOfFiguresFromDiceSet(); //To be able to place the marker after
             return false;
         }
-        if ((appelClicked)&&(appelRegistered.isEmpty())){
+        if ((appelClicked) && (appelRegistered.isEmpty())) {
             return false;
         }
         if (this.throwNb == 0) { //first throw check if all dices are selected
@@ -287,14 +288,13 @@ class Jeu {
             for (int i = 0; i < 5; i++)
                 if (fiveDices.diceSet[i].selected()) //roll all selected dices
                     rollOneDice(i);
-            if ((throwNb == 2)||(throwNb==this.maxThrowNb)) {
+            if ((throwNb == 2) || (throwNb == this.maxThrowNb)) {
                 fiveDices.setListOfFiguresFromDiceSet();
                 if ((appelClicked) && (fiveDices.figureList.contains(appelRegistered))) {//Appel OK, set figureList to appel
                     fiveDices.figureList = "Appel";
-                }
-                else if (throwNb==maxThrowNb)
-                    if ((appelClicked) && (!fiveDices.figureList.contains(appelRegistered))){
-                        fiveDices.figureList="";
+                } else if (throwNb == maxThrowNb)
+                    if ((appelClicked) && (!fiveDices.figureList.contains(appelRegistered))) {
+                        fiveDices.figureList = "";
                     }
             }
         }
@@ -305,36 +305,31 @@ class Jeu {
         return true;
     }
 
-    void printSortedDices(){
+    void printSortedDices() {
 
         System.out.println("**SortedDices**");
-        for (int i=0; i<5; i++)
-        {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0]+" ");
+        for (int i = 0; i < 5; i++) {
+            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0] + " ");
         }
         System.out.println();
-        for (int i=0; i<5; i++)
-        {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1]+" ");
+        for (int i = 0; i < 5; i++) {
+            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1] + " ");
         }
         System.out.println();
     }
 
-    public void printSelectedSortedDice(){
+    public void printSelectedSortedDice() {
 
         System.out.println("**SelectedSortedDice**");
-        for (int i=0; i<5; i++)
-        {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0]+" ");
+        for (int i = 0; i < 5; i++) {
+            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0] + " ");
         }
         System.out.println();
-        for (int i=0; i<5; i++)
-        {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1]+" ");
+        for (int i = 0; i < 5; i++) {
+            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1] + " ");
         }
         System.out.println();
-        for (int i=0; i<5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             if (this.fiveDices.diceSet[this.fiveDices.tempDiceSetIndValues[i][0]].isSelected)
                 System.out.print("x ");
             else
@@ -343,7 +338,7 @@ class Jeu {
         System.out.println();
     }
 
-    public String printSelectedDice(){
+    public String printSelectedDice() {
         System.out.println("**SelectedDice**");
        /* for (int i=0; i<5; i++)
         {
@@ -358,161 +353,283 @@ class Jeu {
                 System.out.print("o ");
         }
         System.out.println();*/
-        String selectedDiceSet="\n";
-        for (int i=0; i<5; i++)
-        {
-            selectedDiceSet+=Integer.toString(this.fiveDices.diceSet[i].value)+" ";
+        String selectedDiceSet = "\n";
+        for (int i = 0; i < 5; i++) {
+            selectedDiceSet += Integer.toString(this.fiveDices.diceSet[i].value) + " ";
         }
-        selectedDiceSet+="\n";
-        for (int i=0; i<5; i++)
-        {
+        selectedDiceSet += "\n";
+        for (int i = 0; i < 5; i++) {
             if (this.fiveDices.diceSet[i].isSelected)
-                selectedDiceSet+="x ";
+                selectedDiceSet += "x ";
             else
-                selectedDiceSet+="o ";
+                selectedDiceSet += "o ";
         }
         return selectedDiceSet;
     }
 
-    void terminate() { this.couleur = "white"; }
+    void terminate() {
+        this.couleur = "white";
+    }
 
-    void afficherBoxPair(BoxPair aBoxPair){
-        if (aBoxPair.getPairId()>0) {
-            System.out.println("boxId: "+aBoxPair.getPairId()+" Box[" + this.findBoxById(aBoxPair.getPairId()).v + "]["
+    void afficherBoxPair(BoxPair aBoxPair) {
+        if (aBoxPair.getPairId() > 0) {
+            System.out.println("boxId: " + aBoxPair.getPairId() + " Box[" + this.findBoxById(aBoxPair.getPairId()).v + "]["
                     + this.findBoxById(aBoxPair.getPairId()).h + "]: "
                     + this.findBoxById(aBoxPair.getPairId()).getFigType()
-                    +" "
+                    + " "
                     + this.findBoxById(aBoxPair.getPairId()).getColor()
                     + "->"
                     + aBoxPair.getPairPoints() + " points"
             );
-        }
-        else System.out.println("null box");
+        } else System.out.println("null box");
     }
 
-    String afficherDes(){
+    String afficherDes() {
         return fiveDices.printDiceSet();
     }
 
     //returns a list of boxpair available for given figureList
-    List <BoxPair> getListFreeBoxesPerFigureList(String aFigureList){
-        List <BoxPair> aBoxPairList = new ArrayList<>();
+    List<BoxPair> getListFreeBoxPairPerFigureList(String aFigureList) {
+        List<BoxPair> aBoxPairList = new ArrayList<>();
         List<String> aListOfFigures = new ArrayList<>();
         Pattern aPattern = Pattern.compile("1|2|3|4|5|6|Appel|Full|Carre|Small|Suite|Sec|Yam");
         Matcher aMatcher = aPattern.matcher(aFigureList);
-        while (aMatcher.find()){
+        while (aMatcher.find()) {
             aListOfFigures.add(aMatcher.group());
         }
-        for (int i=0; i<aListOfFigures.size(); i++){
+        for (int i = 0; i < aListOfFigures.size(); i++) {
             aBoxPairList.addAll(getListBoxPairColorPerFigure(aListOfFigures.get(i), "white"));
         }
-        return  aBoxPairList;
+        return aBoxPairList;
     }
 
-    //returns a List of BoxPair  with such color per figure (points =0)
-    List<BoxPair> getListBoxPairColorPerFigure(String aFigure, String aColor) {
-        List<BoxPair> aBoxPairList = new ArrayList<>();
+    ArrayList<Box> getListFreeBoxPerFigureList(String aFigureList) {
+        ArrayList<Box> aBoxPairList = new ArrayList<>();
+        List<String> aListOfFigures = new ArrayList<>();
+        Pattern aPattern = Pattern.compile("1|2|3|4|5|6|Appel|Full|Carre|Small|Suite|Sec|Yam");
+        Matcher aMatcher = aPattern.matcher(aFigureList);
+        while (aMatcher.find()) {
+            aListOfFigures.add(aMatcher.group());
+        }
+        for (int i = 0; i < aListOfFigures.size(); i++) {
+            aBoxPairList.addAll(getListBoxColorPerFigure(aListOfFigures.get(i), "white"));
+        }
+        return aBoxPairList;
+    }
+
+   public  ArrayList<Box> getListBoxColorPerFigure(String aFigure, String aColor) {
+        ArrayList<Box> aBoxList = new ArrayList<>();
         if (aFigure.equals("1")) {
             if ((this.checkerBox[0][0].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][0], 0, 0));
+                aBoxList.add(this.checkerBox[0][0]);
             }
             if ((this.checkerBox[3][4].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][4], 0, 0));
+                aBoxList.add(this.checkerBox[3][4]);
             }
         }
         if (aFigure.equals("2")) {
             if ((this.checkerBox[1][0].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][0], 0, 0));
+                aBoxList.add(this.checkerBox[1][0]);
             }
             if ((this.checkerBox[4][1].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][1], 0, 0));
+                aBoxList.add(this.checkerBox[4][1]);
             }
         }
         if (aFigure.equals("3")) {
             if ((this.checkerBox[0][1].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][1], 0, 0));
+                aBoxList.add(this.checkerBox[0][1]);
             }
             if ((this.checkerBox[4][0].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][0], 0, 0));
+                aBoxList.add(this.checkerBox[4][0]);
             }
         }
         if (aFigure.equals("4")) {
             if ((this.checkerBox[0][3].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][3], 0, 0));
+                aBoxList.add(this.checkerBox[0][3]);
             }
             if ((this.checkerBox[4][4].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][4], 0, 0));
+                aBoxList.add(this.checkerBox[4][4]);
             }
         }
         if (aFigure.equals("5")) {
             if ((this.checkerBox[1][4].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][4], 0, 0));
+                aBoxList.add(this.checkerBox[1][4]);
             }
             if ((this.checkerBox[4][3].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][3], 0, 0));
+                aBoxList.add(this.checkerBox[4][3]);
             }
         }
         if (aFigure.equals("6")) {
             if ((this.checkerBox[0][4].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][4], 0, 0));
+                aBoxList.add(this.checkerBox[0][4]);
             }
             if ((this.checkerBox[3][0].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][0], 0, 0));
+                aBoxList.add(this.checkerBox[3][0]);
             }
         }
         if (aFigure.equals("Appel")) {
             if ((this.checkerBox[0][2].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[0][2], 0, 0));
+                aBoxList.add(this.checkerBox[0][2]);
             }
             if ((this.checkerBox[2][3].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][3], 0, 0));
+                aBoxList.add(this.checkerBox[2][3]);
             }
         }
         if (aFigure.equals("Carre")) {
             if ((this.checkerBox[1][1].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][1], 0, 0));
+                aBoxList.add(this.checkerBox[1][1]);
             }
             if ((this.checkerBox[4][2].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[4][2], 0, 0));
+                aBoxList.add(this.checkerBox[4][2]);
             }
         }
         if (aFigure.equals("Sec")) {
             if ((this.checkerBox[1][2].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][2], 0, 0));
+                aBoxList.add(this.checkerBox[1][2]);
             }
             if ((this.checkerBox[3][1].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][1], 0, 0));
+                aBoxList.add(this.checkerBox[3][1]);
             }
         }
         if (aFigure.equals("Full")) {
             if ((this.checkerBox[1][3].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[1][3], 0, 0));
+                aBoxList.add(this.checkerBox[1][3]);
             }
             if ((this.checkerBox[2][1].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][1], 0, 0));
+                aBoxList.add(this.checkerBox[2][1]);
             }
         }
         if (aFigure.equals("Small")) {
             if ((this.checkerBox[2][0].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][0], 0, 0));
+                aBoxList.add(this.checkerBox[2][0]);
             }
             if ((this.checkerBox[3][3].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][3], 0, 0));
+                aBoxList.add(this.checkerBox[3][3]);
             }
         }
         if (aFigure.equals("Suite")) {
             if ((this.checkerBox[2][4].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][4], 0, 0));
+                aBoxList.add(this.checkerBox[2][4]);
             }
             if ((this.checkerBox[3][2].getColor().equals(aColor))) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[3][2], 0, 0));
+                aBoxList.add(this.checkerBox[3][2]);
             }
         }
         if (aFigure.equals("Yam")) {
             if (this.checkerBox[2][2].getColor().equals(aColor)) {
-                aBoxPairList.add(new BoxPair(this.checkerBox[2][2], 0, 0));
+                aBoxList.add(this.checkerBox[2][2]);
             }
+
         }
-        return aBoxPairList;
+       return aBoxList;
     }
+
+
+
+    //returns a List of BoxPair  with such color per figure (points =0)
+   public  List<BoxPair> getListBoxPairColorPerFigure (String aFigure, String aColor){
+            List<BoxPair> aBoxPairList = new ArrayList<>();
+            if (aFigure.equals("1")) {
+                if ((this.checkerBox[0][0].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[0][0], 0, 0));
+                }
+                if ((this.checkerBox[3][4].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[3][4], 0, 0));
+                }
+            }
+            if (aFigure.equals("2")) {
+                if ((this.checkerBox[1][0].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[1][0], 0, 0));
+                }
+                if ((this.checkerBox[4][1].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[4][1], 0, 0));
+                }
+            }
+            if (aFigure.equals("3")) {
+                if ((this.checkerBox[0][1].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[0][1], 0, 0));
+                }
+                if ((this.checkerBox[4][0].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[4][0], 0, 0));
+                }
+            }
+            if (aFigure.equals("4")) {
+                if ((this.checkerBox[0][3].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[0][3], 0, 0));
+                }
+                if ((this.checkerBox[4][4].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[4][4], 0, 0));
+                }
+            }
+            if (aFigure.equals("5")) {
+                if ((this.checkerBox[1][4].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[1][4], 0, 0));
+                }
+                if ((this.checkerBox[4][3].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[4][3], 0, 0));
+                }
+            }
+            if (aFigure.equals("6")) {
+                if ((this.checkerBox[0][4].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[0][4], 0, 0));
+                }
+                if ((this.checkerBox[3][0].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[3][0], 0, 0));
+                }
+            }
+            if (aFigure.equals("Appel")) {
+                if ((this.checkerBox[0][2].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[0][2], 0, 0));
+                }
+                if ((this.checkerBox[2][3].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[2][3], 0, 0));
+                }
+            }
+            if (aFigure.equals("Carre")) {
+                if ((this.checkerBox[1][1].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[1][1], 0, 0));
+                }
+                if ((this.checkerBox[4][2].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[4][2], 0, 0));
+                }
+            }
+            if (aFigure.equals("Sec")) {
+                if ((this.checkerBox[1][2].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[1][2], 0, 0));
+                }
+                if ((this.checkerBox[3][1].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[3][1], 0, 0));
+                }
+            }
+            if (aFigure.equals("Full")) {
+                if ((this.checkerBox[1][3].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[1][3], 0, 0));
+                }
+                if ((this.checkerBox[2][1].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[2][1], 0, 0));
+                }
+            }
+            if (aFigure.equals("Small")) {
+                if ((this.checkerBox[2][0].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[2][0], 0, 0));
+                }
+                if ((this.checkerBox[3][3].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[3][3], 0, 0));
+                }
+            }
+            if (aFigure.equals("Suite")) {
+                if ((this.checkerBox[2][4].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[2][4], 0, 0));
+                }
+                if ((this.checkerBox[3][2].getColor().equals(aColor))) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[3][2], 0, 0));
+                }
+            }
+            if (aFigure.equals("Yam")) {
+                if (this.checkerBox[2][2].getColor().equals(aColor)) {
+                    aBoxPairList.add(new BoxPair(this.checkerBox[2][2], 0, 0));
+                }
+            }
+            return aBoxPairList;
+        }
 }

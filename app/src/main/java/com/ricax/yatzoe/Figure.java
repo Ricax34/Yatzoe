@@ -171,7 +171,7 @@ class Figure {
         else return "";
     }
 
-    private String checkForBrelan(){
+    public String checkForBrelan(){
         if (
                 (this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])||
                         (this.tempDiceSetIndValues[1][1] == this.tempDiceSetIndValues [3][1])||

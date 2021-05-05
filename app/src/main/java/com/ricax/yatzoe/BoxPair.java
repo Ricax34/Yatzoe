@@ -28,6 +28,8 @@ class BoxPair implements Comparable<BoxPair>{
     private int allPossiblePoints=0;
     private int nextTurnPossiblePoints=0;
     private int probability=0;
+    private int bonus =0;
+    private int boxWeight=0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
 
@@ -58,40 +60,26 @@ class BoxPair implements Comparable<BoxPair>{
     public Integer getNextTurnPossiblePoints(){return nextTurnPossiblePoints;}
     public Integer getProbability(){return this.probability;}
     public void setProbability(int probability){ this.probability=probability;}
-    public int foo() {return 4;}
-    //  @Override
-  /*  boolean equals(BoxPair bp){
-        return this.id == bp.id;
+    public void setBonus(int bonus){this.bonus=bonus;}
+    public int getBonus(){return this.bonus;}
+    public void setBoxWeight() {
+        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
     }
-*/
- /*   @Override
-    public boolean equals(Object bp){
-        if (bp==null)
-            return false;
-        if(this==bp)
-            return true;
-        if ((bp instanceof BoxPair) &&(((BoxPair)bp).getPairId()==this.id)){
-            return true;
-        } else {
-            return false;
-        }
+    public Integer getBoxWeight() {
+        return boxWeight;
     }
-    @Override
-    public int hashCode(){
-        int result =0;
-        result = (int) (id/11);
-        return result;
-    }
-*/
+
     @Override
     public String toString() {
-        return "BoxPair{" +
-                "box =" + aBox
+        return "BoxPair{"
+                +"box =" + aBox
+                +", boxWeight:"+ boxWeight
                 + ", pts=" + points
-                + ", ntpP=" + nextTurnPossiblePoints
-                + ", apP=" + allPossiblePoints
-                + ", oPts=" + oponentPoints
-                + ", pb="+probability
+                + ", pb="+ probability
+                + ", ntpP="+ nextTurnPossiblePoints
+                + ", apP="+ allPossiblePoints
+                + ", oPts="+ oponentPoints
+                + ", bonus="+bonus
                 + ", isFL: "+ isFullLine
                 + ", isOFL "+ isOponentFullLine
                 + "}\n";
@@ -100,6 +88,7 @@ class BoxPair implements Comparable<BoxPair>{
     @Override
     public int compareTo(BoxPair bp) {
         //first compare points and so on ....
+/*
         if (!bp.getPairPoints().equals(this.getPairPoints()))
             return this.getPairPoints().compareTo(bp.getPairPoints());
         else if (!bp.getProbability().equals(this.getProbability()))
@@ -108,8 +97,7 @@ class BoxPair implements Comparable<BoxPair>{
             return this.getNextTurnPossiblePoints().compareTo(bp.getNextTurnPossiblePoints());
         else if (!bp.getAllPossiblePoints().equals(this.getAllPossiblePoints()))
             return this.getAllPossiblePoints().compareTo(bp.getAllPossiblePoints());
-        else // if (! bp.getOponentPoints().equals(this.getOponentPoints()))
-            return this.getOponentPoints().compareTo(bp.getOponentPoints());
-  //     else return this.getProbability().compareTo(bp.getProbability());
+        else return this.getOponentPoints().compareTo(bp.getOponentPoints());*/
+        return this.getBoxWeight().compareTo(bp.getBoxWeight());
     }
 }

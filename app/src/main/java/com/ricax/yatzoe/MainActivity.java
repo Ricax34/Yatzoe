@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void ungrayAppelBoxOrFigAppelBoxToPreviousState(int appelOrFigBoxId){
         //Ungray appelFigBoxView
+        System.out.println("appelOrFigBoxId: "+appelOrFigBoxId);
         ImageView appelOrFigBoxView = findViewById(appelOrFigBoxId);
         appelOrFigBoxView.setBackgroundResource(0);
         switch (game.findBoxById(appelOrFigBoxId).getColor()) {
@@ -224,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void onBoxFigureAppelClicked(View v) {
-        //TODO: fix Attempt to invoke virtual method 'int android.view.View.getId()' on a null object reference
         if ((game.findBoxById(v.getId()).getFigType().matches(".*(Full|Suite|Carre|Sec|Yam|Small).*"))) {
             if (game.appelRegistered.isEmpty()) {
                 game.appelRegistered = game.findBoxById(v.getId()).getFigType();
@@ -407,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
+    //pour poser des markers
     public void onButtonCheatClicked(View v){
         //System.out.println("onButtonCheatClicked1 flagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
@@ -508,7 +509,6 @@ public class MainActivity extends AppCompatActivity {
                 game.terminate();
                 textview_Message.setText(getResources().getIdentifier(game.showEndOfGame(), "string", getPackageName()));
                 enableNewGameButton();
-                //TODO faire apparaitre la fenetre de menu a la place de enableNewGameButton()
             }
             else game.changeTurnColor("red");
         }
@@ -533,7 +533,6 @@ public class MainActivity extends AppCompatActivity {
                 textview_Message.setText(getResources().getIdentifier(game.showEndOfGame(), "string", getPackageName()));
                 game.terminate();
                 enableNewGameButton();
-                //TODO faire apparaitre la fenetre de menu a la place de enableNewGameButton()
             }
             else game.changeTurnColor("blue");
         }
@@ -615,7 +614,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     TextView textview_Message = findViewById(R.id.TextViewMessage);
                     textview_Message.setText(getResources().getIdentifier("ThirdThrow", "string", getPackageName()));
-                    if ((game.fiveDices.figureList.isEmpty()) || (game.getListFreeBoxesPerFigureList(game.fiveDices.figureList).isEmpty())) //pas de figure posables ni appel
+                    if ((game.fiveDices.figureList.isEmpty()) || (game.getListFreeBoxPerFigureList(game.fiveDices.figureList).isEmpty())) //pas de figure posables ni appel
                     {
                         if (game.appelClicked) { //appel raté
                             game.fiveDices.figureList = "";
@@ -744,6 +743,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-//TODO ajouter une animation qd on change de joueur et qd un évènement survient (point, appel, victoire, Yam)
-//TODO ajouter YAAAATZOOOE en cas de victoire (fichier son)
-//TODO voir jeu réseau
