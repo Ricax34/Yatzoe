@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         imViewDices[3] = findViewById(R.id.imageViewDiceNb3);
         imViewDices[4] = findViewById(R.id.imageViewDiceNb4);
         //initialisation of fiveDices
+        /*
         game.fiveDices = new Figure(
                 imViewDices[0].getId(),
                 imViewDices[1].getId(),
@@ -119,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
                 imViewDices[3].getId(),
                 imViewDices[4].getId()
         );
+        */
+        int [] imViewDicesId = new int[5];
+        for (int i =0; i<5; i++)
+            imViewDicesId[i]=imViewDices[i].getId();
+        game.fiveDices=new Figure(imViewDicesId);
+
         //initialisation of board
         game.checkerBox[0][0] = new Box("1", "white", 0, 0, findViewById(R.id.imageView1Un).getId());
         game.checkerBox[0][1] = new Box("3", "white", 0, 1, findViewById(R.id.imageView2Trois).getId());
@@ -264,11 +271,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO revoir le thrownb cheat pour vérifier YatzoeLog20210509-234336 jetN°2 du dernier gamestate
+    // (pointeur nul sur dé, surement pas de procédure prévue pour sélectionner
+    // des dés pour une suite à partir de ce diceset)
     public void onBoxClicked(View v) {
-        if (diceCheat){
-           // System.out.println("throwDiceCheat="+throwDiceCheat);
+        if (diceCheat&&!boxFlagCheat){
+           System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
 //            if (diceCheatIdx<5 && !throwDiceCheat && game.throwNb==0){
-                if (diceCheatIdx<5 && game.throwNb==0){
+                if (diceCheatIdx<5 && game.throwNb<3){
                 String tagToString = v.getTag().toString();
                 switch (tagToString) {
                     case "imageView1Un": {
@@ -307,8 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 game.changeTurnColor("red");
             }
         }
-
-        else if (boxFlagCheat){
+        else if (boxFlagCheat&&!diceCheat){
             Resources res = getApplicationContext().getResources();
             Box clickedBox = game.findBoxById(v.getId());
             ImageView uneCase = findViewById(v.getId());
@@ -335,6 +344,16 @@ public class MainActivity extends AppCompatActivity {
                 TextView redPointsTV = findViewById(R.id.redPoints);
                 redPointsTV.setText(String.format("%s", game.redPoints));
             }
+        }
+        else if (boxFlagCheat&&diceCheat){
+            Box clickedBox = game.findBoxById(v.getId());
+            if (clickedBox.getFigType().equals(Integer.toString(1)))
+                game.throwNb=1;
+            else if (clickedBox.getFigType().equals(Integer.toString(2)))
+                game.throwNb=2;
+            else if (clickedBox.getFigType().equals(Integer.toString(3)))
+                game.throwNb=3;
+            System.out.println("Game thronb cheat: "+game.throwNb);
         }
         else if (game.couleur.equals("blue")) {
             //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire
@@ -393,23 +412,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int cheat(int v, int h, String color){
-        if (color.equals("blue")){
-            game.checkerBox[v][h].setColor("blue");
-            game.blueMarkers--;
-            return game.countLine(3, "blue", game.checkerBox[v][h].getId());
-        }
-        else if (color.equals("red")){
-            game.checkerBox[v][h].setColor("red");
-            game.redMarkers--;
-            return game.countLine(3, "red", game.checkerBox[v][h].getId());
-        }
-        return 0;
-    }
 
     //pour poser des markers
     public void onButtonCheatClicked(View v){
-        //System.out.println("onButtonCheatClicked1 flagCheat:"+boxFlagCheat);
+
+        System.out.println("onButtonCheatClicked1 boxFlagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
             boxFlagCheat=true;
             ImageView boxFlagCheatView = findViewById(v.getId());
@@ -430,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
             redMarkersTextview.setClickable(false);
             redFlagCheat=false;
         }
-        //System.out.println("onButtonCheatClicked2 flagCheat:"+boxFlagCheat);
+        System.out.println("onButtonCheatClicked2 boxFlagCheat:"+boxFlagCheat);
     }
 
     public void onColorMarkersNbTVClicked(View v){
@@ -455,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onButtonDiceCheatClicked (View v){
         diceCheat= !diceCheat;
+        System.out.println("DiceCheat: "+diceCheat);
         ImageView diceCheatView = findViewById(v.getId());
         if (diceCheat)
             diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));

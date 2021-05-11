@@ -57,7 +57,7 @@ class Jeu {
 
     //pour logger
     Date aujourdhui = new Date();
-    SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddH-Hmmss");
+    SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd-HHmmss");
     public String dateFormat = formater.format(aujourdhui);
 
     Jeu(MainActivity mainActivity) {
@@ -91,6 +91,9 @@ class Jeu {
         redPoints = game.redPoints;
         bluePoints = game.bluePoints;
         diceArrayList = game.diceArrayList;
+        aujourdhui=game.aujourdhui;
+        formater=game.formater;
+        dateFormat=game.dateFormat;
     }
 
 

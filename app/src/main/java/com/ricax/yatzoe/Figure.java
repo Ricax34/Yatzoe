@@ -31,6 +31,7 @@ class Figure {
     private final boolean appel; //If the human player pressed on any appel box or the machine
     final Dice[] diceSet;
     final int [][] tempDiceSetIndValues;
+    private int dicesetLength;
 
     //       figureList can contain: brelan (1, 2, 3, 4, 5 or 6), carre, suite, full, yam, small, appel, sec
     String figureList = "";
@@ -52,16 +53,31 @@ class Figure {
         diceSet[4].id=idDice4;
     }
 
+    Figure (int [] aDiceset){
+        hasAFigure = false;
+        appel = false;
+        dicesetLength=aDiceset.length;
+        diceSet = new Dice[dicesetLength];
+        tempDiceSetIndValues = new int[aDiceset.length][2];
+        for (int i = 0; i < aDiceset.length; i++) {
+            diceSet[i] = new Dice();
+            diceSet[i].setDice(false, 0);
+            diceSet[i].index = i;
+            diceSet[i].id=aDiceset[i];
+        }
+    }
     //Constructeur de copie
     Figure(Figure aFigure){
         figureList=aFigure.figureList;
         hasAFigure=aFigure.hasAFigure;
         appel=aFigure.appel;
-        diceSet=new Dice[5];
+        diceSet=new Dice[aFigure.diceSet.length];
+        dicesetLength=aFigure.dicesetLength;
+        //diceSet=new Dice[5];
         for (int i=0; i<5; i++)
             diceSet[i]=new Dice(aFigure.diceSet[i]);
-        tempDiceSetIndValues=new int[5][2];
-        for (int i=0; i<5;i++)
+        tempDiceSetIndValues=new int[aFigure.diceSet.length][2];
+        for (int i=0; i<aFigure.diceSet.length;i++)
             System.arraycopy(aFigure.tempDiceSetIndValues[i], 0, tempDiceSetIndValues[i], 0, 2);
     }
 
@@ -92,7 +108,7 @@ class Figure {
     //set list of figures obtained from the diceSet
     void setListOfFiguresFromDiceSet(){
         //populate tempDiceSetIndValues with the result of the throw
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<dicesetLength; i++) {
             this.tempDiceSetIndValues[i][0] = diceSet[i].index;
             this.tempDiceSetIndValues[i][1] = diceSet[i].value;
         }
@@ -111,20 +127,20 @@ class Figure {
     }
 
     private String checkForFull(){
-        if(
-                ((this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])
-                        && (this.tempDiceSetIndValues[3][1] == this.tempDiceSetIndValues [4][1])) ||
-                        ((this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [1][1])
-                                && (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1]))
-        ) {
-            return "Full";
-        }
+        if (this.dicesetLength==5)
+            if(
+                    ((this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])
+                            && (this.tempDiceSetIndValues[3][1] == this.tempDiceSetIndValues [4][1])) ||
+                            ((this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [1][1])
+                                    && (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1]))
+            )
+                return "Full";
         return "";
     }
 
     private String checkForSmall() {
         int sumOfus = 0;
-        for (int i = 0; i<5; i++)
+        for (int i = 0; i<dicesetLength; i++)
             sumOfus += this.tempDiceSetIndValues[i][1];
         if (sumOfus < 9)
             return "Small";
@@ -139,55 +155,71 @@ class Figure {
     }
 
     private String checkForSuite(){
-        for (int i = 0; i <4; i++) {
-            if (this.tempDiceSetIndValues[i][1]+1 != this.tempDiceSetIndValues[i+1][1])
-                return "";
-        }
-        return "Suite";
-    }
-
-    private String checkForYam(){
-        if(this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [4][1])
-            return  "Yam";
-        else
-            return "";
-    }
-
-    private String checkForSec(){
-        //Execution AFTER all the checkFor... above
-        for (int i = 0; i<5; i++)
-            if (!this.diceSet[i].selected()){
-                return "";
-        }
-
-      /*  Pattern p = Pattern.compile("Small|Carre|Suite|Yam|Full");
-      //  Matcher m = p.matcher(figureList);
-        if (m.find()){
-            return "Sec";
-        }*/
-
-        if (figureList.matches(".*(Small|Carre|Suite|Yam|Full).*"))
-                return "Sec";
-        else return "";
-    }
-
-    public String checkForBrelan(){
-        if (
-                (this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])||
-                        (this.tempDiceSetIndValues[1][1] == this.tempDiceSetIndValues [3][1])||
-                        (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1])
-        )
-        {
-            return String.valueOf(this.tempDiceSetIndValues[2][1]);
+        if (this.dicesetLength==5){
+            for (int i = 0; i <this.dicesetLength-1; i++) {
+                if (this.tempDiceSetIndValues[i][1]+1 != this.tempDiceSetIndValues[i+1][1])
+                    return "";
+            }
+            return "Suite";
         }
         return "";
     }
 
+    private String checkForYam(){
+        if (this.dicesetLength==5)
+            if(this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [dicesetLength-1][1])
+                return  "Yam";
+            else
+                return "";
+        else return "";
+    }
+
+    private String checkForSec(){
+        //Execution AFTER all the checkFor... above
+        if (this.dicesetLength==5){
+            for (int i = 0; i<5; i++)
+                if (!this.diceSet[i].selected()){
+                    return "";
+                }
+            if (figureList.matches(".*(Small|Carre|Suite|Yam|Full).*"))
+                return "Sec";
+            else return "";
+        }
+        else return "";
+    }
+
+    public String checkForBrelan(){
+        if (dicesetLength==5
+                &&(     (this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])||
+                        (this.tempDiceSetIndValues[1][1] == this.tempDiceSetIndValues [3][1])||
+                        (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1])
+                )
+        )
+            return String.valueOf(this.tempDiceSetIndValues[2][1]);
+        return "";
+    }
+//TODO finir ça pour selectionner la meillure sélection de dé pour le small
+    public int getSortedDiceSetSum(int nbOfDice){
+        int sum=0;
+        if (nbOfDice<dicesetLength){
+            int [][] tempSortedDiceset = new int [dicesetLength][2];
+            for (int i=0; i<dicesetLength; i++){
+                tempSortedDiceset[i][0] = diceSet[i].index;
+                tempSortedDiceset[i][1] = diceSet[i].value;
+            }
+            sortDoubleArray(tempSortedDiceset);
+            for (int i =0; i<nbOfDice; i++)
+                sum+=tempSortedDiceset[i][1];
+        }
+        return sum;
+    }
     public String printDiceSet(){
         String des = "";
-        for (int i =0; i<5; i++)
-            des+=Integer.toString(diceSet[i].value)+" ";
-      //  System.out.println(des);
+        for (int i =0; i<dicesetLength; i++)
+            des+= diceSet[i].value +" ";
         return des;
+    }
+    public Dice getDice(int idx){
+        return diceSet[idx];
     }
 }

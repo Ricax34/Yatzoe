@@ -28,7 +28,6 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
         ArrayList<BoxPair> aBoxPairCombinationList = new ArrayList<>();
         for (int value : idCombination) {
             BoxPair tmpBoxPair = new BoxPair(new Box (aGame.findBoxById(value)), 0, 0);
-            //BoxPair tmpBoxPair = new BoxPair(new Box("", "white", 0, 0, value), 0, 0);
             aBoxPairCombinationList.add(tmpBoxPair);
         }
         return aBoxPairCombinationList;
