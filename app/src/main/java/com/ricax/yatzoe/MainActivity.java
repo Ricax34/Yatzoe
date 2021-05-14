@@ -32,7 +32,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     boolean blueFlagCheat = false;
     boolean redFlagCheat = false;
     boolean diceCheat = false;
-  //  boolean throwDiceCheat = false;
     int diceCheatIdx=0;
 
     @Override
@@ -75,10 +73,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button startGameButton = findViewById(R.id.buttonStartNewGame);
         startGameButton.setEnabled(false);
-    }
-
-    public void quitGame (View v){
-        this.finish();
     }
 
 
@@ -112,15 +106,6 @@ public class MainActivity extends AppCompatActivity {
         imViewDices[3] = findViewById(R.id.imageViewDiceNb3);
         imViewDices[4] = findViewById(R.id.imageViewDiceNb4);
         //initialisation of fiveDices
-        /*
-        game.fiveDices = new Figure(
-                imViewDices[0].getId(),
-                imViewDices[1].getId(),
-                imViewDices[2].getId(),
-                imViewDices[3].getId(),
-                imViewDices[4].getId()
-        );
-        */
         int [] imViewDicesId = new int[5];
         for (int i =0; i<5; i++)
             imViewDicesId[i]=imViewDices[i].getId();
@@ -277,13 +262,11 @@ public class MainActivity extends AppCompatActivity {
     public void onBoxClicked(View v) {
         if (diceCheat&&!boxFlagCheat){
            System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
-//            if (diceCheatIdx<5 && !throwDiceCheat && game.throwNb==0){
                 if (diceCheatIdx<5 && game.throwNb<3){
                 String tagToString = v.getTag().toString();
                 switch (tagToString) {
                     case "imageView1Un": {
                         game.fiveDices.diceSet[diceCheatIdx].value=1;
-                        //System.out.println("dice1 value: "+game.fiveDices.diceSet[diceCheatIdx].value);
                         break;
                     }
                     case "imageView6Deux": {
@@ -307,13 +290,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                //System.out.println("dice value: "+game.fiveDices.diceSet[diceCheatIdx].value);
                 updateOneDice(game.fiveDices.diceSet[diceCheatIdx].id, game.fiveDices.diceSet[diceCheatIdx].value);
                 diceCheatIdx++;
             }
             if (diceCheatIdx==5){
                 diceCheatIdx=0;
-               // throwDiceCheat=true;
                 game.changeTurnColor("red");
             }
         }
@@ -446,14 +427,10 @@ public class MainActivity extends AppCompatActivity {
             if (v.getTag().toString().equals("blueMarkerTextView")){
                 blueFlagCheat=true;
                 redFlagCheat=false;
-                //System.out.println("blueFlagCheat: "+blueFlagCheat);
-                //System.out.println("redFlagCheat: "+redFlagCheat);
             }
             else if (v.getTag().toString().equals("redMarkerTextView")){
                 redFlagCheat=true;
                 blueFlagCheat=false;
-                //System.out.println("blueFlagCheat: "+blueFlagCheat);
-                //System.out.println("redFlagCheat: "+redFlagCheat);
             }
         }
         else
@@ -468,7 +445,6 @@ public class MainActivity extends AppCompatActivity {
             diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
         else
             diceCheatView.clearColorFilter();
-        //System.out.println("diceCheat="+diceCheat);
     }
 
     public void placeMarkerById(int id){

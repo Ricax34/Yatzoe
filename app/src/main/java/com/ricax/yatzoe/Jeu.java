@@ -31,8 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -248,13 +246,6 @@ class Jeu {
         this.fiveDices.diceSet[i].toggleDiceSelected();
     }
 
-    private int getRandomValue() {
-        if (diceArrayList.isEmpty())
-            setDiceArrayListRandomValue();
-        int value = diceArrayList.get(0);
-        diceArrayList.remove(0);
-        return value;
-    }
 
     //  private  static Random random =  new Random() ;
     private void rollOneDice(int i) {
@@ -308,57 +299,14 @@ class Jeu {
         return true;
     }
 
-    void printSortedDices() {
 
-        System.out.println("**SortedDices**");
-        for (int i = 0; i < 5; i++) {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < 5; i++) {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1] + " ");
-        }
-        System.out.println();
-    }
 
-    public void printSelectedSortedDice() {
-
-        System.out.println("**SelectedSortedDice**");
-        for (int i = 0; i < 5; i++) {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][0] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < 5; i++) {
-            System.out.print(this.fiveDices.tempDiceSetIndValues[i][1] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < 5; i++) {
-            if (this.fiveDices.diceSet[this.fiveDices.tempDiceSetIndValues[i][0]].isSelected)
-                System.out.print("x ");
-            else
-                System.out.print("o ");
-        }
-        System.out.println();
-    }
 
     public String printSelectedDice() {
         System.out.println("**SelectedDice**");
-       /* for (int i=0; i<5; i++)
-        {
-            System.out.print(this.fiveDices.diceSet[i].value+" ");
-        }
-        System.out.println();
-        for (int i=0; i<5; i++)
-        {
-            if (this.fiveDices.diceSet[i].isSelected)
-                System.out.print("x ");
-            else
-                System.out.print("o ");
-        }
-        System.out.println();*/
         String selectedDiceSet = "\n";
         for (int i = 0; i < 5; i++) {
-            selectedDiceSet += Integer.toString(this.fiveDices.diceSet[i].value) + " ";
+            selectedDiceSet += this.fiveDices.diceSet[i].value + " ";
         }
         selectedDiceSet += "\n";
         for (int i = 0; i < 5; i++) {
@@ -374,36 +322,8 @@ class Jeu {
         this.couleur = "white";
     }
 
-    void afficherBoxPair(BoxPair aBoxPair) {
-        if (aBoxPair.getPairId() > 0) {
-            System.out.println("boxId: " + aBoxPair.getPairId() + " Box[" + this.findBoxById(aBoxPair.getPairId()).v + "]["
-                    + this.findBoxById(aBoxPair.getPairId()).h + "]: "
-                    + this.findBoxById(aBoxPair.getPairId()).getFigType()
-                    + " "
-                    + this.findBoxById(aBoxPair.getPairId()).getColor()
-                    + "->"
-                    + aBoxPair.getPairPoints() + " points"
-            );
-        } else System.out.println("null box");
-    }
-
     String afficherDes() {
         return fiveDices.printDiceSet();
-    }
-
-    //returns a list of boxpair available for given figureList
-    List<BoxPair> getListFreeBoxPairPerFigureList(String aFigureList) {
-        List<BoxPair> aBoxPairList = new ArrayList<>();
-        List<String> aListOfFigures = new ArrayList<>();
-        Pattern aPattern = Pattern.compile("1|2|3|4|5|6|Appel|Full|Carre|Small|Suite|Sec|Yam");
-        Matcher aMatcher = aPattern.matcher(aFigureList);
-        while (aMatcher.find()) {
-            aListOfFigures.add(aMatcher.group());
-        }
-        for (int i = 0; i < aListOfFigures.size(); i++) {
-            aBoxPairList.addAll(getListBoxPairColorPerFigure(aListOfFigures.get(i), "white"));
-        }
-        return aBoxPairList;
     }
 
     ArrayList<Box> getListFreeBoxPerFigureList(String aFigureList) {

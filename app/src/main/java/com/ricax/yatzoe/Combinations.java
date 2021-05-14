@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Combinations {
-    private int [] input;
-    private int k;                             // sequence length
-    private int n;
+    private final int [] input;
+    private final int k;                             // sequence length
+    private final int n;
 
     List<int[]> subsets = new ArrayList<>();
     /*

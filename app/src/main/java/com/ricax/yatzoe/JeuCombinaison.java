@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 public class JeuCombinaison implements Comparable<JeuCombinaison>{
     Jeu aGame;
-    private int combinationPoints;
-    private int [] idCombination;
-    private ArrayList<BoxPair> boxPairCombinationArrayList;
-    private String aColor;
+    private final int combinationPoints;
+    private final ArrayList<BoxPair> boxPairCombinationArrayList;
+    private final String aColor;
     private String oponentColor;
     public JeuCombinaison(Jeu aGame, String aColor, int [] idCombination){
         this.aGame = aGame;
@@ -16,7 +15,6 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
             oponentColor="blue";
         else if (aColor.equals("blue"))
             oponentColor="red";
-        this.idCombination = idCombination;
         this.boxPairCombinationArrayList=this.setBoxPairCombinationArrayList(idCombination);
         this.combinationPoints=this.computeCombinationPointsBoxPairArrayList();
         //calcul des points de chaque box dans la combinaison
@@ -38,13 +36,6 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
     private int computeCombinationPointsBoxPairArrayList(){
         int points = 0;
         for (int i = 0; i< boxPairCombinationArrayList.size(); i++){
-          /*  if (aGame.fullLine(aColor, boxPairCombinationArrayList.get(i).getPairId()) && i != boxPairCombinationArrayList.size() - 1) {
-                //swap with next in array
-                BoxPair tmpBoxPair = boxPairCombinationArrayList.get(i);
-                boxPairCombinationArrayList.set(i, boxPairCombinationArrayList.get(i+1));
-                boxPairCombinationArrayList.set(i, tmpBoxPair);
-            }*/
-
             aGame.findBoxById(boxPairCombinationArrayList.get(i).getPairId()).setColor(aColor);
             int tmpPoints= aGame.countLine(3, aColor, boxPairCombinationArrayList.get(i).getPairId());
             points+= tmpPoints;
@@ -75,7 +66,6 @@ public class JeuCombinaison implements Comparable<JeuCombinaison>{
 
 
     public Integer getPoints(){ return combinationPoints; }
-    public int[] getIdCombination(){ return idCombination; }
     public ArrayList<BoxPair> getBoxPairCombinationArrayList(){ return boxPairCombinationArrayList; }
     @Override
     public int compareTo(JeuCombinaison o) {

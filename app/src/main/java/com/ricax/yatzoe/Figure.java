@@ -23,36 +23,22 @@
 
 package com.ricax.yatzoe;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Figure {
     private boolean hasAFigure;
     private final boolean appel; //If the human player pressed on any appel box or the machine
     final Dice[] diceSet;
     final int [][] tempDiceSetIndValues;
-    private int dicesetLength;
+    private final int dicesetLength;
 
     //       figureList can contain: brelan (1, 2, 3, 4, 5 or 6), carre, suite, full, yam, small, appel, sec
     String figureList = "";
-    //constructors
-    Figure(int idDice0, int idDice1, int idDice2, int idDice3, int idDice4){
-        hasAFigure = false;
-        appel = false;
-        diceSet = new Dice[5];
-        tempDiceSetIndValues = new int[5][2];
-        for (int i = 0; i < 5; i++) {
-            diceSet[i] = new Dice();
-            diceSet[i].setDice(false, 0);
-            diceSet[i].index = i;
-        }
-        diceSet[0].id=idDice0;
-        diceSet[1].id=idDice1;
-        diceSet[2].id=idDice2;
-        diceSet[3].id=idDice3;
-        diceSet[4].id=idDice4;
-    }
 
+    //constructors
     Figure (int [] aDiceset){
         hasAFigure = false;
         appel = false;
@@ -73,7 +59,6 @@ class Figure {
         appel=aFigure.appel;
         diceSet=new Dice[aFigure.diceSet.length];
         dicesetLength=aFigure.dicesetLength;
-        //diceSet=new Dice[5];
         for (int i=0; i<5; i++)
             diceSet[i]=new Dice(aFigure.diceSet[i]);
         tempDiceSetIndValues=new int[aFigure.diceSet.length][2];
@@ -198,28 +183,273 @@ class Figure {
             return String.valueOf(this.tempDiceSetIndValues[2][1]);
         return "";
     }
-//TODO finir ça pour selectionner la meillure sélection de dé pour le small
-    public int getSortedDiceSetSum(int nbOfDice){
-        int sum=0;
-        if (nbOfDice<dicesetLength){
-            int [][] tempSortedDiceset = new int [dicesetLength][2];
-            for (int i=0; i<dicesetLength; i++){
-                tempSortedDiceset[i][0] = diceSet[i].index;
-                tempSortedDiceset[i][1] = diceSet[i].value;
-            }
-            sortDoubleArray(tempSortedDiceset);
-            for (int i =0; i<nbOfDice; i++)
-                sum+=tempSortedDiceset[i][1];
-        }
-        return sum;
-    }
+
     public String printDiceSet(){
         String des = "";
         for (int i =0; i<dicesetLength; i++)
             des+= diceSet[i].value +" ";
         return des;
     }
-    public Dice getDice(int idx){
-        return diceSet[idx];
+
+    public int getMissingIdxForSuite(int inc){
+        //inc=0 -> petite suite or 1 -> grande suite
+        List<Integer> listDiceIdx= new ArrayList<>();
+        for  (int value=1+inc; value<=5+inc; value++)  {
+            for (int i=0; i<5; i++){
+                if ((this.tempDiceSetIndValues[i][1]==value)){
+                    listDiceIdx.add(this.tempDiceSetIndValues[i][0]);
+                    break;
+                }
+            }
+        }
+        if ((listDiceIdx.size()==4))
+            for (int i=0; i<5;i++){
+                if (!listDiceIdx.contains(i)){
+                    return i;
+                }
+            }
+        return -1;
     }
+    public int figureContains4InARow(){
+        int idx1 = getMissingIdxForSuite(0);
+        int idx2 = getMissingIdxForSuite(1);
+        if ((idx1!=-1) && (idx2!=-1)){
+            return 2;//Manquent 1 OU 6 (on a 2345)
+        }
+        if ((idx1!=-1) || (idx2!=-1)){
+            return 1;
+        }
+        return 0;
+    }
+    public int getIdxFrom4inARow(){
+        int idx = getMissingIdxForSuite(0);
+        if (idx==-1)
+            idx=getMissingIdxForSuite(1);
+        return idx;
+    }
+    public void selectForSuite(){
+        if (!figureList.contains("Suite")){
+            int idx= getIdxFrom4inARow();
+            for (int i =0; i<5; i++)
+               diceSet[i].isSelected=false;
+            diceSet[idx].isSelected=true;
+        }
+        else {
+            //Appel à la suite à partir d'une suite, on tente de partir d'une suite bilatérale
+            if (tempDiceSetIndValues[0][1]==1)
+                diceSet[tempDiceSetIndValues[0][0]].isSelected=true;
+            else
+                diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
+        }
+    }
+    public void selectForSec(){
+        for (int i =0; i<5; i++)
+            diceSet[i].isSelected=true;
+    }
+    public void selectForBrelan(int value){
+        for (int i =0; i<5; i++)
+            diceSet[i].isSelected= diceSet[i].value != value;
+    }
+    public void selectForSmall() {
+        if (!figureList.contains("Small")){
+
+            //Select dice so that (sum of 1s & 2s) < 5
+            int sum=0;
+            for (int i=0; i<5; i++)
+                diceSet[tempDiceSetIndValues[i][0]].isSelected = true;
+            for (int i = 0; i<5; i++){
+                if (diceSet[tempDiceSetIndValues[i][0]].value==1){
+                    diceSet[tempDiceSetIndValues[i][0]].isSelected = false;
+                    sum+= diceSet[tempDiceSetIndValues[i][0]].value;
+                }
+            }
+            for (int i = 0; i<5; i++){
+                if (diceSet[tempDiceSetIndValues[i][0]].value==2){
+                    diceSet[tempDiceSetIndValues[i][0]].isSelected = false;
+                    if (sum+diceSet[tempDiceSetIndValues[i][0]].value<6)
+                        sum+= diceSet[tempDiceSetIndValues[i][0]].value;
+                }
+            }
+
+
+        }
+        else {
+            //On a déjà un small, on tente l'appel en relançant le dé le +grand
+            diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
+        }
+    }
+    public void selectForFull() {
+        if (!figureList.contains("Full")){
+            if (figureContainsDoublePair()) {
+                selectfromDoublePair();
+            }
+            //Traiter brelan
+            else if (figureList.matches( ".*([123456]).*")){
+                for (int i = 0; i < 5; i++)
+                    diceSet[i].isSelected = true;
+                if (tempDiceSetIndValues[0][1] == tempDiceSetIndValues[2][1]) {
+                    for (int j = 0; j < 3; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                } else if (tempDiceSetIndValues[1][1] == tempDiceSetIndValues[3][1]) {
+                    for (int j = 1; j < 4; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                } else if (tempDiceSetIndValues[2][1] == tempDiceSetIndValues[4][1]) {
+                    for (int j = 2; j < 5; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                }
+            }
+            //traiter paire
+            else if (figureContainsPair()) {
+                selectFromSinglePair();
+            }
+        }
+        else {
+            //On a un full et on tente l'appel au full en relançant le premier (ou dernier) du brelan (cas où on trie les dés je me comprend)
+            diceSet[tempDiceSetIndValues[2][0]].isSelected=true;
+        }
+    }
+    public void selectForCarre() {
+        if (!figureList.contains("Carre")){
+            if (figureList.matches( ".*([123456]).*")){
+                for (int i = 0; i < 5; i++)
+                    diceSet[i].isSelected = true;
+                if (tempDiceSetIndValues[0][1] == tempDiceSetIndValues[2][1]) {
+                    for (int j = 0; j < 3; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                } else if (tempDiceSetIndValues[1][1] == tempDiceSetIndValues[3][1]) {
+                    for (int j = 1; j < 4; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                } else if (tempDiceSetIndValues[2][1] == tempDiceSetIndValues[4][1]) {
+                    for (int j = 2; j < 5; j++)
+                        diceSet[
+                                tempDiceSetIndValues[j][0]
+                                ].isSelected = false;
+                }
+            }
+            //Traiter les paires
+            else if (figureContainsSinglePair())
+                selectFromSinglePair();
+            //pas besoin de traiter le full car si full alors brelan
+        }
+        else {
+            //On a un carre et on tente l'appel au carre
+            if (figureList.contains("Yam")){
+                //relancer le 5e dé
+                diceSet[4].isSelected=true;
+            }
+            else{
+                //on a un carre et on tente l'appel au carre, relancer le dé qui n'est pas ds la carré ;-) cela inclus le cas du Yam
+                if (tempDiceSetIndValues[0][1]== tempDiceSetIndValues[1][1])
+                    diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
+                else
+                    diceSet[tempDiceSetIndValues[0][0]].isSelected=true;
+            }
+
+        }
+    }
+
+    public void selectfromDoublePair(){
+        for (int i =0; i<5; i++)
+            diceSet[i].isSelected=false;
+        if ((tempDiceSetIndValues[0][1]==tempDiceSetIndValues[1][1]) &&
+                (tempDiceSetIndValues[2][1]==tempDiceSetIndValues[3][1])){
+            diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
+        }
+        else if ((tempDiceSetIndValues[1][1]==tempDiceSetIndValues[2][1]) &&
+                (tempDiceSetIndValues[3][1]==tempDiceSetIndValues[4][1])){
+            diceSet[tempDiceSetIndValues[0][0]].isSelected=true;
+        }
+        else if ((tempDiceSetIndValues[0][1]==tempDiceSetIndValues[1][1]) &&
+                (tempDiceSetIndValues[3][1]==tempDiceSetIndValues[4][1])){
+            diceSet[tempDiceSetIndValues[2][0]].isSelected=true;
+        }
+    }
+    public boolean figureContainsDoublePair(){
+        if ((tempDiceSetIndValues[0][1]==tempDiceSetIndValues[1][1]) &&
+                (tempDiceSetIndValues[2][1]==tempDiceSetIndValues[3][1])){
+            return true;
+        }
+        else if ((tempDiceSetIndValues[1][1]==tempDiceSetIndValues[2][1]) &&
+                (tempDiceSetIndValues[3][1]==tempDiceSetIndValues[4][1])){
+            return true;
+        }
+        else if ((tempDiceSetIndValues[0][1]==tempDiceSetIndValues[1][1]) &&
+                (tempDiceSetIndValues[3][1]==tempDiceSetIndValues[4][1])){
+            return true;
+        }
+        return false;
+    }
+    public void selectFromSinglePair(){
+        for (int i =0; i<5; i++)
+            diceSet[i].isSelected=true;
+        for(int i = 0; i <4; i++)
+            if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1]){
+                for (int j=i+2; j<4; j++)
+                    if (tempDiceSetIndValues[j][1]==tempDiceSetIndValues[j+1][1])
+                        return;//if we find another pair
+                diceSet[tempDiceSetIndValues[i][0]].isSelected=false;
+                diceSet[tempDiceSetIndValues[i+1][0]].isSelected=false;
+                return;
+            }
+    }
+    public boolean figureContainsPair(){
+        for(int i = 0; i <4; i++)
+            if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1])
+                return true;
+        return false;
+    }
+    public boolean figureContainsSinglePair(){
+        return figureContainsPair() && !figureContainsDoublePair();
+    }
+    public int getSinglePairValue() {
+        if (figureContainsSinglePair()){
+            for (int i = 0; i < 4; i++)
+                if (tempDiceSetIndValues[i][1] == tempDiceSetIndValues[i + 1][1])
+                    return tempDiceSetIndValues[i][1];
+        }
+        return 0;
+    }
+    //Choisir SOIT 1ere paire SOIT 2nde paire
+    public int getPairValues(boolean firstPair, boolean secondPair){
+        if (firstPair){
+            if (!figureContainsDoublePair())
+                return getSinglePairValue();
+            else
+                return tempDiceSetIndValues[1][1];
+        }
+        else if (secondPair){
+            if (figureContainsDoublePair())
+                return tempDiceSetIndValues[3][1];
+        }
+        return 0;
+    }
+    public int getFirstAvailablePairValue(){
+        for(int i = 0; i <4; i++)
+            if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1])
+                return tempDiceSetIndValues[i][1];
+        return 0;
+    }
+    //Pour Brelan  carre Full Small Yam  + Appel
+    public boolean figureContainsSingleValue(int value){
+        int count = 0;
+        for (int i =0; i<5; i++){
+            if (tempDiceSetIndValues[i][1]==value )
+                count++;
+        }
+        if (count == 1)
+            return true;
+        else
+            return false;
+    }
+
 }
