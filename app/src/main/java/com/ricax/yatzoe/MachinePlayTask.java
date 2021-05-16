@@ -83,7 +83,8 @@ class MachinePlayTask implements Runnable {
                     if (target.matches(".*(1|2|3|4|5|6|Appel|Carre|Full|Yam|Suite|Sec|Small).*")) {
                         System.out.println("target2: "+target);
                         selectDiceFromTarget(currentGame, target);
-                    } else if (target.equals("blue")) {
+                    }
+                    else if (target.equals("blue")) {
                         //Pour être sûr d'avoir la bonne couleur courante car le changement de couleur est fait dans le UI thread
                         try {
                             sleep(1000);
@@ -153,7 +154,17 @@ class MachinePlayTask implements Runnable {
             //Populate boxPairAppelFigures with empty BoxPairs
             BoxPair appFigBP = new BoxPair(new Box(appFig, "White", 0, 0, 0), 0, 0);
             //Add the probability for each boxpair
-            appFigBP.setProbability(getFigProb(aGame, appFig));
+            //Si on appelle une figure déjà obtenue il faut relancer au moins un dé
+            //et tester avec un diceset nouveau
+            if(aGame.fiveDices.figureList.contains(appFig)){
+                Jeu tempAppelGame = new Jeu(aGame);
+                //modifier le diceset du jeu en fonction de la figure à appeler pour obtenir la bonne proba
+                tempAppelGame.fiveDices=setAppelDiceset(tempAppelGame, appFig);
+                System.out.println("tempAppelGame pour "+appFig);
+                appFigBP.setProbability(getFigProb(tempAppelGame, appFig));
+            }
+            else
+                appFigBP.setProbability(getFigProb(aGame, appFig));
             appFigBP.setBoxWeight();
             boxPairAppelFigures.add(appFigBP);
         }
@@ -161,6 +172,46 @@ class MachinePlayTask implements Runnable {
         Collections.sort(boxPairAppelFigures);
         return boxPairAppelFigures.get(boxPairAppelFigures.size()-1);
     }
+
+    private Figure setAppelDiceset(Jeu aGame, String aFigType){
+        Figure aFigure = new Figure(aGame.fiveDices);
+        System.out.println("<--setAppelDiceset: "+aFigType);
+        //Modifier le diceset
+        switch (aFigType){
+            case "Carre":
+                //rien à faire on relancera celui qui n'est pas ds le carre ou bien le 5éme dé si yam
+                //la proba reste donc le max: 20
+                //géré ds figure.selectForCarre
+                break;
+            case "Full":
+            {
+                aFigure.diceSet[aFigure.tempDiceSetIndValues[2][0]].value=0;
+                break;
+            }
+            case "Suite":
+            {
+                System.out.println("case Suite");
+                if (aFigure.tempDiceSetIndValues[0][1]==1)
+                    aFigure.diceSet[aFigure.tempDiceSetIndValues[0][0]].value=0;
+                else
+                    aFigure.diceSet[aFigure.tempDiceSetIndValues[4][0]].value=0;
+                break;
+            }
+            case "Small":
+            {
+                aFigure.diceSet[aFigure.tempDiceSetIndValues[4][0]].value=0;
+                break;
+            }
+        }
+        //TODO fixer ca
+        aFigure.setListOfFiguresFromDiceSet();
+        System.out.println("toto");
+        System.out.println(aFigure);
+        System.out.println("tito");
+        System.out.println("setAppelDiceset: "+aFigType+" -->");
+        return aFigure;
+    }
+
     public int setBrelanBoxBonus(Jeu aGame, BoxPair aboxPair){
         ArrayList<Box> freeBoxList= getFreeBoxList(aGame);
         //Si on a un brelan dont la box est libre
@@ -684,39 +735,43 @@ class MachinePlayTask implements Runnable {
             }
         //TODO gérer le cas où il n'y a pas de combinaison gagnante pour les rouges
         //Recupérer les box libres
-        ArrayList<Box> optimalBoxList;
+        ArrayList<Box> aBoxList;
+            //TODO gérer le cas où il y a beaucoup de possibilités pour les red et que les bleus sont <5
         if ((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5))
-            optimalBoxList = getBestUltimateBox(currentGame); //Normalement jamais vide
-        else optimalBoxList = getListFreeBox(currentGame);//Normalement jamais vide
+            aBoxList = getBestUltimateBox(currentGame); //Normalement jamais vide
+        else aBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //les stocker dans une liste de boxPairs
-        ArrayList<BoxPair> optimalNextThrowBoxPairList = new ArrayList<>();
-        for (int i = 0; i < optimalBoxList.size(); i++)
-            optimalNextThrowBoxPairList.add(new BoxPair(optimalBoxList.get(i),0,  0));
-
+        ArrayList<BoxPair> nextThrowBoxPairList = new ArrayList<>();
+        for (int i = 0; i < aBoxList.size(); i++)
+            nextThrowBoxPairList.add(new BoxPair(aBoxList.get(i),0,  0));
+//TODO si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
 
         //Leur donner leur poids
-        for (int i = 0; i<optimalNextThrowBoxPairList.size(); i++)
-            setBoxWeight(currentGame, optimalNextThrowBoxPairList.get(i), "red");
+        for (int i = 0; i<nextThrowBoxPairList.size(); i++)
+            setBoxWeight(currentGame, nextThrowBoxPairList.get(i), "red");
         //Trier
-        if (!optimalNextThrowBoxPairList.isEmpty())
-            Collections.sort(optimalNextThrowBoxPairList);
+        if (!nextThrowBoxPairList.isEmpty())
+            Collections.sort(nextThrowBoxPairList);
 
 
         System.out.println("<--optimalNextThrowBoxPairList:");
-        System.out.println(optimalNextThrowBoxPairList);
+        System.out.println(nextThrowBoxPairList);
         System.out.println("optimalNextThrowBoxPairList-->");
 
 
-        //Si la meilleure box correspond à la figure obtenue
         Box optimalBox = new Box();
         if (!currentGame.appelClicked){
-            if (!optimalNextThrowBoxPairList.isEmpty())
-                optimalBox= optimalNextThrowBoxPairList.get(optimalNextThrowBoxPairList.size()-1).getBox();
+            System.out.println("thrownb ="+currentGame.throwNb+" game.appelClicked est "+currentGame.appelClicked+" on ne tente pas l'appel");
+            if (!nextThrowBoxPairList.isEmpty())
+                optimalBox= nextThrowBoxPairList.get(nextThrowBoxPairList.size()-1).getBox();
         }
-        else
+        else{
+            System.out.println("thrownb ="+currentGame.throwNb+" game.appelClicked est "+currentGame.appelClicked+" on tente l'appel");
             optimalBox=appelBox;
+        }
         System.out.println("Optimal box: "+optimalBox);
         if (optimalBox.getId()!=0){
+            //Si la meilleure box correspond à la figure obtenue
             if (currentGame.fiveDices.figureList.contains(optimalBox.getFigType()))
                 //Alors poser un pion dessus (y compris case appel)
                 return machinePlaceMarkerById(optimalBox.getId());
@@ -801,96 +856,53 @@ class MachinePlayTask implements Runnable {
 
 
     private void selectForFull(Jeu aGame) {
-        /*
-        if (!aGame.fiveDices.figureList.contains("Full")){
-            if (figureContainsDoublePair(aGame)) {
-                selectfromDoublePair(aGame);
-            }
-            //Traiter brelan
-            else if (aGame.fiveDices.figureList.matches( ".*([123456]).*")){
-                for (int i = 0; i < 5; i++)
-                    aGame.fiveDices.diceSet[i].isSelected = true;
-                if (aGame.fiveDices.tempDiceSetIndValues[0][1] == aGame.fiveDices.tempDiceSetIndValues[2][1]) {
-                    for (int j = 0; j < 3; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                } else if (aGame.fiveDices.tempDiceSetIndValues[1][1] == aGame.fiveDices.tempDiceSetIndValues[3][1]) {
-                    for (int j = 1; j < 4; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                } else if (aGame.fiveDices.tempDiceSetIndValues[2][1] == aGame.fiveDices.tempDiceSetIndValues[4][1]) {
-                    for (int j = 2; j < 5; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                }
-            }
-            //traiter paire
-            else if (aGame.fiveDices.figureContainsPair()) {
-                selectFromSinglePair(aGame);
-            }
-        }
-        else {
-            //On a un full et on tente l'appel au full en relançant le premier (ou dernier) du brelan (cas où on trie les dés je me comprend)
-            aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[2][0]].isSelected=true;
-        }
-        */
         aGame.fiveDices.selectForFull();
     }
-    private void selectForCarre(Jeu aGame) {
-        /*
-        if (!aGame.fiveDices.figureList.contains("Carre")){
-            if (aGame.fiveDices.figureList.matches( ".*([123456]).*")){
-                for (int i = 0; i < 5; i++)
-                    aGame.fiveDices.diceSet[i].isSelected = true;
-                if (aGame.fiveDices.tempDiceSetIndValues[0][1] == aGame.fiveDices.tempDiceSetIndValues[2][1]) {
-                    for (int j = 0; j < 3; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                } else if (aGame.fiveDices.tempDiceSetIndValues[1][1] == aGame.fiveDices.tempDiceSetIndValues[3][1]) {
-                    for (int j = 1; j < 4; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                } else if (aGame.fiveDices.tempDiceSetIndValues[2][1] == aGame.fiveDices.tempDiceSetIndValues[4][1]) {
-                    for (int j = 2; j < 5; j++)
-                        aGame.fiveDices.diceSet[
-                                aGame.fiveDices.tempDiceSetIndValues[j][0]
-                                ].isSelected = false;
-                }
-            }
-            //Traiter les paires
-            else if (figureContainsSinglePair(aGame))
-                selectFromSinglePair(aGame);
-            //pas besoin de traiter le full car si full alors brelan
-        }
-        else {
-            //On a un carre et on tente l'appel au carre
-            if (aGame.fiveDices.figureList.contains("Yam")){
-                //relancer le 5e dé
-                aGame.fiveDices.diceSet[4].isSelected=true;
-            }
-            else{
-                //on a un carre et on tente l'appel au carre, relancer le dé qui n'est pas ds la carré ;-) cela inclus le cas du Yam
-                if (aGame.fiveDices.tempDiceSetIndValues[0][1]== aGame.fiveDices.tempDiceSetIndValues[1][1])
-                    aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected=true;
-                else
-                    aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[0][0]].isSelected=true;
-            }
 
-        }
-        */
+    private void selectForCarre(Jeu aGame) {
+        int singleton;
         if (aGame.fiveDices.figureContainsPair()){
             if (aGame.fiveDices.figureContainsDoublePair())
-                aGame.fiveDices.selectForBrelan(getBestBrelanAvailable(aGame));
-        else
-            aGame.fiveDices.selectForBrelan(getFirstAvailablePairValue(aGame));
+                aGame.fiveDices.selectForBrelan(getBestBrelanAvailableFromDoublePair(aGame));
+            else
+                aGame.fiveDices.selectForBrelan(getFirstAvailablePairValue(aGame));
         }
+        else if ((singleton = getBestBrelanAvailableFromSingleton(aGame))!=0)
+            aGame.fiveDices.selectForBrelan(singleton);
         else
             aGame.fiveDices.selectForCarre();
+    }
+
+    private int getBestBrelanAvailableFromSingleton(Jeu aGame){
+        System.out.println("<--getBestBrelanAvailableFromSingleton");
+        ArrayList <Integer> singletonArrayList = new ArrayList<>();
+        for (int i =0; i<5; i++){
+            int diceValue=aGame.fiveDices.getDiceValue(i);
+            if (!singletonArrayList.contains(diceValue))
+                singletonArrayList.add(diceValue);
+        }
+        ArrayList<BoxPair>  pairs = new ArrayList<>();
+        for (int i =0; i< singletonArrayList.size(); i++){
+            pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(singletonArrayList.get(i)), "white"));
+        }
+        //choisir le meilleur brelan fallback
+        for (int i =0; i<pairs.size(); i++){
+            pairs.get(i).setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox()));
+            pairs.get(i).setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, "blue", pairs.get(i).getBox()));
+            pairs.get(i).setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, "red", pairs.get(i).getBox() ));
+            pairs.get(i).setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, "red",pairs.get(i).getBox()));
+            int bonus = setEndOfGameBonus(aGame, "red", pairs.get(i).getBox()) +setEndOfGameBonus(aGame, "blue", pairs.get(i).getBox());
+            if (aGame.throwNb<aGame.maxThrowNb)
+                bonus += setBrelanBoxBonus(aGame, pairs.get(i));
+            pairs.get(i).setBonus(bonus);
+            pairs.get(i).setBoxWeight();
+        }
+        Collections.sort(pairs);
+        if (pairs.size()>0){
+            System.out.println("getBestBrelanAvailableFromSingleton: "+Integer.valueOf(pairs.get(pairs.size()-1).getFigType())+" -->");
+            return Integer.valueOf(pairs.get(pairs.size()-1).getFigType());
+        }
+        else return 0;
     }
 
     private void selectForYam(Jeu aGame) {
@@ -920,7 +932,7 @@ class MachinePlayTask implements Runnable {
                     Collections.sort(pairs);
                     if (pairs.size()>0)
                         selectForBrelan(aGame, Integer.valueOf(pairs.get(pairs.size()-1).getFigType()));*/
-                    selectForBrelan(aGame, getBestBrelanAvailable(aGame));
+                    selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
 
                 }
                 else {
@@ -932,7 +944,7 @@ class MachinePlayTask implements Runnable {
         else aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected = true;
     }
 
-    private int getBestBrelanAvailable(Jeu aGame){
+    private int getBestBrelanAvailableFromDoublePair(Jeu aGame){
         int valIdx1 = aGame.fiveDices.tempDiceSetIndValues[1][1];
         int valIdx3 = aGame.fiveDices.tempDiceSetIndValues[3][1];
         ArrayList<BoxPair>  pairs = new ArrayList<>();

@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         //game.appelClicked Devrait être 0 depuis machienPlayTask
         if ((!game.appelClicked) || (game.appelBoxId == v.getId())) {//if game.appelBoxId==v.getId() then game.appelClicked is true
             if (!game.appelClicked) {
+                System.out.println("game.appelClicked est mis à true");
                 game.appelClicked=true;
                 game.appelBoxId=v.getId();
                 //Gray the Box
@@ -206,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 ungrayAppelBoxOrFigAppelBoxToPreviousState(game.appelBoxId);
                 game.appelBoxId=0;
                 game.appelClicked=false;
+                System.out.println("game.appelClicked est remis à false");
                 // un-gray the figtype Box that was called and reset variables about appel
                 //reset to previous state
                 if (game.appelFigTypeBoxId != 0) {

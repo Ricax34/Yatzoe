@@ -29,8 +29,7 @@ class Dice {
     int id; //to connect with the UI
     String color = "white";//Selected or not on the UI
 
-    Dice() {
-    }
+    Dice() { }
 
     //constructeur de copie
     Dice(Dice aDice){

@@ -31,7 +31,7 @@ import java.util.List;
 class Figure {
     private boolean hasAFigure;
     private final boolean appel; //If the human player pressed on any appel box or the machine
-    final Dice[] diceSet;
+    public Dice[] diceSet;
     final int [][] tempDiceSetIndValues;
     private final int dicesetLength;
 
@@ -53,7 +53,7 @@ class Figure {
         }
     }
     //Constructeur de copie
-    Figure(Figure aFigure){
+     Figure(Figure aFigure){
         figureList=aFigure.figureList;
         hasAFigure=aFigure.hasAFigure;
         appel=aFigure.appel;
@@ -64,6 +64,18 @@ class Figure {
         tempDiceSetIndValues=new int[aFigure.diceSet.length][2];
         for (int i=0; i<aFigure.diceSet.length;i++)
             System.arraycopy(aFigure.tempDiceSetIndValues[i], 0, tempDiceSetIndValues[i], 0, 2);
+    }
+
+    public int getDiceValue(int i){
+        return this.diceSet[i].value;
+    }
+
+    public void setDiceSet(Dice[] aDiceset){
+        this.diceSet=aDiceset;
+    }
+
+    public void setDice(Dice aDice, int idx){
+        this.diceSet[idx]=aDice;
     }
 
     private void sortDoubleArray(int[][] aDoubleArray)
@@ -93,13 +105,14 @@ class Figure {
     //set list of figures obtained from the diceSet
     void setListOfFiguresFromDiceSet(){
         //populate tempDiceSetIndValues with the result of the throw
+        System.out.println("\nsetListOfFiguresFromDiceSet");
         for (int i=0; i<dicesetLength; i++) {
             this.tempDiceSetIndValues[i][0] = diceSet[i].index;
             this.tempDiceSetIndValues[i][1] = diceSet[i].value;
         }
         //sort tempDiceSetIndValues
         sortDoubleArray(this.tempDiceSetIndValues);
-
+        figureList="";
         //check for figures and add the results to figureList
         figureList += checkForYam();
         figureList += checkForFull();
@@ -185,9 +198,23 @@ class Figure {
     }
 
     public String printDiceSet(){
-        String des = "";
+        String des = "\n";
         for (int i =0; i<dicesetLength; i++)
             des+= diceSet[i].value +" ";
+        return des;
+    }
+
+    @Override
+    public String toString(){
+        String des = "\n"+this.figureList+"\n";
+        for (int i =0; i<dicesetLength; i++)
+            des+= diceSet[i].value +" ";
+        des+="\n";
+        for (int i =0; i<dicesetLength; i++){
+           if (diceSet[i].isSelected)
+            des+= "x ";
+           else des+="o ";
+        }
         return des;
     }
 
@@ -210,6 +237,7 @@ class Figure {
             }
         return -1;
     }
+
     public int figureContains4InARow(){
         int idx1 = getMissingIdxForSuite(0);
         int idx2 = getMissingIdxForSuite(1);
@@ -221,14 +249,17 @@ class Figure {
         }
         return 0;
     }
+
     public int getIdxFrom4inARow(){
         int idx = getMissingIdxForSuite(0);
         if (idx==-1)
             idx=getMissingIdxForSuite(1);
         return idx;
     }
+
     public void selectForSuite(){
         if (!figureList.contains("Suite")){
+            System.out.println("Select for Suite1 figurelist: "+figureList);
             int idx= getIdxFrom4inARow();
             for (int i =0; i<5; i++)
                diceSet[i].isSelected=false;
@@ -236,20 +267,26 @@ class Figure {
         }
         else {
             //Appel à la suite à partir d'une suite, on tente de partir d'une suite bilatérale
+            System.out.println("Select for suite2 figurelist: "+figureList);
+            for (int i =0; i<5; i++)
+                diceSet[i].isSelected=false;
             if (tempDiceSetIndValues[0][1]==1)
                 diceSet[tempDiceSetIndValues[0][0]].isSelected=true;
             else
                 diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
         }
     }
+
     public void selectForSec(){
         for (int i =0; i<5; i++)
             diceSet[i].isSelected=true;
     }
+
     public void selectForBrelan(int value){
         for (int i =0; i<5; i++)
             diceSet[i].isSelected= diceSet[i].value != value;
     }
+
     public void selectForSmall() {
         if (!figureList.contains("Small")){
 
@@ -278,6 +315,7 @@ class Figure {
             diceSet[tempDiceSetIndValues[4][0]].isSelected=true;
         }
     }
+
     public void selectForFull() {
         if (!figureList.contains("Full")){
             if (figureContainsDoublePair()) {
@@ -314,6 +352,7 @@ class Figure {
             diceSet[tempDiceSetIndValues[2][0]].isSelected=true;
         }
     }
+
     public void selectForCarre() {
         if (!figureList.contains("Carre")){
             if (figureList.matches( ".*([123456]).*")){
@@ -354,7 +393,6 @@ class Figure {
                 else
                     diceSet[tempDiceSetIndValues[0][0]].isSelected=true;
             }
-
         }
     }
 
@@ -374,6 +412,7 @@ class Figure {
             diceSet[tempDiceSetIndValues[2][0]].isSelected=true;
         }
     }
+
     public boolean figureContainsDoublePair(){
         if ((tempDiceSetIndValues[0][1]==tempDiceSetIndValues[1][1]) &&
                 (tempDiceSetIndValues[2][1]==tempDiceSetIndValues[3][1])){
@@ -389,6 +428,7 @@ class Figure {
         }
         return false;
     }
+
     public void selectFromSinglePair(){
         for (int i =0; i<5; i++)
             diceSet[i].isSelected=true;
@@ -402,15 +442,18 @@ class Figure {
                 return;
             }
     }
+
     public boolean figureContainsPair(){
         for(int i = 0; i <4; i++)
             if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1])
                 return true;
         return false;
     }
+
     public boolean figureContainsSinglePair(){
         return figureContainsPair() && !figureContainsDoublePair();
     }
+
     public int getSinglePairValue() {
         if (figureContainsSinglePair()){
             for (int i = 0; i < 4; i++)
@@ -433,6 +476,7 @@ class Figure {
         }
         return 0;
     }
+
     public int getFirstAvailablePairValue(){
         for(int i = 0; i <4; i++)
             if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1])
