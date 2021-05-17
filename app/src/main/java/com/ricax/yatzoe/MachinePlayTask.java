@@ -220,58 +220,81 @@ class MachinePlayTask implements Runnable {
             String brelanValue = aGame.fiveDices.checkForBrelan();
             if (aboxPair.getFigType().equals("Yam")) {
                 int bonus =0;
-                if (boxListContains(freeBoxList, brelanValue)
-                        && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full"))){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour garder le brelan de "+brelanValue);
+                if ((boxListContains(freeBoxList, brelanValue) && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour garder le brelan de "+brelanValue+" sans casser full ou Sec/Smallposable");
                     bonus +=20;
                 }
-                if (boxListContains(freeBoxList, "Carre")
-                        && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full"))){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le carre sans casser un éventuel full posable");
+                if ((boxListContains(freeBoxList, "Carre") && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le carre sans casser un éventuel full  ou Sec/Small posable");
                     bonus +=20;
                 }
                 if (currFigs.contains("Carre"))
-                    if (boxListContains(freeBoxList, "Carre")){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam 20 pour garder le carre posable");
+                    if (boxListContains(freeBoxList, "Carre")
+                            && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                            && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                    ){
+                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus: yam 20 pour garder le carre posable sans casser le Sec/Small posable");
                         bonus+=20;
                     }
-                if (boxListContains(freeBoxList, "Full")&& ! currFigs.contains("Full")){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le Full");
+                if ((boxListContains(freeBoxList, "Full")&& ! currFigs.contains("Full"))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le Full sans casser le Sec/Smallposable");
                     bonus +=20;
                 }
                 if (brelanValue.equals(Integer.toString(1)))
-                    if (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small")){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter le small");
+                    if ((boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
+                            && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                    ){
+                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter le small sans casser le Sec/Small posable");
                         bonus+=20;
                     }
 
                 return bonus;
             }
             else if (aboxPair.getFigType().equals("Carre")) {
-                if (boxListContains(freeBoxList, brelanValue) && !currFigs.contains("Carre")){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour garder le brelan de "+brelanValue);
+                if ((boxListContains(freeBoxList, brelanValue) && !currFigs.contains("Carre"))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour garder le brelan de "+brelanValue+" sans casser le Sec/Small posable");
                     return 20;
                 }
-                if (boxListContains(freeBoxList, "Full") && !currFigs.contains("Full")){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Full ");
+                if ((boxListContains(freeBoxList, "Full") && !currFigs.contains("Full"))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Full sans casser le Sec/Small posable");
                     return 20;
                 }
-                if (boxListContains(freeBoxList, "Yam") && ! currFigs.contains("Yam")){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Yam ");
+                if ((boxListContains(freeBoxList, "Yam") && ! currFigs.contains("Yam"))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Yam sans casser le Sec/Small posable");
                     return 20;
                 }
             }
             else if (aboxPair.getFigType().equals("Small")) {
                 int bonus =0;
                 if (brelanValue.equals(Integer.toString(1))){
-                    if (boxListContains(freeBoxList, brelanValue))
+                    if (boxListContains(freeBoxList, brelanValue)
+                            && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                    )
                     {
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour garder le brelan de "+brelanValue);
+                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour garder le brelan de "+brelanValue+" sans casser le sec posable");
                         bonus += 20;
                     }
-                    if (boxListContains(freeBoxList, "Carre")
-                            && !(currFigs.contains("Small")&& boxListContains(freeBoxList, "Small"))){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour tenter aussi le carre de "+brelanValue+" sans casser un éventuel Small posable");
+                    if ((boxListContains(freeBoxList, "Carre") && !(currFigs.contains("Small")&& boxListContains(freeBoxList, "Small")))
+                            && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
+                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour tenter aussi le carre de "+brelanValue+" sans casser un éventuel Sec/Small posable");
                         bonus += 20;
                     }
                 }
@@ -281,15 +304,21 @@ class MachinePlayTask implements Runnable {
             else if (aboxPair.getFigType().equals("Full")){
                 int bonus = 0;
                 if (brelanValue.equals(Integer.toString(1))){
-                    if (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small")){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour le brelan/small de "+brelanValue);
+                    if (
+                            (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
+                            && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                    ){
+                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour le brelan/small de "+brelanValue+" sans casser le Sec/Small posable");
                         bonus += 20;
 
                     }
                 }
-                if (boxListContains(freeBoxList, brelanValue) &&
-                        !(boxListContains(freeBoxList,"Carre")&& currFigs.contains("Carre"))){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour garder le brelan de "+brelanValue+" sans casser un éventuel carré posable");
+                if ((boxListContains(freeBoxList, brelanValue) &&
+                        !(boxListContains(freeBoxList,"Carre")&& currFigs.contains("Carre")))
+                        && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                        && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
+                ){
+                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour garder le brelan de "+brelanValue+" sans casser un éventuel carré/Sec/Small posable");
                     bonus+=20;
                 }
                 return bonus;
@@ -740,11 +769,18 @@ class MachinePlayTask implements Runnable {
         if ((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5))
             aBoxList = getBestUltimateBox(currentGame); //Normalement jamais vide
         else aBoxList = getListFreeBox(currentGame);//Normalement jamais vide
+        //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
+        if (currentGame.throwNb==currentGame.maxThrowNb){
+            String currentFigureList = currentGame.fiveDices.figureList;
+            for (int i =0; i<aBoxList.size(); i++){
+                if (!currentFigureList.contains(aBoxList.get(i).getFigType()))
+                    aBoxList.remove(i);
+            }
+        }
         //les stocker dans une liste de boxPairs
         ArrayList<BoxPair> nextThrowBoxPairList = new ArrayList<>();
         for (int i = 0; i < aBoxList.size(); i++)
             nextThrowBoxPairList.add(new BoxPair(aBoxList.get(i),0,  0));
-//TODO si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
 
         //Leur donner leur poids
         for (int i = 0; i<nextThrowBoxPairList.size(); i++)
