@@ -205,9 +205,7 @@ class MachinePlayTask implements Runnable {
         }
         //TODO fixer ca
         aFigure.setListOfFiguresFromDiceSet();
-        System.out.println("toto");
         System.out.println(aFigure);
-        System.out.println("tito");
         System.out.println("setAppelDiceset: "+aFigType+" -->");
         return aFigure;
     }
@@ -621,9 +619,12 @@ class MachinePlayTask implements Runnable {
         //Stocker les box libres dans une liste
         String [] allFigTypes = {"1", "2", "3", "4", "5", "6", "Appel", "Small", "Full", "Carre", "Yam", "Sec", "Suite"};
         for (String figType: allFigTypes){
-            if (!boxListContains(boxPointList, figType))//Verification superflue
+           // if (!boxListContains(boxPointList, figType))//Verification superflue
                 boxPointList.addAll(aGame.getListBoxColorPerFigure(figType, "white"));
         }
+        System.out.println("<--getListFreeBox boxPointList:");
+        System.out.println(boxPointList);
+        System.out.println("getListFreeBox-->");
         return boxPointList;
     }
 
@@ -733,7 +734,7 @@ class MachinePlayTask implements Runnable {
                 }
             }
         Collections.sort(noDuplicatesBoxPairArrayList);
-        System.out.println("<--noDuplicatesBoxPairArrayList: \n"+noDuplicatesBoxPairArrayList+"\nnoDuplicatesBoxPairArrayList-->");
+        //System.out.println("<--noDuplicatesBoxPairArrayList: \n"+noDuplicatesBoxPairArrayList+"\nnoDuplicatesBoxPairArrayList-->");
         for (int i =0; i< noDuplicatesBoxPairArrayList.size(); i++)
             noDuplicatesBoxArrayList.add(noDuplicatesBoxPairArrayList.get(i).getBox());
 
@@ -771,10 +772,14 @@ class MachinePlayTask implements Runnable {
         else aBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
         if (currentGame.throwNb==currentGame.maxThrowNb){
+            System.out.println("currentGame.throwNb==currentGame.maxThrowNb");
             String currentFigureList = currentGame.fiveDices.figureList;
             for (int i =0; i<aBoxList.size(); i++){
-                if (!currentFigureList.contains(aBoxList.get(i).getFigType()))
+                if (!currentFigureList.contains(aBoxList.get(i).getFigType())){
+                    //TODO bug 1 ici ne semble passer que sur 1 element sur 2
+                    System.out.println("remove: "+aBoxList.get(i));
                     aBoxList.remove(i);
+                }
             }
         }
         //les stocker dans une liste de boxPairs
@@ -788,7 +793,7 @@ class MachinePlayTask implements Runnable {
         //Trier
         if (!nextThrowBoxPairList.isEmpty())
             Collections.sort(nextThrowBoxPairList);
-
+//TODO suite bug 1, elles ne semblent pas etre enlevees
 
         System.out.println("<--optimalNextThrowBoxPairList:");
         System.out.println(nextThrowBoxPairList);
