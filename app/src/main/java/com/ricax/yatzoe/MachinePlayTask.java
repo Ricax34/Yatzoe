@@ -972,7 +972,6 @@ class MachinePlayTask implements Runnable {
         }
         else {
             String appelFigure= machineFigureAppel;
-            System.out.println("AppelFigure: "+appelFigure);
             switch (appelFigure){
                 case "Full":
                     selectForFull(aGame);
