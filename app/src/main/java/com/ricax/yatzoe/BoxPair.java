@@ -87,17 +87,6 @@ class BoxPair implements Comparable<BoxPair>{
 
     @Override
     public int compareTo(BoxPair bp) {
-        //first compare points and so on ....
-/*
-        if (!bp.getPairPoints().equals(this.getPairPoints()))
-            return this.getPairPoints().compareTo(bp.getPairPoints());
-        else if (!bp.getProbability().equals(this.getProbability()))
-            return this.getProbability().compareTo(bp.getProbability());
-        else if (!bp.getNextTurnPossiblePoints().equals(this.getNextTurnPossiblePoints()))
-            return this.getNextTurnPossiblePoints().compareTo(bp.getNextTurnPossiblePoints());
-        else if (!bp.getAllPossiblePoints().equals(this.getAllPossiblePoints()))
-            return this.getAllPossiblePoints().compareTo(bp.getAllPossiblePoints());
-        else return this.getOponentPoints().compareTo(bp.getOponentPoints());*/
         return this.getBoxWeight().compareTo(bp.getBoxWeight());
     }
 }

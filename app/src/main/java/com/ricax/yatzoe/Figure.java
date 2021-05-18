@@ -105,7 +105,6 @@ class Figure {
     //set list of figures obtained from the diceSet
     void setListOfFiguresFromDiceSet(){
         //populate tempDiceSetIndValues with the result of the throw
-        System.out.println("\nsetListOfFiguresFromDiceSet");
         for (int i=0; i<dicesetLength; i++) {
             this.tempDiceSetIndValues[i][0] = diceSet[i].index;
             this.tempDiceSetIndValues[i][1] = diceSet[i].value;
@@ -259,7 +258,6 @@ class Figure {
 
     public void selectForSuite(){
         if (!figureList.contains("Suite")){
-            System.out.println("Select for Suite1 figurelist: "+figureList);
             int idx= getIdxFrom4inARow();
             for (int i =0; i<5; i++)
                diceSet[i].isSelected=false;
@@ -267,7 +265,6 @@ class Figure {
         }
         else {
             //Appel à la suite à partir d'une suite, on tente de partir d'une suite bilatérale
-            System.out.println("Select for suite2 figurelist: "+figureList);
             for (int i =0; i<5; i++)
                 diceSet[i].isSelected=false;
             if (tempDiceSetIndValues[0][1]==1)

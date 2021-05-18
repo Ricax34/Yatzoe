@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import static java.lang.Thread.sleep;
 
 class Jeu {
     private final MainActivity mainActivity;
@@ -292,10 +291,6 @@ class Jeu {
                     }
             }
         }
-        //DEBUG
-        //       if (couleur.equals("blue"))
-        //           fiveDices.figureList="SmallSuiteSecFullCarreAppelYam123456";
-        //DEBUG
         return true;
     }
 
