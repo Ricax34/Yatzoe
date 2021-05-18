@@ -80,9 +80,7 @@ class MachinePlayTask implements Runnable {
                         currentGame.fiveDices.setListOfFiguresFromDiceSet();
                     }
                     String target = machineChoseFromDices();
-                   // System.out.println("target1: "+target);
                     if (target.matches(".*(1|2|3|4|5|6|Appel|Carre|Full|Yam|Suite|Sec|Small).*")) {
-                        System.out.println("target2: "+target);
                         selectDiceFromTarget(currentGame, target);
                     }
                     else if (target.equals("blue")) {
@@ -161,7 +159,6 @@ class MachinePlayTask implements Runnable {
                 Jeu tempAppelGame = new Jeu(aGame);
                 //modifier le diceset du jeu en fonction de la figure à appeler pour obtenir la bonne proba
                 tempAppelGame.fiveDices=setAppelDiceset(tempAppelGame, appFig);
-                System.out.println("tempAppelGame pour "+appFig);
                 appFigBP.setProbability(getFigProb(tempAppelGame, appFig));
             }
             else
@@ -176,7 +173,6 @@ class MachinePlayTask implements Runnable {
 
     private Figure setAppelDiceset(Jeu aGame, String aFigType){
         Figure aFigure = new Figure(aGame.fiveDices);
-        System.out.println("<--setAppelDiceset: "+aFigType);
         //Modifier le diceset
         switch (aFigType){
             case "Carre":
@@ -191,7 +187,6 @@ class MachinePlayTask implements Runnable {
             }
             case "Suite":
             {
-                System.out.println("case Suite");
                 if (aFigure.tempDiceSetIndValues[0][1]==1)
                     aFigure.diceSet[aFigure.tempDiceSetIndValues[0][0]].value=0;
                 else
@@ -206,8 +201,6 @@ class MachinePlayTask implements Runnable {
         }
         //TODO fixer ca
         aFigure.setListOfFiguresFromDiceSet();
-        System.out.println(aFigure);
-        System.out.println("setAppelDiceset: "+aFigType+" -->");
         return aFigure;
     }
 
@@ -223,14 +216,12 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour garder le brelan de "+brelanValue+" sans casser full ou Sec/Smallposable");
                     bonus +=20;
                 }
                 if ((boxListContains(freeBoxList, "Carre") && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le carre sans casser un éventuel full  ou Sec/Small posable");
                     bonus +=20;
                 }
                 if (currFigs.contains("Carre"))
@@ -238,21 +229,18 @@ class MachinePlayTask implements Runnable {
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                             && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                     ){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus: yam 20 pour garder le carre posable sans casser le Sec/Small posable");
                         bonus+=20;
                     }
                 if ((boxListContains(freeBoxList, "Full")&& ! currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter aussi le Full sans casser le Sec/Smallposable");
                     bonus +=20;
                 }
                 if (brelanValue.equals(Integer.toString(1)))
                     if ((boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus yam: 20 pour tenter le small sans casser le Sec/Small posable");
                         bonus+=20;
                     }
 
@@ -263,21 +251,18 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour garder le brelan de "+brelanValue+" sans casser le Sec/Small posable");
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Full") && !currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Full sans casser le Sec/Small posable");
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Yam") && ! currFigs.contains("Yam"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus carre: 20 pour tenter aussi le Yam sans casser le Sec/Small posable");
                     return 20;
                 }
             }
@@ -288,12 +273,10 @@ class MachinePlayTask implements Runnable {
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     )
                     {
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour garder le brelan de "+brelanValue+" sans casser le sec posable");
                         bonus += 20;
                     }
                     if ((boxListContains(freeBoxList, "Carre") && !(currFigs.contains("Small")&& boxListContains(freeBoxList, "Small")))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Small: 20 pour tenter aussi le carre de "+brelanValue+" sans casser un éventuel Sec/Small posable");
                         bonus += 20;
                     }
                 }
@@ -307,7 +290,6 @@ class MachinePlayTask implements Runnable {
                             (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
-                        System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour le brelan/small de "+brelanValue+" sans casser le Sec/Small posable");
                         bonus += 20;
 
                     }
@@ -317,7 +299,6 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    System.out.println(aboxPair.getBox()+": setBrelanBoxBonus Full: 20 pour garder le brelan de "+brelanValue+" sans casser un éventuel carré/Sec/Small posable");
                     bonus+=20;
                 }
                 return bonus;
@@ -590,10 +571,8 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")){
             if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
-                    System.out.println("1 setEndOfGameBonus "+aBox+" marquage gagnant pour les red +5");
                     bonus= 5;
                 } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
-                    System.out.println("2 setEndOfGameBonus "+aBox+" marquage perdant pour les red -20");
                     bonus= -20;
                 }
             }
@@ -601,11 +580,9 @@ class MachinePlayTask implements Runnable {
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
-                    System.out.println("3 setEndOfGameBonus marquage gagnant pour les blue +5 pour prendre la case");
                     bonus = 5;
                 }
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
-                    System.out.println("4 setEndOfGameBonus "+aBox+" marquage perdant pour les blue pas de bonus");
                 }
             }
         }
@@ -622,11 +599,6 @@ class MachinePlayTask implements Runnable {
            // if (!boxListContains(boxPointList, figType))//Verification superflue
             freeBoxList.addAll(aGame.getListBoxColorPerFigure(figType, "white"));
         }
-    /*
-        System.out.println("<--getListFreeBox freeBoxList:");
-        System.out.println(freeBoxList);
-        System.out.println("getListFreeBox-->");
-        */
         return freeBoxList;
     }
 
@@ -692,7 +664,6 @@ class MachinePlayTask implements Runnable {
     }
 
     private ArrayList<Box> getBestUltimateBox(Jeu aGame) {
-        System.out.println("getBestUltimateBox markers<6");
         List<JeuCombinaison> jcRedList = AllCombinationsAvailable("red", aGame);
 
         int maxRedPointsPossible = 0;
@@ -733,32 +704,19 @@ class MachinePlayTask implements Runnable {
                 }
             }
         Collections.sort(noDuplicatesBoxPairArrayList);
-        //System.out.println("<--noDuplicatesBoxPairArrayList: \n"+noDuplicatesBoxPairArrayList+"\nnoDuplicatesBoxPairArrayList-->");
         for (int i =0; i< noDuplicatesBoxPairArrayList.size(); i++)
             noDuplicatesBoxArrayList.add(noDuplicatesBoxPairArrayList.get(i).getBox());
 
-        System.out.println("fin getBestUltimateBox");
         return noDuplicatesBoxArrayList;
     }
 
 
     private String machineChoseFromDices(){
-        System.out.println("#########################################################################################");
-        String diceSet = currentGame.afficherDes();
-        System.out.println(diceSet);
-        String selectedDiceSet = currentGame.printSelectedDice();
-        System.out.println(selectedDiceSet);
-        System.out.println("figureList: "+currentGame.fiveDices.figureList);
-        System.out.println("Appel: "+currentGame.appelClicked+": "+currentGame.appelRegistered);
-        appendLog(gameStateToString());
-        appendLog(selectedDiceSet);
-
 
         if (currentGame.throwNb < currentGame.maxThrowNb)
             if (currentGame.appelClicked){
                 if ((currentGame.throwNb==2) && (!currentGame.fiveDices.figureList.equals("Appel")))
                 {
-                    System.out.println("-3: return appel");
                     return "Appel";
                 }
             }
@@ -771,13 +729,11 @@ class MachinePlayTask implements Runnable {
         else aBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
         if (currentGame.throwNb==currentGame.maxThrowNb){
-            System.out.println("currentGame.throwNb==currentGame.maxThrowNb");
             String currentFigureList = currentGame.fiveDices.figureList;
             Iterator<Box> it = aBoxList.iterator();
             while (it.hasNext()){
                 Box nextBox = it.next();
                 if (!currentFigureList.contains(nextBox.getFigType())){
-                    System.out.println("remove nextBox: "+nextBox);
                     it.remove();
                 }
             }
@@ -793,24 +749,15 @@ class MachinePlayTask implements Runnable {
         //Trier
         if (!nextBoxPairList.isEmpty())
             Collections.sort(nextBoxPairList);
-//TODO suite bug 1, elles ne semblent pas etre enlevees
-
-        System.out.println("<--nextBoxPairList:");
-        System.out.println(nextBoxPairList);
-        System.out.println("nextBoxPairList-->");
-
 
         Box optimalBox = new Box();
         if (!currentGame.appelClicked){
-            System.out.println("thrownb ="+currentGame.throwNb+" game.appelClicked est "+currentGame.appelClicked+" on ne tente pas l'appel");
             if (!nextBoxPairList.isEmpty())
                 optimalBox= nextBoxPairList.get(nextBoxPairList.size()-1).getBox();
         }
         else{
-            System.out.println("thrownb ="+currentGame.throwNb+" game.appelClicked est "+currentGame.appelClicked+" on tente l'appel");
             optimalBox=appelBox;
         }
-        System.out.println("Optimal box: "+optimalBox);
         if (optimalBox.getId()!=0){
             //Si la meilleure box correspond à la figure obtenue
             if (currentGame.fiveDices.figureList.contains(optimalBox.getFigType()))
@@ -913,7 +860,6 @@ class MachinePlayTask implements Runnable {
     }
 
     private int getBestBrelanAvailableFromSingleton(Jeu aGame){
-        System.out.println("<--getBestBrelanAvailableFromSingleton");
         ArrayList <Integer> singletonArrayList = new ArrayList<>();
         for (int i =0; i<5; i++){
             int diceValue=aGame.fiveDices.getDiceValue(i);
@@ -938,7 +884,6 @@ class MachinePlayTask implements Runnable {
         }
         Collections.sort(pairs);
         if (pairs.size()>0){
-            System.out.println("getBestBrelanAvailableFromSingleton: "+Integer.valueOf(pairs.get(pairs.size()-1).getFigType())+" -->");
             return Integer.valueOf(pairs.get(pairs.size()-1).getFigType());
         }
         else return 0;
@@ -959,20 +904,7 @@ class MachinePlayTask implements Runnable {
             }
             else  if (aGame.fiveDices.figureContainsPair()){
                 if (figureContainsDoublePair(aGame)){
-                    /*int valIdx1 = aGame.fiveDices.tempDiceSetIndValues[1][1];
-                    int valIdx3 = aGame.fiveDices.tempDiceSetIndValues[3][1];
-                    ArrayList<BoxPair>  pairs = new ArrayList<>();
-                    pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valIdx1), "white"));
-                    pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valIdx3), "white"));
-                    //choisir le meilleur brelan fallback
-                    for (int i =0; i<pairs.size(); i++){
-                        pairs.get(i).setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox()));
-                    }
-                    Collections.sort(pairs);
-                    if (pairs.size()>0)
-                        selectForBrelan(aGame, Integer.valueOf(pairs.get(pairs.size()-1).getFigType()));*/
                     selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
-
                 }
                 else {
                     selectForBrelan(aGame, getFirstAvailablePairValue(aGame));
@@ -1173,7 +1105,6 @@ class MachinePlayTask implements Runnable {
                 e.printStackTrace();
             }
             int tempAppelBoxFigTypeId=0;
-            System.out.println("figureAppel: "+figureAppel);
             for (int i =0; i<5; i++)
                 for (int j = 0; j<5; j++)
                     if (aGame.checkerBox[i][j].getFigType().equals(figureAppel)){

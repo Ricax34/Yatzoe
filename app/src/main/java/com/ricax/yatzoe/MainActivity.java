@@ -160,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void ungrayAppelBoxOrFigAppelBoxToPreviousState(int appelOrFigBoxId){
         //Ungray appelFigBoxView
-        System.out.println("appelOrFigBoxId: "+appelOrFigBoxId);
         ImageView appelOrFigBoxView = findViewById(appelOrFigBoxId);
         appelOrFigBoxView.setBackgroundResource(0);
         switch (game.findBoxById(appelOrFigBoxId).getColor()) {
@@ -195,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
         //game.appelClicked Devrait être 0 depuis machienPlayTask
         if ((!game.appelClicked) || (game.appelBoxId == v.getId())) {//if game.appelBoxId==v.getId() then game.appelClicked is true
             if (!game.appelClicked) {
-                System.out.println("game.appelClicked est mis à true");
                 game.appelClicked=true;
                 game.appelBoxId=v.getId();
                 //Gray the Box
@@ -207,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
                 ungrayAppelBoxOrFigAppelBoxToPreviousState(game.appelBoxId);
                 game.appelBoxId=0;
                 game.appelClicked=false;
-                System.out.println("game.appelClicked est remis à false");
                 // un-gray the figtype Box that was called and reset variables about appel
                 //reset to previous state
                 if (game.appelFigTypeBoxId != 0) {
@@ -258,9 +255,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //TODO revoir le thrownb cheat pour vérifier YatzoeLog20210509-234336 jetN°2 du dernier gamestate
-    // (pointeur nul sur dé, surement pas de procédure prévue pour sélectionner
-    // des dés pour une suite à partir de ce diceset)
+
     public void onBoxClicked(View v) {
         if (diceCheat&&!boxFlagCheat){
            System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
