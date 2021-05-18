@@ -67,7 +67,7 @@ class MachinePlayTask implements Runnable {
                     if ((!mainActivity.diceCheat)||currentGame.throwNb>0) {//cette condition est pour le cheat, à enlever + tard
                         currentGame.throwDices();
                         try {
-                            sleep(1000);
+                            sleep(500);//1000
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
