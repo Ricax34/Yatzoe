@@ -63,7 +63,7 @@ class BoxPair implements Comparable<BoxPair>{
     public void setBonus(int bonus){this.bonus=bonus;}
     public int getBonus(){return this.bonus;}
     public void setBoxWeight() {
-        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
+        this.boxWeight=this.points+this.probability*2+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
     }
     public Integer getBoxWeight() {
         return boxWeight;
@@ -71,18 +71,15 @@ class BoxPair implements Comparable<BoxPair>{
 
     @Override
     public String toString() {
-        return "BoxPair{"
-                +"box =" + aBox
-                +", boxWeight:"+ boxWeight
-                + ", pts=" + points
-                + ", pb="+ probability
-                + ", ntpP="+ nextTurnPossiblePoints
-                + ", apP="+ allPossiblePoints
-                + ", oPts="+ oponentPoints
-                + ", bonus="+bonus
-                + ", isFL: "+ isFullLine
-                + ", isOFL "+ isOponentFullLine
-                + "}\n";
+        return aBox
+                +", "+ boxWeight
+                + " ("+ points
+                + "+ "+ probability
+                + "+ "+ nextTurnPossiblePoints
+                + "+ "+ allPossiblePoints
+                + "+ "+ oponentPoints
+                + "+ "+bonus
+                + ")\n";
     }
 
     @Override

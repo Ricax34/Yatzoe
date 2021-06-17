@@ -462,15 +462,15 @@
 
     <TextView
         android:id="@+id/redMarkerTextView"
-        android:tag="redMarkerTextView"
-        android:clickable="true"
-        android:onClick="onColorMarkersNbTVClicked"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/ic_pion_rouge_contour_noir"
+        android:clickable="true"
         android:gravity="center"
+        android:onClick="onColorMarkersNbTVClicked"
+        android:tag="redMarkerTextView"
         android:text="12"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="30sp"
@@ -528,7 +528,6 @@
 
     <ImageView
         android:id="@+id/markerCheatButton"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -537,6 +536,7 @@
         android:layout_marginBottom="359dp"
         android:clickable="true"
         android:onClick="onButtonCheatClicked"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/LancerDes"
         app:layout_constraintEnd_toStartOf="@+id/blueMarkerTextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -545,18 +545,18 @@
 
     <ImageView
         android:id="@+id/diceCheatButton"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="342dp"
+        android:layout_marginBottom="359dp"
         android:clickable="true"
         android:onClick="onButtonDiceCheatClicked"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/LancerDes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tableau"
+        app:layout_constraintStart_toStartOf="@+id/redMarkerTextView"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
         app:srcCompat="@android:drawable/ic_menu_add" />
 

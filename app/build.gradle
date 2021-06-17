@@ -3,19 +3,25 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         debug {
-            storeFile file('/home/eric/AndroidStudioProjects/Yatzoe/yatzoekeystore.jks')
+            storeFile file('/home/eric/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
+            storePassword 'martinadele'
+            keyAlias 'yatzoe1'
+            keyPassword 'martinadele'
+        }
+        release {
+            storeFile file('/home/eric/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
             storePassword 'martinadele'
             keyAlias 'yatzoe1'
             keyPassword 'martinadele'
         }
     }
-    compileSdkVersion 30
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.ricax.yatzoe"
         //minSdkVersion 22
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 10
         versionName "1.4.5"
 
@@ -26,18 +32,19 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '29.0.3'
 
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
