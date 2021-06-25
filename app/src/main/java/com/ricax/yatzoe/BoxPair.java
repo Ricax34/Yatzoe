@@ -63,7 +63,7 @@ class BoxPair implements Comparable<BoxPair>{
     public void setBonus(int bonus){this.bonus=bonus;}
     public int getBonus(){return this.bonus;}
     public void setBoxWeight() {
-        this.boxWeight=this.points+this.probability*2+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
+        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
     }
     public Integer getBoxWeight() {
         return boxWeight;

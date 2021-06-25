@@ -535,7 +535,7 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="359dp"
         android:clickable="true"
-        android:onClick="onButtonCheatClicked"
+        android:onClick="onButtonBoxCheatClicked"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/LancerDes"
         app:layout_constraintEnd_toStartOf="@+id/blueMarkerTextView"

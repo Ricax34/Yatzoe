@@ -130,6 +130,7 @@ class MachinePlayTask implements Runnable {
 
         //Test
        // return getModulo50Prob(prob2jets*1000);
+       // return getModulo50Prob(prob1jet*1000);
     }
 
     public int getBoxProbability(Jeu aGame, Box targetBox){
@@ -225,19 +226,22 @@ class MachinePlayTask implements Runnable {
                 System.out.println("B:"+!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec")));
                 System.out.println("C:"+!(boxListContains(freeBoxList, "Small") && currFigs.contains("Small")));
                 */
-                if (boxListContains(freeBoxList, brelanValue))
-                    bonus+=20;//pour ne pas se faire squeezer par la proba de 20 du brelan
-
+                if (boxListContains(freeBoxList, brelanValue)) {
+                    System.out.println("bonus1 +20");
+                    bonus += 20;//pour ne pas se faire squeezer par la proba de 20 du brelan
+                }
                 if ((boxListContains(freeBoxList, brelanValue) && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus2 +20");
                     bonus +=20;
                 }
                 if ((boxListContains(freeBoxList, "Carre") && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus3 +20");
                     bonus +=20;
                 }
                 if (currFigs.contains("Carre"))
@@ -245,18 +249,21 @@ class MachinePlayTask implements Runnable {
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                             && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                     ){
+                        System.out.println("bonus4 +20");
                         bonus+=20;
                     }
                 if ((boxListContains(freeBoxList, "Full")&& ! currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus5 +20");
                     bonus +=20;
                 }
                 if (brelanValue.equals(Integer.toString(1)))
                     if ((boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
+                        System.out.println("bonus6 +20");
                         bonus+=20;
                     }
                 //System.out.println("bonus pour "+aboxPair.getFigType()+": "+bonus);
@@ -267,18 +274,21 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus7 +20");
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Full") && !currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus8 +20");
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Yam") && ! currFigs.contains("Yam"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus9 +20");
                     return 20;
                 }
             }
@@ -289,10 +299,12 @@ class MachinePlayTask implements Runnable {
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     )
                     {
+                        System.out.println("bonus10 +20");
                         bonus += 20;
                     }
                     if ((boxListContains(freeBoxList, "Carre") && !(currFigs.contains("Small")&& boxListContains(freeBoxList, "Small")))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
+                        System.out.println("bonus11 +20");
                         bonus += 20;
                     }
                 }
@@ -306,6 +318,7 @@ class MachinePlayTask implements Runnable {
                             (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                                     && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
+                        System.out.println("bonus12 +20");
                         bonus += 20;
 
                     }
@@ -315,6 +328,7 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
+                    System.out.println("bonus13 +20");
                     bonus+=20;
                 }
                 return bonus;
@@ -581,17 +595,9 @@ class MachinePlayTask implements Runnable {
         int tmpPoints = 0;
         //copie de currentGame
         Jeu tempGame = new Jeu(aGame);
-        // tempGame.findBoxById(boxId).afficherBox();
         if (tempGame.findBoxById(boxId).getColor().equals("white")) {
             tempGame.findBoxById(boxId).setColor(aColor);
             tmpPoints = tempGame.countLine(3, aColor, boxId);
-            //TODO verifeir cela
-            /*
-            if (tempGame.countLine(5, aColor, boxId)==1)
-                if (aColor.equals("blue"))
-                    tmpPoints+=20;
-
-             */
         }
         return tmpPoints;
     }
@@ -905,7 +911,17 @@ class MachinePlayTask implements Runnable {
 
     private void selectForCarre(Jeu aGame) {
         int singleton;
-        if (aGame.fiveDices.figureContainsPair()){
+        if (aGame.fiveDices.figureList.matches(".*([123456]).*"))
+        {
+            int valBrelan = aGame.fiveDices.getBrelanValue();
+            if (valBrelan>0) {
+                ArrayList<BoxPair> pairs = new ArrayList<>();
+                pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valBrelan), "white"));
+                if (pairs.size() > 0)
+                    selectForBrelan(aGame, valBrelan);
+            }
+        }
+        else if (aGame.fiveDices.figureContainsPair()){
             if (aGame.fiveDices.figureContainsDoublePair())
                 aGame.fiveDices.selectForBrelan(getBestBrelanAvailableFromDoublePair(aGame));
             else
@@ -948,8 +964,11 @@ class MachinePlayTask implements Runnable {
     }
 
     private void selectForYam(Jeu aGame) {
+        System.out.println("selectForYam1");
         if (! aGame.fiveDices.figureList.contains("Yam")){
+            System.out.println("selectForYam2");
             if (aGame.fiveDices.figureList.contains("Carre")) {
+                System.out.println("selectForYam3");
                 for (int i = 0; i < 5; i++)
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[i][0]].isSelected = false;
                 if (aGame.fiveDices.tempDiceSetIndValues[0][1] == aGame.fiveDices.tempDiceSetIndValues[3][1])
@@ -958,22 +977,30 @@ class MachinePlayTask implements Runnable {
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[0][0]].isSelected = true;
             }
             else if (aGame.fiveDices.figureList.matches( ".*([123456]).*")){
+                System.out.println("selectForYam4");
                 selectForCarre(aGame);
             }
             else  if (aGame.fiveDices.figureContainsPair()){
+                System.out.println("selectForYam5");
                 if (figureContainsDoublePair(aGame)){
+                    System.out.println("selectForYam6");
                     selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
                 }
                 else {
+                    System.out.println("selectForYam7");
                     selectForBrelan(aGame, getFirstAvailablePairValue(aGame));
                 }
             }
         }
         //Sinon c'est qu'on tente l'appel au yam
-        else aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected = true;
+        else {
+            System.out.println("selectForYam1");
+            aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected = true;
+        }
     }
 
     private int getBestBrelanAvailableFromDoublePair(Jeu aGame){
+        System.out.println("getBestBrelanAvailableFromDoublePair");
         int valIdx1 = aGame.fiveDices.tempDiceSetIndValues[1][1];
         int valIdx3 = aGame.fiveDices.tempDiceSetIndValues[3][1];
         ArrayList<BoxPair>  pairs = new ArrayList<>();
@@ -982,6 +1009,8 @@ class MachinePlayTask implements Runnable {
         //choisir le meilleur brelan fallback
         for (int i =0; i<pairs.size(); i++){
             pairs.get(i).setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox()));
+            pairs.get(i).setBoxWeight();
+            System.out.println(pairs.get(i).getBox()+": "+getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox())+" points");
         }
         Collections.sort(pairs);
         if (pairs.size()>0)

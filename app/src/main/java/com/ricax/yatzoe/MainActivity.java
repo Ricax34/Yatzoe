@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //pour poser des markers
-    public void onButtonCheatClicked(View v){
+    public void onButtonBoxCheatClicked(View v){
 
         System.out.println("onButtonCheatClicked1 boxFlagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onColorMarkersNbTVClicked(View v){
-        if (boxFlagCheat){
+        if (boxFlagCheat&&!diceCheat){
             //System.out.println("flagCheat: "+boxFlagCheat);
             if (v.getTag().toString().equals("blueMarkerTextView")){
                 blueFlagCheat=true;
@@ -431,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else
-            System.out.println("No cheats!");
+            System.out.println("No box cheats!");
     }
 
     public void onButtonDiceCheatClicked (View v){

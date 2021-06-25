@@ -53,7 +53,7 @@ class Figure {
         }
     }
     //Constructeur de copie
-     Figure(Figure aFigure){
+    Figure(Figure aFigure){
         figureList=aFigure.figureList;
         hasAFigure=aFigure.hasAFigure;
         appel=aFigure.appel;
@@ -188,9 +188,9 @@ class Figure {
     public String checkForBrelan(){
         if (dicesetLength==5
                 &&(     (this.tempDiceSetIndValues[0][1] == this.tempDiceSetIndValues [2][1])||
-                        (this.tempDiceSetIndValues[1][1] == this.tempDiceSetIndValues [3][1])||
-                        (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1])
-                )
+                (this.tempDiceSetIndValues[1][1] == this.tempDiceSetIndValues [3][1])||
+                (this.tempDiceSetIndValues[2][1] == this.tempDiceSetIndValues [4][1])
+        )
         )
             return String.valueOf(this.tempDiceSetIndValues[2][1]);
         return "";
@@ -210,9 +210,9 @@ class Figure {
             des+= diceSet[i].value +" ";
         des+="\n";
         for (int i =0; i<dicesetLength; i++){
-           if (diceSet[i].isSelected)
-            des+= "x ";
-           else des+="o ";
+            if (diceSet[i].isSelected)
+                des+= "x ";
+            else des+="o ";
         }
         return des;
     }
@@ -259,9 +259,30 @@ class Figure {
     public void selectForSuite(){
         if (!figureList.contains("Suite")){
             int idx= getIdxFrom4inARow();
-            for (int i =0; i<5; i++)
-               diceSet[i].isSelected=false;
-            diceSet[idx].isSelected=true;
+            System.out.println("Idx:"+idx);
+            if (idx>-1){
+                for (int i =0; i<5; i++)
+                    diceSet[i].isSelected=false;
+                diceSet[idx].isSelected=true;
+            }
+            else{
+                ArrayList<Integer> petiteListe = new ArrayList<>();
+                ArrayList<Integer> grandeListe = new ArrayList<>();
+                for (int i= 0; i<5; i++){
+                    if (tempDiceSetIndValues[i][1]==i+1)
+                        petiteListe.add(tempDiceSetIndValues[i][0]);
+                    if (tempDiceSetIndValues[i][1]==i+2)
+                        grandeListe.add(tempDiceSetIndValues[i][0]);
+                }
+                for (int i =0; i<5; i++)
+                    diceSet[i].isSelected=true;
+                if (petiteListe.size()>=grandeListe.size())
+                    for (int i=0; i<petiteListe.size(); i++)
+                        diceSet[petiteListe.get(i)].isSelected=false;
+                else
+                    for (int i=0; i<grandeListe.size(); i++)
+                        diceSet[grandeListe.get(i)].isSelected=false;
+            }
         }
         else {
             //Appel à la suite à partir d'une suite, on tente de partir d'une suite bilatérale
@@ -474,6 +495,11 @@ class Figure {
         return 0;
     }
 
+    public int getBrelanValue(){
+        if (this.figureList.matches(".*([123456]).*")){
+            return tempDiceSetIndValues[2][1];}
+        else return 0;
+    }
     public int getFirstAvailablePairValue(){
         for(int i = 0; i <4; i++)
             if (tempDiceSetIndValues[i][1]==tempDiceSetIndValues[i+1][1])
