@@ -29,6 +29,7 @@ class BoxPair implements Comparable<BoxPair>{
     private int nextTurnPossiblePoints=0;
     private int probability=0;
     private int bonus =0;
+    private int endOfGameBonus=0;
     private int boxWeight=0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
@@ -61,9 +62,11 @@ class BoxPair implements Comparable<BoxPair>{
     public Integer getProbability(){return this.probability;}
     public void setProbability(int probability){ this.probability=probability;}
     public void setBonus(int bonus){this.bonus=bonus;}
+    public void setEndOfGameBonus(int endOfGameBonus){this.endOfGameBonus=endOfGameBonus; }
+    public int getEndOfGameBonus(){return endOfGameBonus;}
     public int getBonus(){return this.bonus;}
     public void setBoxWeight() {
-        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus;
+        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus+this.endOfGameBonus;
     }
     public Integer getBoxWeight() {
         return boxWeight;
@@ -79,6 +82,7 @@ class BoxPair implements Comparable<BoxPair>{
                 + "+ "+ allPossiblePoints
                 + "+ "+ oponentPoints
                 + "+ "+bonus
+                +"+ "+endOfGameBonus
                 + ")\n";
     }
 

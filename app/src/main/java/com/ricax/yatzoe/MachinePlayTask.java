@@ -112,7 +112,7 @@ class MachinePlayTask implements Runnable {
     public int getModulo50Prob(double proba){
         for (int i =0; i<20; i++)
             if (proba>=i*50 && proba<(i+1)*50){
-               // System.out.println("getModulo50Prob de "+proba+": "+i);
+                // System.out.println("getModulo50Prob de "+proba+": "+i);
                 return i;
             }
         return 0;
@@ -129,8 +129,8 @@ class MachinePlayTask implements Runnable {
         }
 
         //Test
-       // return getModulo50Prob(prob2jets*1000);
-       // return getModulo50Prob(prob1jet*1000);
+        // return getModulo50Prob(prob2jets*1000);
+        // return getModulo50Prob(prob1jet*1000);
     }
 
     public int getBoxProbability(Jeu aGame, Box targetBox){
@@ -172,6 +172,7 @@ class MachinePlayTask implements Runnable {
         }
         //Sort according to the only probability
         Collections.sort(boxPairAppelFigures);
+        System.out.println("getBestAppelTargetFigureFromDiceSet: "+boxPairAppelFigures.get(boxPairAppelFigures.size()-1).getFigType());
         return boxPairAppelFigures.get(boxPairAppelFigures.size()-1);
     }
 
@@ -212,7 +213,7 @@ class MachinePlayTask implements Runnable {
         ArrayList<Box> freeBoxList= getFreeBoxList(aGame);
         //Si on a un brelan dont la box est libre
         String currFigs = aGame.fiveDices.figureList;
-       // int bonus =0;
+        // int bonus =0;
         if (currFigs.matches(".*([123456]).*")) {
             int bonus =0;
             String brelanValue = aGame.fiveDices.checkForBrelan();
@@ -493,11 +494,34 @@ class MachinePlayTask implements Runnable {
         aBoxPair.setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, aColor, aBox ));
         aBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
         aBoxPair.setProbability(getBoxProbability(aGame, aBox));
-        int bonus = setEndOfGameBonus(aGame, "red", aBox) +setEndOfGameBonus(aGame, "blue", aBox);
+        int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox) +setEndOfGameBonus(aGame, "blue", aBox);
+        aBoxPair.setEndOfGameBonus(endOfGameBonus);
+        int bonus=0;
         if (aGame.throwNb<aGame.maxThrowNb)
             bonus += setBrelanBoxBonus(aGame, aBoxPair);
         aBoxPair.setBonus(bonus);
         aBoxPair.setBoxWeight();
+    }
+
+    public Boolean manageEndOfGameBonus(Jeu currentGame, ArrayList<BoxPair> bpArrayList){
+        //Ne tenter de faire/bloquer le end of game que si la prob est favorable
+        // et qu'il n'y a pas d'autre case meilleure
+        BoxPair firstBoxPair=bpArrayList.get(bpArrayList.size()-1);
+        if (firstBoxPair.getEndOfGameBonus()>0){
+            for (int i =0; i<bpArrayList.size(); i++){
+                if(bpArrayList.get(i).getProbability()>firstBoxPair.getProbability())
+                    if (bpArrayList.get(i).getPairPoints()>firstBoxPair.getPairPoints())
+                        if (currentGame.redPoints+bpArrayList.get(i).getPairPoints()>currentGame.bluePoints)
+                            firstBoxPair.setEndOfGameBonus(0);
+            }
+            if (firstBoxPair.getEndOfGameBonus()==0){
+                System.out.println("managed end of game!: bp="+firstBoxPair);
+                firstBoxPair.setBoxWeight();
+                return true;
+                //Collections.sort(bpArrayList);
+            }
+        }
+        return false;
     }
 
     public int setAllPossiblePointsAroundBox(Jeu aGame, String aColor, Box aBox){
@@ -613,8 +637,10 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")){
             if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
+                    System.out.println("setEndOfGameBonus1: 20");
                     bonus= 20;
                 } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
+                    System.out.println("setEndOfGameBonus1: -20");
                     bonus= -20;
                 }
             }
@@ -622,6 +648,7 @@ class MachinePlayTask implements Runnable {
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
+                    System.out.println("setEndOfGameBonus2 : 20");
                     bonus = 20;
                 }
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
@@ -795,14 +822,18 @@ class MachinePlayTask implements Runnable {
         for (int i = 0; i<nextBoxPairList.size(); i++)
             setBoxWeight(currentGame, nextBoxPairList.get(i), "red");
         //Trier
-        if (!nextBoxPairList.isEmpty())
+        if (!nextBoxPairList.isEmpty()){
             Collections.sort(nextBoxPairList);
+            //manageEndOfGameBonus
+            if (manageEndOfGameBonus(currentGame, nextBoxPairList))
+                    Collections.sort(nextBoxPairList);
+        }
         //Afficher
         System.out.println("nextBoxPairList");
-        System.out.println("Box     BW Pts pb NTPP APP OPts B");
+        System.out.println("Box         BW (Pts pb NTPP APP OPts B EGB)");
         System.out.println(nextBoxPairList);
         appendLog("nextBoxPairList");
-        appendLog("Box BW Pts pb NTPP APP OPts B");
+        appendLog("Box BW (Pts pb NTPP APP OPts B EGB)");
         appendLog(nextBoxPairList.toString());
 
         Box optimalBox = new Box();
@@ -815,11 +846,11 @@ class MachinePlayTask implements Runnable {
         }
 
         System.out.println("optimalBox:");
-        System.out.println("Box BW Pts pb NTPP APP OPts B");
+        System.out.println("Box BW Pts pb NTPP APP OPts B EGB");
         System.out.println(optimalBox);
 
         appendLog("optimalBox");
-        appendLog("Box BW Pts pb NTPP APP OPts B");
+        appendLog("Box BW Pts pb NTPP APP OPts B EGB");
         appendLog(optimalBox.toString());
 
         if (optimalBox.getId()!=0){
@@ -934,6 +965,7 @@ class MachinePlayTask implements Runnable {
     }
 
     private int getBestBrelanAvailableFromSingleton(Jeu aGame){
+        System.out.println("getBestBrelanAvailableFromSingleton!");
         ArrayList <Integer> singletonArrayList = new ArrayList<>();
         for (int i =0; i<5; i++){
             int diceValue=aGame.fiveDices.getDiceValue(i);
