@@ -29,6 +29,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +38,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import static java.lang.Thread.sleep;
 
 
@@ -46,11 +50,19 @@ public class MainActivity extends AppCompatActivity {
     boolean redFlagCheat = false;
     boolean diceCheat = false;
     int diceCheatIdx=0;
+    int thrownbCheat=0;
+    boolean logFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (logFlag){
+            ImageView boxFlagCheatImView = findViewById(R.id.markerCheatButton);
+            boxFlagCheatImView.setVisibility(View.VISIBLE);
+            ImageView diceCheatImView = findViewById(R.id.diceCheatButton);
+            diceCheatImView.setVisibility(View.VISIBLE);
+        }
         startGame();
         Button startGameButton = findViewById(R.id.buttonStartNewGame);
         startGameButton.setEnabled(false);
@@ -100,16 +112,18 @@ public class MainActivity extends AppCompatActivity {
         game = new Jeu(MainActivity.this);
         //initialisation of dices
         imViewDices = new ImageView[5];
-        imViewDices[0] = findViewById(R.id.imageViewDiceNb0);
-        imViewDices[1] = findViewById(R.id.imageViewDiceNb1);
-        imViewDices[2] = findViewById(R.id.imageViewDiceNb2);
-        imViewDices[3] = findViewById(R.id.imageViewDiceNb3);
-        imViewDices[4] = findViewById(R.id.imageViewDiceNb4);
+        imViewDices[0] = findViewById(R.id.imViewDiceNb0);
+//        System.out.println("imViewDices[0].getId(): "+imViewDices[0].getId());
+        imViewDices[1] = findViewById(R.id.imViewDiceNb1);
+        imViewDices[2] = findViewById(R.id.imViewDiceNb2);
+        imViewDices[3] = findViewById(R.id.imViewDiceNb3);
+        imViewDices[4] = findViewById(R.id.imViewDiceNb4);
         //initialisation of fiveDices
         int [] imViewDicesId = new int[5];
         for (int i =0; i<5; i++)
             imViewDicesId[i]=imViewDices[i].getId();
         game.fiveDices=new Figure(imViewDicesId);
+
 
         //initialisation of board
         game.checkerBox[0][0] = new Box("1", "white", 0, 0, findViewById(R.id.imageView1Un).getId());
@@ -258,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBoxClicked(View v) {
         if (diceCheat&&!boxFlagCheat){
-           System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
+           //System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
                 if (diceCheatIdx<5 && game.throwNb<3){
                 String tagToString = v.getTag().toString();
                 switch (tagToString) {
@@ -326,12 +340,12 @@ public class MainActivity extends AppCompatActivity {
         else if (boxFlagCheat&&diceCheat){
             Box clickedBox = game.findBoxById(v.getId());
             if (clickedBox.getFigType().equals(Integer.toString(1)))
-                game.throwNb=1;
+                thrownbCheat=1;
             else if (clickedBox.getFigType().equals(Integer.toString(2)))
-                game.throwNb=2;
+                thrownbCheat=2;
             else if (clickedBox.getFigType().equals(Integer.toString(3)))
-                game.throwNb=3;
-            System.out.println("Game thronb cheat: "+game.throwNb);
+                thrownbCheat=3;
+            //System.out.println("Game thronb cheat: "+game.throwNb);
         }
         else if (game.couleur.equals("blue")) {
             //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire
@@ -394,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
     //pour poser des markers
     public void onButtonBoxCheatClicked(View v){
 
-        System.out.println("onButtonCheatClicked1 boxFlagCheat:"+boxFlagCheat);
+        //System.out.println("onButtonCheatClicked1 boxFlagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
             boxFlagCheat=true;
             ImageView boxFlagCheatView = findViewById(v.getId());
@@ -415,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
             redMarkersTextview.setClickable(false);
             redFlagCheat=false;
         }
-        System.out.println("onButtonCheatClicked2 boxFlagCheat:"+boxFlagCheat);
+        //System.out.println("onButtonCheatClicked2 boxFlagCheat:"+boxFlagCheat);
     }
 
     public void onColorMarkersNbTVClicked(View v){
@@ -430,13 +444,14 @@ public class MainActivity extends AppCompatActivity {
                 blueFlagCheat=false;
             }
         }
-        else
-            System.out.println("No box cheats!");
+        else{
+            //System.out.println("No box cheats!");
+            }
     }
 
     public void onButtonDiceCheatClicked (View v){
         diceCheat= !diceCheat;
-        System.out.println("DiceCheat: "+diceCheat);
+        //System.out.println("DiceCheat: "+diceCheat);
         ImageView diceCheatView = findViewById(v.getId());
         if (diceCheat)
             diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
@@ -474,6 +489,10 @@ public class MainActivity extends AppCompatActivity {
             Drawable pionBleu = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_bleu_contour_noir, null);
             ImageView uneCase = findViewById(v.getId());
             uneCase.setBackground(pionBleu);
+
+            final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            uneCase.startAnimation(animation);
+
             clickedBox.setColor("blue");
             TextView textview_Message = findViewById(R.id.TextViewMessage);
             textview_Message.setText(getResources().getIdentifier("red_turn", "string", getPackageName()));
@@ -498,6 +517,10 @@ public class MainActivity extends AppCompatActivity {
             Drawable pionRouge = ResourcesCompat.getDrawable(res, R.drawable.ic_pion_rouge_contour_noir, null);
             ImageView uneCase = findViewById(v.getId());
             uneCase.setBackground(pionRouge);
+
+            final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            uneCase.startAnimation(animation);
+
             clickedBox.setColor("red");
             TextView textview_Message = findViewById(R.id.TextViewMessage);
             textview_Message.setText(getResources().getIdentifier("blue_turn", "string", getPackageName()));
@@ -584,7 +607,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 for (int i = 0; i < 5; i++)
-                    updateOneDice(game.fiveDices.diceSet[i].id, game.fiveDices.diceSet[i].value);
+                    if (game.fiveDices.diceSet[i].isSelected)
+                        updateOneDice(game.fiveDices.diceSet[i].id, game.fiveDices.diceSet[i].value);
                 if (game.throwNb == 1) {
                     TextView textview_Message = findViewById(R.id.TextViewMessage);
                     textview_Message.setText(getResources().getIdentifier("FirstThrow", "string", getPackageName()));
@@ -623,6 +647,8 @@ public class MainActivity extends AppCompatActivity {
     public void updateOneDice(int aDiceId, int value) {
         Resources res = getApplicationContext().getResources();
         ImageView aDice = findViewById(aDiceId);
+        final Animation animation = AnimationUtils.loadAnimation(this,R.anim.rotateclockwise);
+        aDice.startAnimation(animation);
         switch (value) {
             case 1: {
                 Drawable dice1 = ResourcesCompat.getDrawable(res, R.drawable.ic_dice1, null);
@@ -657,14 +683,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void  UI_setDiceColor(int Id, String color){
+    public void  UI_setDiceScale(int Id, String size){
         ImageView dice = findViewById(Id);
-        if (color.equals("white")){
-            dice.clearColorFilter();
+        if (size.equals("big")){
+            //dice.clearColorFilter();
+            dice.setScaleY((float)1.3);
+            dice.setScaleX((float)1.3);
+
         }
-        else if (color.equals("green")){
-            dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+        else if (size.equals("small")){
+            //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+            //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+            dice.setScaleY((float)1.1);
+            dice.setScaleX((float)1.1);
+
         }
+        //final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+        //dice.startAnimation(animation);
+    }
+
+    public void UI_bounceImageView(int id){
+        ImageView imview = findViewById(id);
+        final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+        imview.startAnimation(animation);
     }
 
     public void onDiceSelect(View v) {
@@ -673,54 +714,77 @@ public class MainActivity extends AppCompatActivity {
             game.setDiceArrayListRandomValue();
             ImageView dice = findViewById(v.getId());
             String diceName = dice.getResources().getResourceEntryName(dice.getId());
+            final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
             switch (diceName) {
-                case "imageViewDiceNb0": {
+                case "imViewDiceNb0": {
                     if (!game.fiveDices.diceSet[0].selected()) {
-                        dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                       // dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+                        dice.setScaleY((float)1.1);
+                        dice.setScaleX((float)1.1);
+
+                        //DrawableCompat.setTint(DrawableCompat.wrap(dice.getDrawable()), ContextCompat.getColor(this, R.color.colorPrimary ));
                     } else {
-                        dice.clearColorFilter();
+                        dice.setScaleY((float) 1.3);
+                        dice.setScaleX((float) 1.3);
+                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(0);
                 }
                 break;
-                case "imageViewDiceNb1": {
+                case "imViewDiceNb1": {
                     if (!game.fiveDices.diceSet[1].selected()) {
-                        dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        dice.setScaleY((float)1.1);
+                        dice.setScaleX((float)1.1);
                     } else {
-                        dice.clearColorFilter();
+                        dice.setScaleY((float) 1.3);
+                        dice.setScaleX((float) 1.3);
+                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(1);
                 }
                 break;
-                case "imageViewDiceNb2": {
+                case "imViewDiceNb2": {
                     if (!game.fiveDices.diceSet[2].selected()) {
-                        dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        dice.setScaleY((float)1.1);
+                        dice.setScaleX((float)1.1);
                     } else {
-                        dice.clearColorFilter();
+                        dice.setScaleY((float) 1.3);
+                        dice.setScaleX((float) 1.3);
+                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(2);
                 }
                 break;
-                case "imageViewDiceNb3": {
+                case "imViewDiceNb3": {
                     if (!game.fiveDices.diceSet[3].selected()) {
-                        dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
-
+                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        dice.setScaleY((float)1.1);
+                        dice.setScaleX((float)1.1);
                     } else {
-                        dice.clearColorFilter();
+                        dice.setScaleY((float) 1.3);
+                        dice.setScaleX((float) 1.3);
+                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(3);
                 }
                 break;
-                case "imageViewDiceNb4": {
+                case "imViewDiceNb4": {
                     if (!game.fiveDices.diceSet[4].selected()) {
-                        dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                        dice.setScaleY((float)1.1);
+                        dice.setScaleX((float)1.1);
                     } else {
-                        dice.clearColorFilter();
+                        dice.setScaleY((float) 1.3);
+                        dice.setScaleX((float) 1.3);
+                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(4);
                 }
                 break;
             }
+            dice.startAnimation(animation);
         }
     }
 }

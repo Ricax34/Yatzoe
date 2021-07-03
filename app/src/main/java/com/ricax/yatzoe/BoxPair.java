@@ -25,19 +25,18 @@ class BoxPair implements Comparable<BoxPair>{
     private Box aBox;
     private int points;
     private int oponentPoints;
-    private int allPossiblePoints=0;
+    private int allPossiblePoints;
     private int nextTurnPossiblePoints=0;
-    private int probability=0;
+    private int  probability=0;
     private int bonus =0;
     private int endOfGameBonus=0;
-    private int boxWeight=0;
+    private Double boxWeight=0.0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
-
     BoxPair(Box aBox, int points, int oponentPoints){
         this.aBox = aBox;
-        this.points=points;
-        this.oponentPoints= oponentPoints;
+        this.points= points;
+        this.oponentPoints=  oponentPoints;
     }
 
     public Integer getPairId(){
@@ -45,30 +44,28 @@ class BoxPair implements Comparable<BoxPair>{
     }
     public Box getBox(){return aBox;};
     public String getFigType(){return aBox.getFigType(); }
-    public void setPairPoints(int p){this.points = p;}
-    public Integer getPairPoints(){
-        return this.points;
-    }
+    public void setPairPoints(int p){this.points =  p;}
+    public double getPairPoints(){ return  this.points; }
     public void setOponentPoints(int p){this.oponentPoints=p;}
-    public Integer getOponentPoints(){return  this.oponentPoints;}
+    public double getOponentPoints(){return  this.oponentPoints;}
     public boolean isFullLine(){return isFullLine;}
     public boolean isOponentFullLine(){return isOponentFullLine;}
     public  void setFullLine(boolean isFullLine){this.isFullLine=isFullLine;}
     public void setOponentFullLine(boolean isOponentFullLine){this.isOponentFullLine=isOponentFullLine;}
-    public void setAllPossiblePoints(int allPossiblePoints){this.allPossiblePoints=allPossiblePoints;}
-    public Integer getAllPossiblePoints(){return allPossiblePoints;}
+    public void setAllPossiblePoints(int allPossiblePoints){this.allPossiblePoints= allPossiblePoints;}
+    public double getAllPossiblePoints(){return allPossiblePoints;}
     public void setNextTurnPossiblePoints(int p){this.nextTurnPossiblePoints=p;}
-    public Integer getNextTurnPossiblePoints(){return nextTurnPossiblePoints;}
-    public Integer getProbability(){return this.probability;}
+    public double getNextTurnPossiblePoints(){return  nextTurnPossiblePoints;}
+    public int getProbability(){return  this.probability;}
     public void setProbability(int probability){ this.probability=probability;}
     public void setBonus(int bonus){this.bonus=bonus;}
     public void setEndOfGameBonus(int endOfGameBonus){this.endOfGameBonus=endOfGameBonus; }
-    public int getEndOfGameBonus(){return endOfGameBonus;}
-    public int getBonus(){return this.bonus;}
+    public double getEndOfGameBonus(){return endOfGameBonus;}
+    public double getBonus(){return this.bonus;}
     public void setBoxWeight() {
-        this.boxWeight=this.points+this.probability+this.nextTurnPossiblePoints+this.allPossiblePoints+this.oponentPoints+this.bonus+this.endOfGameBonus;
+        this.boxWeight=(double)this.points+(double)this.probability*1.5+(double)this.nextTurnPossiblePoints+(double)this.allPossiblePoints+(double)this.oponentPoints+(double)this.bonus+(double)this.endOfGameBonus;
     }
-    public Integer getBoxWeight() {
+    public Double getBoxWeight() {
         return boxWeight;
     }
 
@@ -87,7 +84,6 @@ class BoxPair implements Comparable<BoxPair>{
     }
 
     @Override
-    public int compareTo(BoxPair bp) {
-        return this.getBoxWeight().compareTo(bp.getBoxWeight());
+    public int compareTo(BoxPair bp) { return this.getBoxWeight().compareTo(bp.getBoxWeight());
     }
 }

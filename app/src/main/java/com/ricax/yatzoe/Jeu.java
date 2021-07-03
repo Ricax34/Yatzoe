@@ -216,7 +216,7 @@ class Jeu {
             //Don't change dice.value so it is coherent with the current diceImage
             this.fiveDices.diceSet[i].isSelected = false;
             this.fiveDices.diceSet[i].color = "white";
-            mainActivity.UI_setDiceColor(this.fiveDices.diceSet[i].id, "white");
+            mainActivity.UI_setDiceScale(this.fiveDices.diceSet[i].id, "big");
         }
         switch (couleur) {
             case "red":
