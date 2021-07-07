@@ -73,11 +73,6 @@ class MachinePlayTask implements Runnable {
                     }
                     if ((!mainActivity.diceCheat)||currentGame.throwNb>0) {//cette condition est pour le cheat, à enlever + tard
                         currentGame.throwDices();
-                        /*try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }*/
                         showDroidThrowsUI(currentGame.throwNb);
                         syncFiveDicesResultsWithUI();//Shows dice results
                     }
@@ -128,7 +123,6 @@ class MachinePlayTask implements Runnable {
     public int getModulo50Prob(double proba){
         for (int i =0; i<20; i++)
             if (proba>=i*50 && proba<(i+1)*50){
-                // System.out.println("getModulo50Prob de "+proba+": "+i);
                 return i;
             }
         return 0;

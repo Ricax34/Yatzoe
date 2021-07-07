@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         //initialisation of dices
         imViewDices = new ImageView[5];
         imViewDices[0] = findViewById(R.id.imViewDiceNb0);
-//        System.out.println("imViewDices[0].getId(): "+imViewDices[0].getId());
         imViewDices[1] = findViewById(R.id.imViewDiceNb1);
         imViewDices[2] = findViewById(R.id.imViewDiceNb2);
         imViewDices[3] = findViewById(R.id.imViewDiceNb3);
@@ -272,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBoxClicked(View v) {
         if (diceCheat&&!boxFlagCheat){
-           //System.out.println("diceCheat="+diceCheat+"boxFlagcheat="+boxFlagCheat);
                 if (diceCheatIdx<5 && game.throwNb<3){
                 String tagToString = v.getTag().toString();
                 switch (tagToString) {
@@ -345,7 +343,6 @@ public class MainActivity extends AppCompatActivity {
                 thrownbCheat=2;
             else if (clickedBox.getFigType().equals(Integer.toString(3)))
                 thrownbCheat=3;
-            //System.out.println("Game thronb cheat: "+game.throwNb);
         }
         else if (game.couleur.equals("blue")) {
             //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire
@@ -429,12 +426,10 @@ public class MainActivity extends AppCompatActivity {
             redMarkersTextview.setClickable(false);
             redFlagCheat=false;
         }
-        //System.out.println("onButtonCheatClicked2 boxFlagCheat:"+boxFlagCheat);
     }
 
     public void onColorMarkersNbTVClicked(View v){
         if (boxFlagCheat&&!diceCheat){
-            //System.out.println("flagCheat: "+boxFlagCheat);
             if (v.getTag().toString().equals("blueMarkerTextView")){
                 blueFlagCheat=true;
                 redFlagCheat=false;
@@ -444,14 +439,10 @@ public class MainActivity extends AppCompatActivity {
                 blueFlagCheat=false;
             }
         }
-        else{
-            //System.out.println("No box cheats!");
-            }
     }
 
     public void onButtonDiceCheatClicked (View v){
         diceCheat= !diceCheat;
-        //System.out.println("DiceCheat: "+diceCheat);
         ImageView diceCheatView = findViewById(v.getId());
         if (diceCheat)
             diceCheatView.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_light));
@@ -686,20 +677,15 @@ public class MainActivity extends AppCompatActivity {
     public void  UI_setDiceScale(int Id, String size){
         ImageView dice = findViewById(Id);
         if (size.equals("big")){
-            //dice.clearColorFilter();
             dice.setScaleY((float)1.3);
             dice.setScaleX((float)1.3);
 
         }
         else if (size.equals("small")){
-            //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
-            //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_dark));
             dice.setScaleY((float)1.1);
             dice.setScaleX((float)1.1);
 
         }
-        //final Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-        //dice.startAnimation(animation);
     }
 
     public void UI_bounceImageView(int id){
@@ -718,67 +704,56 @@ public class MainActivity extends AppCompatActivity {
             switch (diceName) {
                 case "imViewDiceNb0": {
                     if (!game.fiveDices.diceSet[0].selected()) {
-                       // dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_red_dark));
                         dice.setScaleY((float)1.1);
                         dice.setScaleX((float)1.1);
 
-                        //DrawableCompat.setTint(DrawableCompat.wrap(dice.getDrawable()), ContextCompat.getColor(this, R.color.colorPrimary ));
                     } else {
                         dice.setScaleY((float) 1.3);
                         dice.setScaleX((float) 1.3);
-                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(0);
                 }
                 break;
                 case "imViewDiceNb1": {
                     if (!game.fiveDices.diceSet[1].selected()) {
-                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                         dice.setScaleY((float)1.1);
                         dice.setScaleX((float)1.1);
                     } else {
                         dice.setScaleY((float) 1.3);
                         dice.setScaleX((float) 1.3);
-                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(1);
                 }
                 break;
                 case "imViewDiceNb2": {
                     if (!game.fiveDices.diceSet[2].selected()) {
-                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                         dice.setScaleY((float)1.1);
                         dice.setScaleX((float)1.1);
                     } else {
                         dice.setScaleY((float) 1.3);
                         dice.setScaleX((float) 1.3);
-                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(2);
                 }
                 break;
                 case "imViewDiceNb3": {
                     if (!game.fiveDices.diceSet[3].selected()) {
-                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                         dice.setScaleY((float)1.1);
                         dice.setScaleX((float)1.1);
                     } else {
                         dice.setScaleY((float) 1.3);
                         dice.setScaleX((float) 1.3);
-                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(3);
                 }
                 break;
                 case "imViewDiceNb4": {
                     if (!game.fiveDices.diceSet[4].selected()) {
-                        //dice.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                         dice.setScaleY((float)1.1);
                         dice.setScaleX((float)1.1);
                     } else {
                         dice.setScaleY((float) 1.3);
                         dice.setScaleX((float) 1.3);
-                        //dice.clearColorFilter();
                     }
                     game.toggleSelectDice(4);
                 }
