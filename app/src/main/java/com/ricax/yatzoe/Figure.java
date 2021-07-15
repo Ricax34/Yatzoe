@@ -275,7 +275,6 @@ class Figure {
                 for (int i= 0; i<5; i++)
                     System.out.print(tempDiceSetIndValues[i][1]);
 
-                //TODO ne fonctionne pas
                 for (int val= 1; val<6; val++){
                     for (int i =0; i<5; i++){
                         if (tempDiceSetIndValues[i][1]==val){
