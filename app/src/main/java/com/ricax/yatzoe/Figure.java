@@ -257,6 +257,7 @@ class Figure {
     }
 
     public void selectForSuite(){
+        System.out.println("selectForSuite");
         if (!figureList.contains("Suite")){
             int idx= getIdxFrom4inARow();
             System.out.println("Idx:"+idx);
@@ -268,12 +269,32 @@ class Figure {
             else{
                 ArrayList<Integer> petiteListe = new ArrayList<>();
                 ArrayList<Integer> grandeListe = new ArrayList<>();
-                for (int i= 0; i<5; i++){
-                    if (tempDiceSetIndValues[i][1]==i+1)
-                        petiteListe.add(tempDiceSetIndValues[i][0]);
-                    if (tempDiceSetIndValues[i][1]==i+2)
-                        grandeListe.add(tempDiceSetIndValues[i][0]);
+                for (int i= 0; i<5; i++)
+                    System.out.print(tempDiceSetIndValues[i][0]);
+                System.out.println("");
+                for (int i= 0; i<5; i++)
+                    System.out.print(tempDiceSetIndValues[i][1]);
+
+                //TODO ne fonctionne pas
+                for (int val= 1; val<6; val++){
+                    for (int i =0; i<5; i++){
+                        if (tempDiceSetIndValues[i][1]==val){
+                         petiteListe.add(tempDiceSetIndValues[i][0]);
+                         break;
+                        }
+                    }
+                    continue;
                 }
+                for (int val= 2; val<7; val++){
+                    for (int i =0; i<5; i++){
+                        if (tempDiceSetIndValues[i][1]==val){
+                           grandeListe.add(tempDiceSetIndValues[i][0]);
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
                 for (int i =0; i<5; i++)
                     diceSet[i].isSelected=true;
                 if (petiteListe.size()>=grandeListe.size())
@@ -282,6 +303,8 @@ class Figure {
                 else
                     for (int i=0; i<grandeListe.size(); i++)
                         diceSet[grandeListe.get(i)].isSelected=false;
+                System.out.println("petite suite: "+petiteListe);
+                System.out.println("grande suite: "+grandeListe);
             }
         }
         else {

@@ -646,10 +646,12 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")){
             if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
-                    //System.out.println("setEndOfGameBonus1: 20");
+                    System.out.println("setEndOfGameBonus1: 20 pour la box "+aBox);
+                    appendLog("setEndOfGameBonus1: 20 pour la box "+aBox);
                     bonus= 20;
                 } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
-                    //System.out.println("setEndOfGameBonus1: -20");
+                    System.out.println("setEndOfGameBonus1: -20 pour la box "+aBox);
+                    appendLog("setEndOfGameBonus1: -20 pour la box "+aBox);
                     bonus= -20;
                 }
             }
@@ -657,7 +659,8 @@ class MachinePlayTask implements Runnable {
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
-                    //System.out.println("setEndOfGameBonus2 : 20");
+                    System.out.println("setEndOfGameBonus2 : 20 pour la box "+aBox);
+                    appendLog("setEndOfGameBonus2: 20 pour la box "+aBox);
                     bonus = 20;
                 }
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
@@ -843,6 +846,13 @@ class MachinePlayTask implements Runnable {
             //manageEndOfGameBonus
             if (manageEndOfGameBonus(currentGame, nextBoxPairList))
                 Collections.sort(nextBoxPairList);
+            //si endOfGameBonus=-20, on enlève les cases qui feraient perdre la machine
+            for (int i =0; i<nextBoxPairList.size(); i++)
+            if (nextBoxPairList.get(i).getEndOfGameBonus()<0){
+                System.out.println("remove boxPair: "+nextBoxPairList.get(i));
+                appendLog("remove boxPair: "+nextBoxPairList.get(i));
+                nextBoxPairList.remove(i);
+            }
         }
         if (mainActivity.logFlag){
             //Afficher
@@ -869,15 +879,20 @@ class MachinePlayTask implements Runnable {
             System.out.println("optimalBox:");
             System.out.println("Box BW Pts pb NTPP APP OPts B EGB");
             System.out.println(optimalBox);
+            if (optimalBox.getFigType().equals("Appel"))
+                System.out.println("Figure appelée: "+machineFigureAppel);
 
             appendLog("optimalBox");
             appendLog("Box BW Pts pb NTPP APP OPts B EGB");
             appendLog(optimalBox.toString());
+            if (optimalBox.getFigType().equals("Appel"))
+                appendLog("Figure appelée: "+machineFigureAppel);
         }
         if (optimalBox.getId()!=0){
             //Si la meilleure box correspond à la figure obtenue
             if (currentGame.fiveDices.figureList.contains(optimalBox.getFigType()))
                 //Alors poser un pion dessus (y compris case appel)
+                //if (optimalBox.)
                 return machinePlaceMarkerById(optimalBox.getId());
                 //sinon tenter cette box
             else if (currentGame.throwNb<currentGame.maxThrowNb){
@@ -966,15 +981,22 @@ class MachinePlayTask implements Runnable {
         {
             int valBrelan = aGame.fiveDices.getBrelanValue();
             if (valBrelan>0) {
-                ArrayList<BoxPair> pairs = new ArrayList<>();
-                pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valBrelan), "white"));
-                if (pairs.size() > 0)
+                //TODO voir si on privilégie la tentative de carre à partir d'un brelan non posable
+                //ou bien si on tente a partir d'une paire/singleton->brelan posable
+                //ArrayList<BoxPair> pairs = new ArrayList<>();
+                //pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valBrelan), "white"));
+                //if (pairs.size() > 0)
                     selectForBrelan(aGame, valBrelan);
             }
         }
         else if (aGame.fiveDices.figureContainsPair()){
-            if (aGame.fiveDices.figureContainsDoublePair())
-                aGame.fiveDices.selectForBrelan(getBestBrelanAvailableFromDoublePair(aGame));
+            if (aGame.fiveDices.figureContainsDoublePair()){
+                int bestBrelanAvailable=getBestBrelanAvailableFromDoublePair(aGame);
+                if (bestBrelanAvailable>0)
+                    aGame.fiveDices.selectForBrelan(getBestBrelanAvailableFromDoublePair(aGame));
+                else
+                    aGame.fiveDices.selectForBrelan(getFirstAvailablePairValue(aGame));
+            }
             else
                 aGame.fiveDices.selectForBrelan(getFirstAvailablePairValue(aGame));
         }
