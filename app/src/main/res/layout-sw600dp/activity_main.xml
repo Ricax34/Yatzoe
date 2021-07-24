@@ -270,51 +270,66 @@
 
     <ImageView
         android:id="@+id/imViewDiceNb0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/background_light"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TextViewMessage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="onDiceSelect"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
+        app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb1"
+        app:layout_constraintEnd_toStartOf="@+id/imViewDiceNb1"
         app:srcCompat="@drawable/ic_dice1" />
 
     <ImageView
         android:id="@+id/imViewDiceNb1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/background_light"
-        app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb0"
-        app:layout_constraintStart_toEndOf="@+id/imViewDiceNb0"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="onDiceSelect"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
+        app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb2"
+        app:layout_constraintEnd_toStartOf="@+id/imViewDiceNb2"
         app:srcCompat="@drawable/ic_dice2" />
 
     <ImageView
         android:id="@+id/imViewDiceNb2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/background_light"
-        app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb1"
-        app:layout_constraintStart_toEndOf="@+id/imViewDiceNb1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="onDiceSelect"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextViewMessage"
         app:srcCompat="@drawable/ic_dice3" />
 
     <ImageView
         android:id="@+id/imViewDiceNb3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/background_light"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="onDiceSelect"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
         app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb2"
         app:layout_constraintStart_toEndOf="@+id/imViewDiceNb2"
         app:srcCompat="@drawable/ic_dice4" />
 
     <ImageView
         android:id="@+id/imViewDiceNb4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/background_light"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="onDiceSelect"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
         app:layout_constraintBottom_toBottomOf="@+id/imViewDiceNb3"
         app:layout_constraintStart_toEndOf="@+id/imViewDiceNb3"
         app:srcCompat="@drawable/ic_dice5" />
@@ -324,25 +339,24 @@
         android:layout_width="184dp"
         android:layout_height="80dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
         android:onClick="startNewGame"
         android:text="@string/StartButton"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/BoutonLancer"
-        app:layout_constraintStart_toEndOf="@+id/skipButton" />
+        app:layout_constraintStart_toEndOf="@+id/skipButton"
+        app:layout_constraintTop_toBottomOf="@+id/imViewDiceNb2" />
 
     <Button
         android:id="@+id/skipButton"
         android:layout_width="134dp"
         android:layout_height="80dp"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="32dp"
         android:onClick="onButtonSkipClicked"
         android:text="@string/skipButton"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonStartNewGame"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -350,11 +364,10 @@
         android:layout_width="134dp"
         android:layout_height="80dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
         android:onClick="onButtonClickRollAllSelectedDices"
         android:text="@string/Bouton_Lancer"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonStartNewGame"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView

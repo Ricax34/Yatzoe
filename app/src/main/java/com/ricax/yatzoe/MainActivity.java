@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     boolean diceCheat = false;
     int diceCheatIdx=0;
     int thrownbCheat=0;
-    boolean logFlag = true;
+    boolean logFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void guessScreenSize(){
+        //TODO: a faire pour adapter aux differents écrans
+    }
     //new game
     private Jeu game;
 

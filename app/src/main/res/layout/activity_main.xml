@@ -542,7 +542,7 @@
 
     <ImageView
         android:id="@+id/imViewDiceNb4"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
