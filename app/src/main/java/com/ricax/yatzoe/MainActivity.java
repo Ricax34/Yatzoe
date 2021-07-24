@@ -343,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
                 thrownbCheat=2;
             else if (clickedBox.getFigType().equals(Integer.toString(3)))
                 thrownbCheat=3;
+            System.out.println("thrownbCheat: "+thrownbCheat);
         }
         else if (game.couleur.equals("blue")) {
             //Chaque fois que l'on clique sur une box on prépare une valeur aléatoire

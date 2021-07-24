@@ -86,7 +86,7 @@ class MachinePlayTask implements Runnable {
                     String target = machineChoseFromDices();
                     if (mainActivity.logFlag)
                     {
-                        System.out.println("Target: "+target);
+                        //System.out.println("Target: "+target);
                         appendLog("Target: "+target);
                     }
                     if (target.matches(".*(1|2|3|4|5|6|Appel|Carre|Full|Yam|Suite|Sec|Small).*")) {
@@ -219,15 +219,14 @@ class MachinePlayTask implements Runnable {
         return aFigure;
     }
 
-    public int setBrelanBoxBonus(Jeu aGame, BoxPair aboxPair){
+    public int setBrelanBoxBonus(Jeu aGame, BoxPair aFreeboxPair){
         ArrayList<Box> freeBoxList= getFreeBoxList(aGame);
         //Si on a un brelan dont la box est libre
         String currFigs = aGame.fiveDices.figureList;
-        // int bonus =0;
         if (currFigs.matches(".*([123456]).*")) {
             int bonus =0;
             String brelanValue = aGame.fiveDices.checkForBrelan();
-            if (aboxPair.getFigType().equals("Yam")) {
+            if (aFreeboxPair.getFigType().equals("Yam")) {
                /* System.out.println("Yam1");
                 System.out.println("currfigs:");
                 System.out.println(currFigs);
@@ -238,21 +237,21 @@ class MachinePlayTask implements Runnable {
                 System.out.println("C:"+!(boxListContains(freeBoxList, "Small") && currFigs.contains("Small")));
                 */
                 if (boxListContains(freeBoxList, brelanValue)) {
-                    //System.out.println("bonus1 +20");
+                    appendLog("bonus1 +20 pour "+aFreeboxPair.getBox());
                     bonus += 20;//pour ne pas se faire squeezer par la proba de 20 du brelan
                 }
                 if ((boxListContains(freeBoxList, brelanValue) && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus2 +20");
+                    appendLog("bonus2 +20 pour "+aFreeboxPair.getBox());
                     bonus +=20;
                 }
                 if ((boxListContains(freeBoxList, "Carre") && !(boxListContains(freeBoxList, "Full") && currFigs.contains("Full")))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus3 +20");
+                    appendLog("bonus3 +20 pour "+aFreeboxPair.getBox());
                     bonus +=20;
                 }
                 if (currFigs.contains("Carre"))
@@ -260,78 +259,74 @@ class MachinePlayTask implements Runnable {
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                             && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                     ){
-                        //System.out.println("bonus4 +20");
+                        appendLog("bonus4 +20 pour "+aFreeboxPair.getBox());
                         bonus+=20;
                     }
                 if ((boxListContains(freeBoxList, "Full")&& ! currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus5 +20");
+                    appendLog("bonus5 +20 pour "+aFreeboxPair.getBox());
                     bonus +=20;
                 }
                 if (brelanValue.equals(Integer.toString(1)))
                     if ((boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
-                        //System.out.println("bonus6 +20");
+                        appendLog("bonus6 +20 pour "+aFreeboxPair.getBox());
                         bonus+=20;
                     }
-                //System.out.println("bonus pour "+aboxPair.getFigType()+": "+bonus);
                 return bonus;
             }
-            else if (aboxPair.getFigType().equals("Carre")) {
+            else if (aFreeboxPair.getFigType().equals("Carre")) {
                 if ((boxListContains(freeBoxList, brelanValue) && !currFigs.contains("Carre"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus7 +20");
+                    appendLog("bonus7 +20 pour "+aFreeboxPair.getBox());
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Full") && !currFigs.contains("Full"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus8 +20");
+                    appendLog("bonus8 +20 pour "+aFreeboxPair.getBox());
                     return 20;
                 }
                 if ((boxListContains(freeBoxList, "Yam") && ! currFigs.contains("Yam"))
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus9 +20");
+                    appendLog("bonus9 +20 pour "+aFreeboxPair.getBox());
                     return 20;
                 }
             }
-            else if (aboxPair.getFigType().equals("Small")) {
-                // int bonus =0;
-                if (brelanValue.equals(Integer.toString(1))){
+            else if (aFreeboxPair.getFigType().equals("Small")) {
+                if (brelanValue.equals("1")){
                     if (boxListContains(freeBoxList, brelanValue)
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     )
                     {
-                        //System.out.println("bonus10 +20");
+                        appendLog("bonus10 +20 pour "+aFreeboxPair.getBox());
                         bonus += 20;
                     }
                     if ((boxListContains(freeBoxList, "Carre") && !(currFigs.contains("Small")&& boxListContains(freeBoxList, "Small")))
                             && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
-                        //System.out.println("bonus11 +20");
+                        appendLog("bonus11 +20 pour "+aFreeboxPair.getBox());
                         bonus += 20;
                     }
                 }
                 return bonus;
             }
 
-            else if (aboxPair.getFigType().equals("Full")){
-                //int bonus = 0;
-                if (brelanValue.equals(Integer.toString(1))){
+            else if (aFreeboxPair.getFigType().equals("Full")){
+                if (brelanValue.equals("1")||brelanValue.equals("2")){
                     if (
                             (boxListContains(freeBoxList, "Small") && !currFigs.contains("Small"))
                                     && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                     ){
-                        //System.out.println("bonus12 +20");
+                        appendLog("bonus12 +20 pour "+aFreeboxPair.getBox());
                         bonus += 20;
-
                     }
                 }
                 if ((boxListContains(freeBoxList, brelanValue) &&
@@ -339,22 +334,20 @@ class MachinePlayTask implements Runnable {
                         && !(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
                         && !(boxListContains(freeBoxList, "Small") && currFigs.contains("Small"))
                 ){
-                    //System.out.println("bonus13 +20");
+                    appendLog("bonus13 +20 pour "+aFreeboxPair.getBox());
                     bonus+=20;
                 }
                 return bonus;
             }
+            else if (aFreeboxPair.getFigType().equals("1")||aFreeboxPair.getFigType().equals("2"))
+                if (currFigs.contains("1")||currFigs.contains("2"))
+                    if (boxListContains(freeBoxList, "Small"))
+                        if (currFigs.contains("Small"))
+                            if (!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
+                                appendLog("bonus14 +20 pour "+aFreeboxPair.getBox());
+                                return 20;
+                            }
         }
-        //TODO verifier de l'opportunité de ce qui suit
-        /*else if(aboxPair.getFigType().equals("Full")){
-            //si on part d'une paire de 1 et d'une paire de 2
-            if (aGame.fiveDices.figureContainsDoublePair())
-                if (boxListContains(freeBoxList, "Small"))
-                    if (aGame.fiveDices.getPairValues(true, false)==1 && aGame.fiveDices.getPairValues(false, true)==2){
-                        bonus += 5;
-                        return bonus;
-                    }
-        }*/
         return 0;
     }
 
@@ -494,23 +487,23 @@ class MachinePlayTask implements Runnable {
     //TODO régler la question EXISTENCIELLE: la proba sur 2 jets ne vaut que si on tente VRAIMENT 2 jets
     //si la sélection se fait sur la proba sur 2 jets (ie: la proba EST le facteur qui fait pencher la balance pour 2 jets),
     // alors faire en sorte que cela ne change pas l'ordre des choix après le 2éme jet (sur 3)
-    private void setBoxWeight(Jeu aGame, BoxPair aBoxPair, String aColor){
+    private void setBoxWeight(Jeu aGame, BoxPair aFreeBoxPair, String aColor){
         String oponentColor="";
         if (aColor.equals("red")) oponentColor="blue";
         else if (aColor.equals("blue")) oponentColor="red";
-        Box aBox=aBoxPair.getBox();
-        aBoxPair.setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, aColor, aBox));
-        aBoxPair.setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, oponentColor, aBox));
-        aBoxPair.setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, aColor, aBox ));
-        aBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
-        aBoxPair.setProbability(getBoxProbability(aGame, aBox));
+        Box aBox=aFreeBoxPair.getBox();
+        aFreeBoxPair.setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, aColor, aBox));
+        aFreeBoxPair.setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, oponentColor, aBox));
+        aFreeBoxPair.setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, aColor, aBox ));
+        aFreeBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
+        aFreeBoxPair.setProbability(getBoxProbability(aGame, aBox));
         int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox) +setEndOfGameBonus(aGame, "blue", aBox);
-        aBoxPair.setEndOfGameBonus(endOfGameBonus);
+        aFreeBoxPair.setEndOfGameBonus(endOfGameBonus);
         int bonus=0;
         if (aGame.throwNb<aGame.maxThrowNb)
-            bonus += setBrelanBoxBonus(aGame, aBoxPair);
-        aBoxPair.setBonus(bonus);
-        aBoxPair.setBoxWeight();
+            bonus += setBrelanBoxBonus(aGame, aFreeBoxPair);
+        aFreeBoxPair.setBonus(bonus);
+        aFreeBoxPair.setBoxWeight();
     }
 
     public Boolean manageEndOfGameBonus(Jeu currentGame, ArrayList<BoxPair> bpArrayList){
@@ -646,11 +639,11 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")){
             if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
-                    System.out.println("setEndOfGameBonus1: 20 pour la box "+aBox);
+                    //System.out.println("setEndOfGameBonus1: 20 pour la box "+aBox);
                     appendLog("setEndOfGameBonus1: 20 pour la box "+aBox);
                     bonus= 20;
                 } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
-                    System.out.println("setEndOfGameBonus1: -20 pour la box "+aBox);
+                    //System.out.println("setEndOfGameBonus1: -20 pour la box "+aBox);
                     appendLog("setEndOfGameBonus1: -20 pour la box "+aBox);
                     bonus= -20;
                 }
@@ -659,7 +652,7 @@ class MachinePlayTask implements Runnable {
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
-                    System.out.println("setEndOfGameBonus2 : 20 pour la box "+aBox);
+                    //System.out.println("setEndOfGameBonus2 : 20 pour la box "+aBox);
                     appendLog("setEndOfGameBonus2: 20 pour la box "+aBox);
                     bonus = 20;
                 }
@@ -745,7 +738,7 @@ class MachinePlayTask implements Runnable {
         return aBoxList;
     }
 
-    private ArrayList<Box> getBestUltimateBox(Jeu aGame) {
+    private ArrayList<Box> getBestUltimateFreeBoxList(Jeu aGame) {
         List<JeuCombinaison> jcRedList = AllCombinationsAvailable("red", aGame);
 
       /*
@@ -798,10 +791,10 @@ class MachinePlayTask implements Runnable {
         if (mainActivity.logFlag){
             if (currentGame.throwNb==1){
                 appendLog(gameStateToString());
-                System.out.println(gameStateToString());
+                //System.out.println(gameStateToString());
             }
             appendLog(currentGame.printSelectedDice());
-            System.out.println(currentGame.printSelectedDice());
+            //System.out.println(currentGame.printSelectedDice());
         }
 
         if (currentGame.throwNb < currentGame.maxThrowNb)
@@ -817,15 +810,15 @@ class MachinePlayTask implements Runnable {
 
         //TODO gérer le cas où il n'y a pas de combinaison gagnante pour les rouges
         //Recupérer les box libres
-        ArrayList<Box> aBoxList;
+        ArrayList<Box> aFreeBoxList;
         //TODO gérer le cas où il y a beaucoup de possibilités pour les red et que les bleus sont <5
         if ((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5))
-            aBoxList = getBestUltimateBox(currentGame); //Normalement jamais vide
-        else aBoxList = getListFreeBox(currentGame);//Normalement jamais vide
+            aFreeBoxList = getBestUltimateFreeBoxList(currentGame); //Normalement jamais vide
+        else aFreeBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
         if (currentGame.throwNb==currentGame.maxThrowNb){
             String currentFigureList = currentGame.fiveDices.figureList;
-            Iterator<Box> it = aBoxList.iterator();
+            Iterator<Box> it = aFreeBoxList.iterator();
             while (it.hasNext()){
                 Box nextBox = it.next();
                 if (!currentFigureList.contains(nextBox.getFigType()))
@@ -833,41 +826,41 @@ class MachinePlayTask implements Runnable {
             }
         }
         //les stocker dans une liste de boxPairs
-        ArrayList<BoxPair> nextBoxPairList = new ArrayList<>();
-        for (int i = 0; i < aBoxList.size(); i++)
-            nextBoxPairList.add(new BoxPair(aBoxList.get(i),0,  0));
+        ArrayList<BoxPair> freeBoxPairList = new ArrayList<>();
+        for (int i = 0; i < aFreeBoxList.size(); i++)
+            freeBoxPairList.add(new BoxPair(aFreeBoxList.get(i),0,  0));
 
         //Leur donner leur poids
-        for (int i = 0; i<nextBoxPairList.size(); i++)
-            setBoxWeight(currentGame, nextBoxPairList.get(i), "red");
+        for (int i = 0; i<freeBoxPairList.size(); i++)
+            setBoxWeight(currentGame, freeBoxPairList.get(i), "red");
         //Trier
-        if (!nextBoxPairList.isEmpty()){
-            Collections.sort(nextBoxPairList);
+        if (!freeBoxPairList.isEmpty()){
+            Collections.sort(freeBoxPairList);
             //manageEndOfGameBonus
-            if (manageEndOfGameBonus(currentGame, nextBoxPairList))
-                Collections.sort(nextBoxPairList);
+            if (manageEndOfGameBonus(currentGame, freeBoxPairList))
+                Collections.sort(freeBoxPairList);
             //si endOfGameBonus=-20, on enlève les cases qui feraient perdre la machine
-            for (int i =0; i<nextBoxPairList.size(); i++)
-            if (nextBoxPairList.get(i).getEndOfGameBonus()<0){
-                System.out.println("remove boxPair: "+nextBoxPairList.get(i));
-                appendLog("remove boxPair: "+nextBoxPairList.get(i));
-                nextBoxPairList.remove(i);
-            }
+            for (int i =0; i<freeBoxPairList.size(); i++)
+                if (freeBoxPairList.get(i).getEndOfGameBonus()<0){
+                    //System.out.println("remove boxPair: "+freeBoxPairList.get(i));
+                    appendLog("remove boxPair: "+freeBoxPairList.get(i));
+                    freeBoxPairList.remove(i);
+                }
         }
         if (mainActivity.logFlag){
             //Afficher
-            System.out.println("nextBoxPairList");
-            System.out.println("Box         BW (Pts pb NTPP APP OPts B EGB)");
-            System.out.println(nextBoxPairList);
+            //System.out.println("nextBoxPairList");
+            //System.out.println("Box         BW (Pts pb NTPP APP OPts B EGB)");
+            //System.out.println(freeBoxPairList);
             appendLog("nextBoxPairList");
             appendLog("Box BW (Pts pb NTPP APP OPts B EGB)");
-            appendLog(nextBoxPairList.toString());
+            appendLog(freeBoxPairList.toString());
         }
 
         Box optimalBox = new Box();
         if (!currentGame.appelClicked){
-            if (!nextBoxPairList.isEmpty())
-                optimalBox= nextBoxPairList.get(nextBoxPairList.size()-1).getBox();
+            if (!freeBoxPairList.isEmpty())
+                optimalBox= freeBoxPairList.get(freeBoxPairList.size()-1).getBox();
         }
         else{
             optimalBox=appelBox;
@@ -876,11 +869,11 @@ class MachinePlayTask implements Runnable {
             if (currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel"))
                 checkForMissedAppel(currentGame);
         if (mainActivity.logFlag) {
-            System.out.println("optimalBox:");
-            System.out.println("Box BW Pts pb NTPP APP OPts B EGB");
-            System.out.println(optimalBox);
-            if (optimalBox.getFigType().equals("Appel"))
-                System.out.println("Figure appelée: "+machineFigureAppel);
+            //System.out.println("optimalBox:");
+            //System.out.println("Box BW Pts pb NTPP APP OPts B EGB");
+            //System.out.println(optimalBox);
+           // if (optimalBox.getFigType().equals("Appel"))
+                //System.out.println("Figure appelée: "+machineFigureAppel);
 
             appendLog("optimalBox");
             appendLog("Box BW Pts pb NTPP APP OPts B EGB");
@@ -892,7 +885,6 @@ class MachinePlayTask implements Runnable {
             //Si la meilleure box correspond à la figure obtenue
             if (currentGame.fiveDices.figureList.contains(optimalBox.getFigType()))
                 //Alors poser un pion dessus (y compris case appel)
-                //if (optimalBox.)
                 return machinePlaceMarkerById(optimalBox.getId());
                 //sinon tenter cette box
             else if (currentGame.throwNb<currentGame.maxThrowNb){
@@ -986,7 +978,7 @@ class MachinePlayTask implements Runnable {
                 //ArrayList<BoxPair> pairs = new ArrayList<>();
                 //pairs.addAll(aGame.getListBoxPairColorPerFigure(Integer.toString(valBrelan), "white"));
                 //if (pairs.size() > 0)
-                    selectForBrelan(aGame, valBrelan);
+                selectForBrelan(aGame, valBrelan);
             }
         }
         else if (aGame.fiveDices.figureContainsPair()){
@@ -1201,7 +1193,7 @@ class MachinePlayTask implements Runnable {
     //Checks if the appel is missed and resets flags
     private void checkForMissedAppel(Jeu aGame){
         if (mainActivity.logFlag){
-            System.out.println("checkForMissedAppel");
+            //System.out.println("checkForMissedAppel");
             appendLog("checkForMissedAppel");
         }
         if (aGame.appelClicked){
@@ -1374,6 +1366,7 @@ class MachinePlayTask implements Runnable {
 
     public void appendLog(String text)
     {
+        System.out.println(text);
         Context context = mainActivity.getApplicationContext();
         File path= context.getExternalFilesDir(null);
         File logFile = new File(path, "YatzoeLog"+currentGame.dateFormat+".txt");

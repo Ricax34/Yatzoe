@@ -278,8 +278,8 @@ class Figure {
                 for (int val= 1; val<6; val++){
                     for (int i =0; i<5; i++){
                         if (tempDiceSetIndValues[i][1]==val){
-                         petiteListe.add(tempDiceSetIndValues[i][0]);
-                         break;
+                            petiteListe.add(tempDiceSetIndValues[i][0]);
+                            break;
                         }
                     }
                     continue;
@@ -287,7 +287,7 @@ class Figure {
                 for (int val= 2; val<7; val++){
                     for (int i =0; i<5; i++){
                         if (tempDiceSetIndValues[i][1]==val){
-                           grandeListe.add(tempDiceSetIndValues[i][0]);
+                            grandeListe.add(tempDiceSetIndValues[i][0]);
                             break;
                         }
                     }
@@ -330,7 +330,7 @@ class Figure {
     public void selectForSmall() {
         if (!figureList.contains("Small")){
 
-            //Select dice so that (sum of 1s & 2s) < 5
+            //Select dice so that (sum of 1s & 2s) <=6
             int sum=0;
             for (int i=0; i<5; i++)
                 diceSet[tempDiceSetIndValues[i][0]].isSelected = true;
@@ -341,11 +341,11 @@ class Figure {
                 }
             }
             for (int i = 0; i<5; i++){
-                if (diceSet[tempDiceSetIndValues[i][0]].value==2){
-                    diceSet[tempDiceSetIndValues[i][0]].isSelected = false;
-                    if (sum+diceSet[tempDiceSetIndValues[i][0]].value<6)
+                if (sum+diceSet[tempDiceSetIndValues[i][0]].value<6)
+                    if (diceSet[tempDiceSetIndValues[i][0]].value==2){
+                        diceSet[tempDiceSetIndValues[i][0]].isSelected = false;
                         sum+= diceSet[tempDiceSetIndValues[i][0]].value;
-                }
+                    }
             }
 
 
