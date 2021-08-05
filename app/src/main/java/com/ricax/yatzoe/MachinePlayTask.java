@@ -338,14 +338,25 @@ class MachinePlayTask implements Runnable {
                 }
                 return bonus;
             }
+            //Garder le brelan de 1 ou 2 pour tenter le small/full et pouvoir mettre le brelan si on rate le small/full
             else if (aFreeboxPair.getFigType().equals("1")||aFreeboxPair.getFigType().equals("2"))
-                if (currFigs.contains("1")||currFigs.contains("2"))
-                    if (boxListContains(freeBoxList, "Small"))
-                        if (currFigs.contains("Small"))
+                if (currFigs.contains("1")||currFigs.contains("2")){
+                    if (boxListContains(freeBoxList, "Small")){
+                        if (!currFigs.contains("Small"))
                             if (!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
                                 appendOutLog("bonus14 +20 pour "+aFreeboxPair.getBox());
                                 return 20;
                             }
+                    }
+                    if (boxListContains(freeBoxList, "Full")){
+                        if (! currFigs.contains("Full")){
+                            if (!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
+                                appendOutLog("bonus15 +20 pour "+aFreeboxPair.getBox());
+                                return 20;
+                            }
+                        }
+                    }
+                }
         }
         return 0;
     }
@@ -1369,7 +1380,7 @@ public void appendOutLog(String text){
 }*/
     public void appendOutLog(String text)
     {
-        //System.out.print(text);
+        System.out.println(text);
         Context context = mainActivity.getApplicationContext();
         File path= context.getExternalFilesDir(null);
         File logFile = new File(path, "YatzoeLog"+currentGame.dateFormat+".txt");
