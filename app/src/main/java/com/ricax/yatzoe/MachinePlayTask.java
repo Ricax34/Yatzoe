@@ -85,7 +85,6 @@ class MachinePlayTask implements Runnable {
                     String target = machineChoseFromDices();
                     if (mainActivity.logFlag)
                     {
-                        //System.out.println("Target: "+target);
                         appendOutLog("Target: "+target);
                     }
                     if (target.matches(".*(1|2|3|4|5|6|Appel|Carre|Full|Yam|Suite|Sec|Small).*")) {
@@ -181,7 +180,7 @@ class MachinePlayTask implements Runnable {
         }
         //Sort according to the only probability
         Collections.sort(boxPairAppelFigures);
-        //System.out.println("getBestAppelTargetFigureFromDiceSet: "+boxPairAppelFigures.get(boxPairAppelFigures.size()-1).getFigType());
+        appendOutLog("getBestAppelTargetFigureFromDiceSet: "+boxPairAppelFigures.toString());
         return boxPairAppelFigures.get(boxPairAppelFigures.size()-1);
     }
 
@@ -508,6 +507,7 @@ class MachinePlayTask implements Runnable {
         aFreeBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
         aFreeBoxPair.setProbability(getBoxProbability(aGame, aBox));
         int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox) +setEndOfGameBonus(aGame, "blue", aBox);
+        appendOutLog("endOfGameBonus: "+endOfGameBonus);
         aFreeBoxPair.setEndOfGameBonus(endOfGameBonus);
         int bonus=0;
         if (aGame.throwNb<aGame.maxThrowNb)
@@ -524,11 +524,12 @@ class MachinePlayTask implements Runnable {
             for (int i =0; i<bpArrayList.size(); i++){
                 if(bpArrayList.get(i).getProbability()>firstBoxPair.getProbability())
                     if (bpArrayList.get(i).getPairPoints()>firstBoxPair.getPairPoints())
-                        if (currentGame.redPoints+bpArrayList.get(i).getPairPoints()>currentGame.bluePoints)
+                        if (currentGame.redPoints+bpArrayList.get(i).getPairPoints()>currentGame.bluePoints){
+                            // System.out.println("manageEndOfGameBonus 0 pour:"+firstBoxPair.getBox());
                             firstBoxPair.setEndOfGameBonus(0);
+                        }
             }
             if (firstBoxPair.getEndOfGameBonus()==0){
-                //System.out.println("managed end of game!: bp="+firstBoxPair);
                 firstBoxPair.setBoxWeight();
                 return true;
             }
@@ -649,11 +650,9 @@ class MachinePlayTask implements Runnable {
         if (aColor.equals("red")){
             if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
-                    //System.out.println("setEndOfGameBonus1: 20 pour la box "+aBox);
                     appendOutLog("setEndOfGameBonus1: 20 pour la box "+aBox);
                     bonus= 20;
                 } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
-                    //System.out.println("setEndOfGameBonus1: -20 pour la box "+aBox);
                     appendOutLog("setEndOfGameBonus1: -20 pour la box "+aBox);
                     bonus= -20;
                 }
@@ -662,7 +661,6 @@ class MachinePlayTask implements Runnable {
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
-                    //System.out.println("setEndOfGameBonus2 : 20 pour la box "+aBox);
                     appendOutLog("setEndOfGameBonus2: 20 pour la box "+aBox);
                     bonus = 20;
                 }
@@ -671,6 +669,7 @@ class MachinePlayTask implements Runnable {
                 }
             }
         }
+        System.out.println("setEndOfGameBonus bonus: "+bonus);
         return bonus;
     }
 
@@ -802,10 +801,8 @@ class MachinePlayTask implements Runnable {
         if (mainActivity.logFlag){
             if (currentGame.throwNb==1){
                 appendOutLog(gameStateToString());
-                //System.out.println(gameStateToString());
             }
             appendOutLog(currentGame.printSelectedDice());
-            //System.out.println(currentGame.printSelectedDice());
         }
 
         if (currentGame.throwNb < currentGame.maxThrowNb)
@@ -853,16 +850,12 @@ class MachinePlayTask implements Runnable {
             //si endOfGameBonus=-20, on enlève les cases qui feraient perdre la machine
             for (int i =0; i<freeBoxPairList.size(); i++)
                 if (freeBoxPairList.get(i).getEndOfGameBonus()<0){
-                    //System.out.println("remove boxPair: "+freeBoxPairList.get(i));
                     appendOutLog("remove boxPair: "+freeBoxPairList.get(i));
                     freeBoxPairList.remove(i);
                 }
         }
         if (mainActivity.logFlag){
             //Afficher
-            //System.out.println("nextBoxPairList");
-            //System.out.println("Box         BW (Pts pb NTPP APP OPts B EGB)");
-            //System.out.println(freeBoxPairList);
             appendOutLog("nextBoxPairList");
             appendOutLog("Box BW (Pts pb NTPP APP OPts B EGB)");
             appendOutLog(freeBoxPairList.toString());
@@ -880,11 +873,6 @@ class MachinePlayTask implements Runnable {
             if (currentGame.appelClicked && !currentGame.fiveDices.figureList.equals("Appel"))
                 checkForMissedAppel(currentGame);
         if (mainActivity.logFlag) {
-            //System.out.println("optimalBox:");
-            //System.out.println("Box BW Pts pb NTPP APP OPts B EGB");
-            //System.out.println(optimalBox);
-           // if (optimalBox.getFigType().equals("Appel"))
-                //System.out.println("Figure appelée: "+machineFigureAppel);
 
             appendOutLog("optimalBox");
             appendOutLog("Box BW Pts pb NTPP APP OPts B EGB");
@@ -1010,7 +998,6 @@ class MachinePlayTask implements Runnable {
     }
 
     private int getBestBrelanAvailableFromSingleton(Jeu aGame){
-        //System.out.println("getBestBrelanAvailableFromSingleton!");
         ArrayList <Integer> singletonArrayList = new ArrayList<>();
         for (int i =0; i<5; i++){
             int diceValue=aGame.fiveDices.getDiceValue(i);
@@ -1041,11 +1028,8 @@ class MachinePlayTask implements Runnable {
     }
 
     private void selectForYam(Jeu aGame) {
-        //System.out.println("selectForYam1");
         if (! aGame.fiveDices.figureList.contains("Yam")){
-            //System.out.println("selectForYam2");
             if (aGame.fiveDices.figureList.contains("Carre")) {
-                //System.out.println("selectForYam3");
                 for (int i = 0; i < 5; i++)
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[i][0]].isSelected = false;
                 if (aGame.fiveDices.tempDiceSetIndValues[0][1] == aGame.fiveDices.tempDiceSetIndValues[3][1])
@@ -1054,30 +1038,24 @@ class MachinePlayTask implements Runnable {
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[0][0]].isSelected = true;
             }
             else if (aGame.fiveDices.figureList.matches( ".*([123456]).*")){
-                //System.out.println("selectForYam4");
                 selectForCarre(aGame);
             }
             else  if (aGame.fiveDices.figureContainsPair()){
-                //System.out.println("selectForYam5");
                 if (figureContainsDoublePair(aGame)){
-                    //System.out.println("selectForYam6");
                     selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
                 }
                 else {
-                    //System.out.println("selectForYam7");
                     selectForBrelan(aGame, getFirstAvailablePairValue(aGame));
                 }
             }
         }
         //Sinon c'est qu'on tente l'appel au yam
         else {
-            //System.out.println("selectForYam1");
             aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected = true;
         }
     }
 
     private int getBestBrelanAvailableFromDoublePair(Jeu aGame){
-        //System.out.println("getBestBrelanAvailableFromDoublePair");
         int valIdx1 = aGame.fiveDices.tempDiceSetIndValues[1][1];
         int valIdx3 = aGame.fiveDices.tempDiceSetIndValues[3][1];
         ArrayList<BoxPair>  pairs = new ArrayList<>();
@@ -1087,7 +1065,6 @@ class MachinePlayTask implements Runnable {
         for (int i =0; i<pairs.size(); i++){
             pairs.get(i).setPairPoints(getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox()));
             pairs.get(i).setBoxWeight();
-            //System.out.println(pairs.get(i).getBox()+": "+getPointsIfMarkerPlacedOnBox(aGame, "red", pairs.get(i).getBox())+" points");
         }
         Collections.sort(pairs);
         if (pairs.size()>0)
@@ -1204,7 +1181,6 @@ class MachinePlayTask implements Runnable {
     //Checks if the appel is missed and resets flags
     private void checkForMissedAppel(Jeu aGame){
         if (mainActivity.logFlag){
-            //System.out.println("checkForMissedAppel");
             appendOutLog("checkForMissedAppel");
         }
         if (aGame.appelClicked){
@@ -1373,30 +1349,28 @@ class MachinePlayTask implements Runnable {
         });
         return "blue";
     }
-/*
-public void appendOutLog(String text){
-        appendLog(text);
-        //System.out.println(text);
-}*/
+
     public void appendOutLog(String text)
     {
-        System.out.println(text);
-        Context context = mainActivity.getApplicationContext();
-        File path= context.getExternalFilesDir(null);
-        File logFile = new File(path, "YatzoeLog"+currentGame.dateFormat+".txt");
+        if (this.mainActivity.logFlag){
+            System.out.println(text);
+            Context context = mainActivity.getApplicationContext();
+            File path= context.getExternalFilesDir(null);
+            File logFile = new File(path, "YatzoeLog"+currentGame.dateFormat+".txt");
 
-        try {
-            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-            buf.append(text);
-            buf.newLine();
-            buf.close();
-        }
-        catch (FileNotFoundException e) {
-            System.out.println(e);
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write raté: " + e.toString());
-            e.printStackTrace();
+            try {
+                BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+                buf.append(text);
+                buf.newLine();
+                buf.close();
+            }
+            catch (FileNotFoundException e) {
+                System.out.println(e);
+            }
+            catch (IOException e) {
+                Log.e("Exception", "File write raté: " + e.toString());
+                e.printStackTrace();
+            }
         }
     }
 

@@ -38,7 +38,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import static java.lang.Thread.sleep;
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     boolean diceCheat = false;
     int diceCheatIdx=0;
     int thrownbCheat=0;
-    boolean logFlag = true;
+    boolean logFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void guessScreenSize(){
-        //TODO: a faire pour adapter aux differents écrans
-    }
+
     //new game
     private Jeu game;
 
@@ -207,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBoxAppelClicked(View v){
         //It is an appel toggled ON or OFF-using-the-same-Box
-        //game.appelClicked Devrait être 0 depuis machienPlayTask
+        //game.appelClicked Devrait être 0 depuis machinePlayTask
         if ((!game.appelClicked) || (game.appelBoxId == v.getId())) {//if game.appelBoxId==v.getId() then game.appelClicked is true
             if (!game.appelClicked) {
                 game.appelClicked=true;
@@ -409,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
     //pour poser des markers
     public void onButtonBoxCheatClicked(View v){
 
-        //System.out.println("onButtonCheatClicked1 boxFlagCheat:"+boxFlagCheat);
         if (!boxFlagCheat) {
             boxFlagCheat=true;
             ImageView boxFlagCheatView = findViewById(v.getId());

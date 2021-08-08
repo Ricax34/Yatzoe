@@ -341,7 +341,7 @@ class Figure {
                 }
             }
             for (int i = 0; i<5; i++){
-                if (sum+diceSet[tempDiceSetIndValues[i][0]].value<6)
+                if (sum+diceSet[tempDiceSetIndValues[i][0]].value<=6)
                     if (diceSet[tempDiceSetIndValues[i][0]].value==2){
                         diceSet[tempDiceSetIndValues[i][0]].isSelected = false;
                         sum+= diceSet[tempDiceSetIndValues[i][0]].value;
