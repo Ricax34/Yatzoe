@@ -820,7 +820,7 @@ class MachinePlayTask implements Runnable {
         //Recupérer les box libres
         ArrayList<Box> aFreeBoxList;
         //TODO gérer le cas où il y a beaucoup de possibilités pour les red et que les bleus sont <5
-        if ((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5))
+        if (((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5)) && currentGame.bluePoints>=currentGame.redPoints)
             aFreeBoxList = getBestUltimateFreeBoxList(currentGame); //Normalement jamais vide
         else aFreeBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable

@@ -104,7 +104,7 @@ class Jeu {
 
 
     protected boolean fullLine(String color, int boxId) {
-        return countLine(5, color, boxId) == 1;
+        return countLine(5, color, boxId) >= 1;
     }
 
     private int hCountline(int markerNb, String color, int v, int h) {
