@@ -119,8 +119,8 @@ class MachinePlayTask implements Runnable {
     /*****Methods that help droid sort all possibilities*******/
     //retourne la proba modulo 50 (sort of)
     public int getModulo50Prob(double proba){
-        for (int i =0; i<20; i++)
-            if (proba>=i*50 && proba<(i+1)*50){
+        for (int i =0; i<=20; i++)
+            if (proba*1000>=i*50 && proba*1000<(i+1)*50){
                 return i;
             }
         return 0;
@@ -130,15 +130,23 @@ class MachinePlayTask implements Runnable {
     public int getProbByThrownNb(int throwNb, double prob1jet, double prob2jets){
 
         if (throwNb==1) {
-            return getModulo50Prob(prob2jets*1000);
+            return getModulo50Prob(prob2jets);
         }
         else {
-            return getModulo50Prob(prob1jet*1000);
+            return getModulo50Prob(prob1jet);
         }
+    }
 
-        //Test
-        // return getModulo50Prob(prob2jets*1000);
-        // return getModulo50Prob(prob1jet*1000);
+    public double getDoubleProbByThrownNb(int throwNb, double prob1jet, double prob2jets){
+
+        if (throwNb==1) {
+            return prob2jets;
+            // return getModulo50Prob(prob2jets*1000);
+        }
+        else {
+            return prob1jet;
+            //return getModulo50Prob(prob1jet*1000);
+        }
     }
 
     public int getBoxProbability(Jeu aGame, Box targetBox){
@@ -154,7 +162,9 @@ class MachinePlayTask implements Runnable {
         else if (targetBox.getFigType().equals("Appel")&& aGame.throwNb>1)
             return 0;
         else targetFigure=targetBox.getFigType();
-        return getFigProb(aGame, targetFigure);
+        double doubleProba = getDoubleFigProb(aGame, targetFigure);
+        return getModulo50Prob(doubleProba);
+        //return getFigProb(aGame, targetFigure);
     }
 
     public  BoxPair getBestAppelTargetFigureFromDiceSet(Jeu aGame){
@@ -171,10 +181,15 @@ class MachinePlayTask implements Runnable {
                 Jeu tempAppelGame = new Jeu(aGame);
                 //modifier le diceset du jeu en fonction de la figure à appeler pour obtenir la bonne proba
                 tempAppelGame.fiveDices=setAppelDiceset(tempAppelGame, appFig);
-                appFigBP.setProbability(getFigProb(tempAppelGame, appFig));
+                int intProba = getModulo50Prob(getDoubleFigProb(tempAppelGame, appFig));
+                appFigBP.setProbability(intProba);
+                //appFigBP.setProbability(getFigProb(tempAppelGame, appFig));
             }
-            else
-                appFigBP.setProbability(getFigProb(aGame, appFig));
+            else{
+                int intProba = getModulo50Prob(getDoubleFigProb(aGame, appFig));
+                //appFigBP.setProbability(getFigProb(aGame, appFig));
+                appFigBP.setProbability(intProba);
+            }
             appFigBP.setBoxWeight();
             boxPairAppelFigures.add(appFigBP);
         }
@@ -216,7 +231,7 @@ class MachinePlayTask implements Runnable {
         aFigure.setListOfFiguresFromDiceSet();
         return aFigure;
     }
-
+    //TODO fixer les bonus en fonction des pts et les probas (calculés AVANT pour toutes les box)
     public int setBrelanBoxBonus(Jeu aGame, BoxPair aFreeboxPair){
         ArrayList<Box> freeBoxList= getFreeBoxList(aGame);
         //Si on a un brelan dont la box est libre
@@ -472,6 +487,125 @@ class MachinePlayTask implements Runnable {
         }
         return 0;
     }
+
+
+    public double getDoubleFigProb (Jeu aGame, String targetFigure){
+        String currFig=aGame.fiveDices.figureList;
+        int throwNb=aGame.throwNb;
+        if (currFig.contains(targetFigure)|| (aGame.appelClicked && targetFigure.equals(machineFigureAppel))) {
+            System.out.println("TargetFigure: "+targetFigure+" proba=1!");
+            return 1;
+            //return 20; //20*50=1000
+        }
+        else if (throwNb<3) {
+            if (targetFigure.equals("Yam")) {
+                if (aGame.fiveDices.figureContainsPair()) {
+                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                        if (currFig.contains("Carre")) {
+                            return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 11 / 36);//0.1666 et 0.3055
+                        }
+                        else {
+                            return getDoubleProbByThrownNb(throwNb, (double) 1 / 36, (double) 121 / 1296);//0.0277 et 0.0933
+                        }
+                    } else
+                        return getDoubleProbByThrownNb(throwNb, (double) 6 / 100, (double) 11 / 100); //a calculer 6% et 11%
+                } else
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 1296, (double) 2 / 1296); // 0.0007 et 0.00015 singleton ->yam a calculer
+            }
+            else if (targetFigure.equals("Carre")) {
+                if (aGame.fiveDices.figureContainsPair()) {
+                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                        return getDoubleProbByThrownNb(throwNb, (double) 11 / 36, (double) 671 / 1296);//0.3055 et 0.5177
+                    } else
+                        return getDoubleProbByThrownNb(throwNb, (double) 2 / 27, (double) 22 / 100);//0.0740 et 22%
+                } else
+                    return getDoubleProbByThrownNb(throwNb, (double) 5 / 324, (double) 8 / 100);//0.154 et 8%
+            }
+            else if (targetFigure.equals("Full")) {
+                if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 17 / 100);
+                } else if (figureContainsDoublePair(aGame))
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 3, (double) 5 / 9);//0.3333 et 0.5555
+                else if (figureContainsSinglePair(aGame))
+                    return getDoubleProbByThrownNb(throwNb, (double) 21 / 216, (double) 89 / 324);//0.0972 et 0.2746
+                    //TODO else  calcul singleton->full
+                else
+                    return getDoubleProbByThrownNb(throwNb, (double) 300 / 7776, (double) 600 / 7776); //0.0385 et 0.0771
+                //Calculer prob full sec en 2 coups
+            }
+            else if (targetFigure.matches(".*(1|2|3|4|5|6).*")) {
+                if (aGame.fiveDices.figureContainsPair()) {
+                    if ((getPairValues(aGame, true, false) == Integer.parseInt(targetFigure))
+                            || (getPairValues(aGame, false, true) == Integer.parseInt(targetFigure))) {
+                        return getDoubleProbByThrownNb(throwNb, (double) 91 / 216, (double) 62 / 100); //0.4212 et 62%
+                    }
+                }
+                if (figureContainsSingleValue(aGame, Integer.parseInt(targetFigure)))
+                    return getDoubleProbByThrownNb(throwNb, (double) 25 / 216, (double) 28 / 100);//0.1157 et 28%
+                else
+                    return getDoubleProbByThrownNb(throwNb, (double) 200 / 7776, (double) 400 / 7776);//0.1543 et 0.3086 A calculer pour 2 jets
+            }
+            else if (targetFigure.equals("Suite")) {
+                if (aGame.fiveDices.figureContains4InARow() == 2)
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 3, (double) 5 / 9);//0.3333 et 0.5555
+                else if (aGame.fiveDices.figureContains4InARow() == 1)
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 11 / 36);//0.1666 et 0.3055
+                else if (figureContainsSingleValue(aGame, 5)) {
+                    if (figureContainsSingleValue(aGame, 4)) {
+                        if (figureContainsSingleValue(aGame, 2))
+                            return getDoubleProbByThrownNb(throwNb, (double) 1 / 9, (double) 5 / 18);//0.1111 et 0.2777
+                        else
+                            return getDoubleProbByThrownNb(throwNb, (double) 1 / 18, (double) 91 / 486);//0.0555 et 0.1872
+                    } else if (figureContainsSingleValue(aGame, 6))
+                        return getDoubleProbByThrownNb(throwNb, (double) 1 / 36, (double) 6 / 100);//0.1666 et 6%
+                    else
+                        return getDoubleProbByThrownNb(throwNb, (double) 1 / 27, (double) 1 / 27);//0.0370  et 0.0370 ??pas de 2éme valeur trouvée je laisse celle du 1er jet
+                } else if (figureContainsSingleValue(aGame, 6))
+                    return getDoubleProbByThrownNb(throwNb, (double) 1 / 54, (double) 6 / 100); //0.0185 et 6%
+            }
+            //Continuer pour les small
+            else if (targetFigure.equals("Small")) {
+                int sumOfDice = 0;
+                //nb de 1, 2, 3 et 4
+                int nbOf1 = 0;
+                int nbOf2 = 0;
+                int nbOf3 = 0;
+                int nbOf4 = 0;
+                for (int i = 0; i < 5; i++) {
+                    if (aGame.fiveDices.tempDiceSetIndValues[i][1] == 1)
+                        nbOf1++;
+                    else if (aGame.fiveDices.tempDiceSetIndValues[i][1] == 2)
+                        nbOf2++;
+                    else if (aGame.fiveDices.tempDiceSetIndValues[i][1] == 3)
+                        nbOf3++;
+                    else if (aGame.fiveDices.tempDiceSetIndValues[i][1] == 4)
+                        nbOf4++;
+                    sumOfDice += aGame.fiveDices.tempDiceSetIndValues[i][1];
+                }
+                if (sumOfDice > 8) {
+                    if (nbOf1 == 4)
+                        return getDoubleProbByThrownNb(throwNb, (double) 4 / 6, (double) 30 / 36); //0.6666 et 0.8333 ???
+                    else if (nbOf1 == 3 && nbOf2 == 1)
+                        return getDoubleProbByThrownNb(throwNb, (double) 3 / 6, (double) 27 / 36);//0.5 et 0.75
+                    else if ((nbOf1 == 3 && nbOf3 == 1) || (nbOf1 == 2 && nbOf2 == 2))
+                        return getDoubleProbByThrownNb(throwNb, (double) 2 / 6, (double) 20 / 36);//0.3333 et 0.5555
+                    else if ((nbOf1 == 3 && nbOf4 == 1) || (nbOf1 == 2 && nbOf2 == 1 && nbOf3 == 1))
+                        return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 11 / 36);//0.1666 et 0.3055
+                    else if (nbOf1 == 3 && nbOf2 == 0)
+                        return getDoubleProbByThrownNb(throwNb, (double) 10 / 36, (double) 620 / 1296);//0.2777 et 0.4782
+                    else if (nbOf1 == 2 && nbOf2 == 1)
+                        return getDoubleProbByThrownNb(throwNb, (double) 6 / 36, (double) 326 / 1296);//0.1666 et 0.2515
+                    else if (nbOf1 == 2)
+                        return getDoubleProbByThrownNb(throwNb, (double) 7 / 216, (double) 676 / 46656);//0.0324 et 0.0144
+                    else
+                        return getDoubleProbByThrownNb(throwNb, (double) 1 / 1000, (double) 2 / 1000);//proba minus pas la peine de calculer
+                }
+            } else if (targetFigure.equals("Sec"))
+                return getDoubleProbByThrownNb(throwNb, (double) 703 / 7776, (double) 10438847 / 60466176);//0.0904 et 0.1726
+        }
+        return 0;
+    }
+
     //returns potential next turn poinst per box
     private int getPotentialNextTurnPointsPerBox(Jeu aGame, String aColor, Box aBox) {
         int v = aBox.v;
@@ -505,9 +639,10 @@ class MachinePlayTask implements Runnable {
         aFreeBoxPair.setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, oponentColor, aBox));
         aFreeBoxPair.setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, aColor, aBox ));
         aFreeBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
-        aFreeBoxPair.setProbability(getBoxProbability(aGame, aBox));
-        int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox) +setEndOfGameBonus(aGame, "blue", aBox);
-        appendOutLog("endOfGameBonus: "+endOfGameBonus);
+        int figProba = getBoxProbability(aGame, aBox);
+        aFreeBoxPair.setProbability(figProba);
+        int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox, figProba) +setEndOfGameBonus(aGame, "blue", aBox, figProba);
+        appendOutLog("endOfGameBonus: "+endOfGameBonus+" fig: "+aBox.getFigType()+" figProba: "+figProba);
         aFreeBoxPair.setEndOfGameBonus(endOfGameBonus);
         int bonus=0;
         if (aGame.throwNb<aGame.maxThrowNb)
@@ -640,29 +775,33 @@ class MachinePlayTask implements Runnable {
     }
 
     // attribuer les bonus négatifs ou positifs en fonction du fulline perdant ou gagnant
-    private int setEndOfGameBonus(Jeu aGame, String aColor, Box aBox){
+    private int setEndOfGameBonus(Jeu aGame, String aColor, Box aBox, int figProba){
         //Color est toujours rouge mais au cas où ...
         Jeu tmpGame = new Jeu(aGame);
         int boxId=aBox.getId();
         tmpGame.findBoxById(boxId).setColor(aColor);
         int tmpPoints = tmpGame.countLine(3, aColor, boxId);
+        int bonusWeight=5;
         int bonus = 0;
         if (aColor.equals("red")){
-            if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers-1 ==0)) {
+            if (tmpGame.fullLine("red", boxId)|| (tmpGame.redMarkers == 1)) {
+                if (figProba==0) figProba=1;
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
-                    appendOutLog("setEndOfGameBonus1: 20 pour la box "+aBox);
-                    bonus= 20;
-                } else if (tmpPoints + tmpGame.redPoints < tmpGame.bluePoints) {
-                    appendOutLog("setEndOfGameBonus1: -20 pour la box "+aBox);
-                    bonus= -20;
+                    bonus= bonusWeight*figProba;
+                    appendOutLog("setEndOfGameBonus1 1: "+bonus+" pour la box "+aBox);
+                } else if ((tmpPoints + tmpGame.redPoints < tmpGame.bluePoints)) {
+                    bonus= -100; //on marque la case perdante
+                    appendOutLog("setEndOfGameBonus1 2: "+bonus+"pour la box "+aBox);
                 }
+                //TODO gérer le cas ou les points sont égaux (else....)
             }
         }
         else if (aColor.equals("blue")){
             if (tmpGame.fullLine("blue", boxId)||(tmpGame.blueMarkers-1==0)){
+                if (figProba==0) figProba=1;
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
-                    appendOutLog("setEndOfGameBonus2: 20 pour la box "+aBox);
-                    bonus = 20;
+                    bonus = bonusWeight*figProba;
+                    appendOutLog("setEndOfGameBonus2: "+bonus+" pour la box "+aBox);
                 }
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
                     //on fait rien pour l'instant
@@ -847,17 +986,30 @@ class MachinePlayTask implements Runnable {
             //manageEndOfGameBonus
             if (manageEndOfGameBonus(currentGame, freeBoxPairList))
                 Collections.sort(freeBoxPairList);
-            //si endOfGameBonus=-20, on enlève les cases qui feraient perdre la machine
+            //si endOfGameBonus=-100, on enlève les cases qui feraient perdre la machine
             for (int i =0; i<freeBoxPairList.size(); i++)
                 if (freeBoxPairList.get(i).getEndOfGameBonus()<0){
-                    appendOutLog("remove boxPair: "+freeBoxPairList.get(i));
-                    freeBoxPairList.remove(i);
+                    if (freeBoxPairList.size()>1){
+                        appendOutLog("remove boxPair: "+freeBoxPairList.get(i));
+                        freeBoxPairList.remove(i);
+                    }
+                }
+            //Ici en cas d'égalité de points entre les 2 premières box, trier en fonction de la proba
+            if (freeBoxPairList.size()>1)
+                if (freeBoxPairList.get(freeBoxPairList.size()-1).getBoxWeight()==freeBoxPairList.get(freeBoxPairList.size()-2).getBoxWeight()){
+                    if (getDoubleFigProb(currentGame, freeBoxPairList.get(freeBoxPairList.size()-1).getFigType())
+                            < getDoubleFigProb(currentGame, freeBoxPairList.get(freeBoxPairList.size()-2).getFigType())){
+                        freeBoxPairList.get(freeBoxPairList.size()-2).setProbaBonus(1);
+                        freeBoxPairList.get(freeBoxPairList.size()-2).setBoxWeight();
+                        Collections.sort(freeBoxPairList);
+                        appendOutLog("Inversion par probaBonus pour: "+freeBoxPairList.get(freeBoxPairList.size()-2));
+                    }
                 }
         }
         if (mainActivity.logFlag){
             //Afficher
             appendOutLog("nextBoxPairList");
-            appendOutLog("Box BW (Pts pb NTPP APP OPts B EGB)");
+            appendOutLog("Box BW (Pts pb NTPP APP OPts B EGB PB)");
             appendOutLog(freeBoxPairList.toString());
         }
 
@@ -1014,7 +1166,12 @@ class MachinePlayTask implements Runnable {
             pairs.get(i).setOponentPoints(getPointsIfMarkerPlacedOnBox(aGame, "blue", pairs.get(i).getBox()));
             pairs.get(i).setAllPossiblePoints(setAllPossiblePointsAroundBox(aGame, "red", pairs.get(i).getBox() ));
             pairs.get(i).setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, "red",pairs.get(i).getBox()));
-            int bonus = setEndOfGameBonus(aGame, "red", pairs.get(i).getBox()) +setEndOfGameBonus(aGame, "blue", pairs.get(i).getBox());
+
+            int intProba= getModulo50Prob(getDoubleFigProb(aGame, pairs.get(i).getFigType()));
+            pairs.get(i).setProbability(intProba);
+            //pairs.get(i).setProbability(getFigProb(aGame, pairs.get(i).getFigType()));
+
+            int bonus = setEndOfGameBonus(aGame, "red", pairs.get(i).getBox(), pairs.get(i).getProbability()) +setEndOfGameBonus(aGame, "blue", pairs.get(i).getBox(), pairs.get(i).getProbability());
             if (aGame.throwNb<aGame.maxThrowNb)
                 bonus += setBrelanBoxBonus(aGame, pairs.get(i));
             pairs.get(i).setBonus(bonus);

@@ -30,6 +30,7 @@ class BoxPair implements Comparable<BoxPair>{
     private int  probability=0;
     private int bonus =0;
     private int endOfGameBonus=0;
+    private int probaBonus=0;
     private Double boxWeight=0.0;
     private boolean isFullLine = false;
     private boolean isOponentFullLine = false;
@@ -62,8 +63,16 @@ class BoxPair implements Comparable<BoxPair>{
     public void setEndOfGameBonus(int endOfGameBonus){this.endOfGameBonus=endOfGameBonus; }
     public double getEndOfGameBonus(){return endOfGameBonus;}
     public double getBonus(){return this.bonus;}
+    public void setProbaBonus(int probaBonus){this.probaBonus=probaBonus;};
     public void setBoxWeight() {
-        this.boxWeight=(double)this.points+(double)this.probability*1.5+(double)this.nextTurnPossiblePoints+(double)this.allPossiblePoints+(double)this.oponentPoints+(double)this.bonus+(double)this.endOfGameBonus;
+        this.boxWeight=(double)this.points
+                +(double)this.probability*1.5
+                +(double)this.nextTurnPossiblePoints
+                +(double)this.allPossiblePoints
+                +(double)this.oponentPoints
+                +(double)this.bonus
+                +(double)this.endOfGameBonus
+                +(double)this.probaBonus ;
     }
     public Double getBoxWeight() {
         return boxWeight;
@@ -74,12 +83,13 @@ class BoxPair implements Comparable<BoxPair>{
         return aBox
                 +", "+ boxWeight
                 + " ("+ points
-                + "+ "+ probability
-                + "+ "+ nextTurnPossiblePoints
-                + "+ "+ allPossiblePoints
-                + "+ "+ oponentPoints
-                + "+ "+bonus
-                +"+ "+endOfGameBonus
+                + "+"+ probability
+                + "+"+ nextTurnPossiblePoints
+                + "+"+ allPossiblePoints
+                + "+"+ oponentPoints
+                + "+"+bonus
+                +"+"+endOfGameBonus
+                +"+"+probaBonus
                 + ")\n";
     }
 
