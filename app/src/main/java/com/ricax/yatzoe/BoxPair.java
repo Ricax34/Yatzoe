@@ -22,7 +22,7 @@
 package com.ricax.yatzoe;
 
 class BoxPair implements Comparable<BoxPair>{
-    private Box aBox;
+    private final Box aBox;
     private int points;
     private int oponentPoints;
     private int allPossiblePoints;
@@ -43,7 +43,7 @@ class BoxPair implements Comparable<BoxPair>{
     public Integer getPairId(){
         return this.aBox.getId();
     }
-    public Box getBox(){return aBox;};
+    public Box getBox(){return aBox;}
     public String getFigType(){return aBox.getFigType(); }
     public void setPairPoints(int p){this.points =  p;}
     public double getPairPoints(){ return  this.points; }
@@ -63,7 +63,7 @@ class BoxPair implements Comparable<BoxPair>{
     public void setEndOfGameBonus(int endOfGameBonus){this.endOfGameBonus=endOfGameBonus; }
     public double getEndOfGameBonus(){return endOfGameBonus;}
     public double getBonus(){return this.bonus;}
-    public void setProbaBonus(int probaBonus){this.probaBonus=probaBonus;};
+    public void setProbaBonus(int probaBonus){this.probaBonus=probaBonus;}
     public void setBoxWeight() {
         this.boxWeight=(double)this.points
                 +(double)this.probability*1.5

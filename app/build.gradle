@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         debug {
-            storeFile file('/home/eric/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
+            storeFile file('/home/eric/Programmation/AndroidStudio/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
             storePassword 'martinadele'
             keyAlias 'yatzoe1'
             keyPassword 'martinadele'
@@ -15,13 +15,13 @@ android {
             keyPassword 'martinadele'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.ricax.yatzoe"
         //minSdkVersion 22
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 16
         versionName '1.4.11'
 
@@ -35,7 +35,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    buildToolsVersion '29.0.3'
+    namespace 'com.ricax.yatzoe'
 
 }
 

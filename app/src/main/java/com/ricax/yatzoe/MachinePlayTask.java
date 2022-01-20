@@ -382,7 +382,7 @@ class MachinePlayTask implements Runnable {
         else if (throwNb<3) {
             if (targetFigure.equals("Yam")) {
                 if (aGame.fiveDices.figureContainsPair()) {
-                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    if (currFig.matches(".*([123456]).*")) {
                         if (currFig.contains("Carre")) {
                             return getProbByThrownNb(throwNb, (double) 1 / 6, (double) 11 / 36);//0.1666 et 0.3055
                         }
@@ -396,7 +396,7 @@ class MachinePlayTask implements Runnable {
             }
             else if (targetFigure.equals("Carre")) {
                 if (aGame.fiveDices.figureContainsPair()) {
-                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    if (currFig.matches(".*([123456]).*")) {
                         return getProbByThrownNb(throwNb, (double) 11 / 36, (double) 671 / 1296);//0.3055 et 0.5177
                     } else
                         return getProbByThrownNb(throwNb, (double) 2 / 27, (double) 22 / 100);//0.0740 et 22%
@@ -404,7 +404,7 @@ class MachinePlayTask implements Runnable {
                     return getProbByThrownNb(throwNb, (double) 5 / 324, (double) 8 / 100);//0.154 et 8%
             }
             else if (targetFigure.equals("Full")) {
-                if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                if (currFig.matches(".*([123456]).*")) {
                     return getProbByThrownNb(throwNb, (double) 1 / 6, (double) 17 / 100);
                 } else if (figureContainsDoublePair(aGame))
                     return getProbByThrownNb(throwNb, (double) 1 / 3, (double) 5 / 9);//0.3333 et 0.5555
@@ -415,7 +415,7 @@ class MachinePlayTask implements Runnable {
                     return getProbByThrownNb(throwNb, (double) 300 / 7776, (double) 600 / 7776); //0.0385 et 0.0771
                 //Calculer prob full sec en 2 coups
             }
-            else if (targetFigure.matches(".*(1|2|3|4|5|6).*")) {
+            else if (targetFigure.matches(".*([123456]).*")) {
                 if (aGame.fiveDices.figureContainsPair()) {
                     if ((getPairValues(aGame, true, false) == Integer.parseInt(targetFigure))
                             || (getPairValues(aGame, false, true) == Integer.parseInt(targetFigure))) {
@@ -500,7 +500,7 @@ class MachinePlayTask implements Runnable {
         else if (throwNb<3) {
             if (targetFigure.equals("Yam")) {
                 if (aGame.fiveDices.figureContainsPair()) {
-                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    if (currFig.matches(".*([123456]).*")) {
                         if (currFig.contains("Carre")) {
                             return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 11 / 36);//0.1666 et 0.3055
                         }
@@ -514,7 +514,7 @@ class MachinePlayTask implements Runnable {
             }
             else if (targetFigure.equals("Carre")) {
                 if (aGame.fiveDices.figureContainsPair()) {
-                    if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                    if (currFig.matches(".*([123456]).*")) {
                         return getDoubleProbByThrownNb(throwNb, (double) 11 / 36, (double) 671 / 1296);//0.3055 et 0.5177
                     } else
                         return getDoubleProbByThrownNb(throwNb, (double) 2 / 27, (double) 22 / 100);//0.0740 et 22%
@@ -522,7 +522,7 @@ class MachinePlayTask implements Runnable {
                     return getDoubleProbByThrownNb(throwNb, (double) 5 / 324, (double) 8 / 100);//0.154 et 8%
             }
             else if (targetFigure.equals("Full")) {
-                if (currFig.matches(".*(1|2|3|4|5|6).*")) {
+                if (currFig.matches(".*([123456]).*")) {
                     return getDoubleProbByThrownNb(throwNb, (double) 1 / 6, (double) 17 / 100);
                 } else if (figureContainsDoublePair(aGame))
                     return getDoubleProbByThrownNb(throwNb, (double) 1 / 3, (double) 5 / 9);//0.3333 et 0.5555
@@ -533,7 +533,7 @@ class MachinePlayTask implements Runnable {
                     return getDoubleProbByThrownNb(throwNb, (double) 300 / 7776, (double) 600 / 7776); //0.0385 et 0.0771
                 //Calculer prob full sec en 2 coups
             }
-            else if (targetFigure.matches(".*(1|2|3|4|5|6).*")) {
+            else if (targetFigure.matches(".*([123456]).*")) {
                 if (aGame.fiveDices.figureContainsPair()) {
                     if ((getPairValues(aGame, true, false) == Integer.parseInt(targetFigure))
                             || (getPairValues(aGame, false, true) == Integer.parseInt(targetFigure))) {
@@ -803,9 +803,11 @@ class MachinePlayTask implements Runnable {
                     bonus = bonusWeight*figProba;
                     appendOutLog("setEndOfGameBonus2: "+bonus+" pour la box "+aBox);
                 }
+      /*
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
                     //on fait rien pour l'instant
                 }
+        */
             }
         }
         System.out.println("setEndOfGameBonus bonus: "+bonus);
