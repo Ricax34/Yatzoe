@@ -93,7 +93,7 @@ class MachinePlayTask implements Runnable {
                     else if (target.equals("blue")) {
                         //Pour être sûr d'avoir la bonne couleur courante car le changement de couleur est fait dans le UI thread
                         try {
-                            sleep(1500);
+                            sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
