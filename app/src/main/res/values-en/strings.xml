@@ -38,4 +38,5 @@
     <string name="Human">Humanoid</string>
     <string name="NewGame">New game</string>
     <string name="QuitGame">Quit</string>
+    <string name="PrivacyLink">Privacy policy at:\n <a href="https://sites.google.com/view/yatzoe/privacy">sites.google.com/view/yatzoe/privacy</a></string>
 </resources>

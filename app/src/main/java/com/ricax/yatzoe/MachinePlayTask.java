@@ -627,7 +627,7 @@ class MachinePlayTask implements Runnable {
 
 
     // donner un poids à chaque box
-    //TODO régler la question EXISTENCIELLE: la proba sur 2 jets ne vaut que si on tente VRAIMENT 2 jets
+    //TODO régler la question EXISTENTIELLE: la proba sur 2 jets ne vaut que si on tente VRAIMENT 2 jets
     //si la sélection se fait sur la proba sur 2 jets (ie: la proba EST le facteur qui fait pencher la balance pour 2 jets),
     // alors faire en sorte que cela ne change pas l'ordre des choix après le 2éme jet (sur 3)
     private void setBoxWeight(Jeu aGame, BoxPair aFreeBoxPair, String aColor){
@@ -660,7 +660,8 @@ class MachinePlayTask implements Runnable {
                 if(bpArrayList.get(i).getProbability()>firstBoxPair.getProbability())
                     if (bpArrayList.get(i).getPairPoints()>firstBoxPair.getPairPoints())
                         if (currentGame.redPoints+bpArrayList.get(i).getPairPoints()>currentGame.bluePoints){
-                            // System.out.println("manageEndOfGameBonus 0 pour:"+firstBoxPair.getBox());
+                             System.out.println("manageEndOfGameBonus 0 pour:"+firstBoxPair.getBox());
+                            appendOutLog("manageEndOfGameBonus 0 pour:"+firstBoxPair.getBox());
                             firstBoxPair.setEndOfGameBonus(0);
                         }
             }
@@ -985,9 +986,9 @@ class MachinePlayTask implements Runnable {
         //Trier
         if (!freeBoxPairList.isEmpty()){
             Collections.sort(freeBoxPairList);
-            //manageEndOfGameBonus
-            if (manageEndOfGameBonus(currentGame, freeBoxPairList))
-                Collections.sort(freeBoxPairList);
+            //manageEndOfGameBonus (foireux)
+            //if (manageEndOfGameBonus(currentGame, freeBoxPairList)) Collections.sort(freeBoxPairList);
+
             //si endOfGameBonus=-100, on enlève les cases qui feraient perdre la machine
             for (int i =0; i<freeBoxPairList.size(); i++)
                 if (freeBoxPairList.get(i).getEndOfGameBonus()<0){
@@ -1187,8 +1188,10 @@ class MachinePlayTask implements Runnable {
     }
 
     private void selectForYam(Jeu aGame) {
+        appendOutLog("Select for yam1");
         if (! aGame.fiveDices.figureList.contains("Yam")){
             if (aGame.fiveDices.figureList.contains("Carre")) {
+                appendOutLog("Select for yam2");
                 for (int i = 0; i < 5; i++)
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[i][0]].isSelected = false;
                 if (aGame.fiveDices.tempDiceSetIndValues[0][1] == aGame.fiveDices.tempDiceSetIndValues[3][1])
@@ -1197,19 +1200,23 @@ class MachinePlayTask implements Runnable {
                     aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[0][0]].isSelected = true;
             }
             else if (aGame.fiveDices.figureList.matches( ".*([123456]).*")){
+                appendOutLog("Select for yam3");
                 selectForCarre(aGame);
             }
             else  if (aGame.fiveDices.figureContainsPair()){
                 if (figureContainsDoublePair(aGame)){
+                    appendOutLog("Select for yam4");
                     selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
                 }
                 else {
+                    appendOutLog("Select for yam5");
                     selectForBrelan(aGame, getFirstAvailablePairValue(aGame));
                 }
             }
         }
         //Sinon c'est qu'on tente l'appel au yam
         else {
+            appendOutLog("Select for yam6");
             aGame.fiveDices.diceSet[aGame.fiveDices.tempDiceSetIndValues[4][0]].isSelected = true;
         }
     }
