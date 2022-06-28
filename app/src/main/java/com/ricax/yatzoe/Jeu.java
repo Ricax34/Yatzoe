@@ -550,4 +550,8 @@ class Jeu {
             }
             return aBoxPairList;
         }
+
+    public  Figure getFiveDices(){
+            return this.fiveDices;
+        }
 }

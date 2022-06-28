@@ -150,18 +150,51 @@ class MachinePlayTask implements Runnable {
     }
 
     public int getBoxProbability(Jeu aGame, Box targetBox){
-        String targetFigure;
+        String targetFigure=targetBox.getFigType();;
         if (aGame.appelClicked)
             targetFigure=aGame.appelRegistered;
         else if (targetBox.getFigType().equals("Appel")&& aGame.throwNb==1){
             BoxPair aBoxPair= getBestAppelTargetFigureFromDiceSet(aGame);
             machineFigureAppel=aBoxPair.getFigType();
             appelBox=targetBox;
-            return aBoxPair.getProbability();
+
+            //return aBoxPair.getProbability();//TODO: BUG En cas d'appel de figure à 5 dés déjà obtenue (autre que carré) la proba n'est pas 20
+            int boxproba = aBoxPair.getProbability();
+            if (boxproba==20){
+                if (!targetFigure.equals("carre"))
+                {
+                    //Faire un truc sur boxproba
+                    //Figure tempFig = aGame.getFiveDices();
+                    Jeu tempGame = aGame;
+
+                   switch (targetFigure){
+                       case "full":
+                       {
+                           tempGame.getFiveDices().setDiceValue(tempGame.getFiveDices().tempDiceSetIndValues[2][0], 0);
+                           break;
+                       }
+                       case "suite":
+                       {
+                           tempGame.getFiveDices().setDiceValue(tempGame.getFiveDices().tempDiceSetIndValues[0][0], 0);
+                           break;
+                       }
+                       case "small":
+                       {
+                           tempGame.getFiveDices().setDiceValue(tempGame.getFiveDices().tempDiceSetIndValues[4][0], 6);
+                           break;
+                       }
+                   }
+                    double doubleProba = getDoubleFigProb(tempGame, targetFigure);
+                    boxproba= getModulo50Prob(doubleProba);
+
+                }
+
+            }
+            return boxproba;
         }
         else if (targetBox.getFigType().equals("Appel")&& aGame.throwNb>1)
             return 0;
-        else targetFigure=targetBox.getFigType();
+        //else targetFigure=targetBox.getFigType();
         double doubleProba = getDoubleFigProb(aGame, targetFigure);
         return getModulo50Prob(doubleProba);
         //return getFigProb(aGame, targetFigure);
@@ -231,6 +264,8 @@ class MachinePlayTask implements Runnable {
         aFigure.setListOfFiguresFromDiceSet();
         return aFigure;
     }
+
+
     //TODO fixer les bonus en fonction des pts et les probas (calculés AVANT pour toutes les box)
     public int setBrelanBoxBonus(Jeu aGame, BoxPair aFreeboxPair){
         ArrayList<Box> freeBoxList= getFreeBoxList(aGame);
@@ -374,7 +409,7 @@ class MachinePlayTask implements Runnable {
         }
         return 0;
     }
-
+/*
     public int getFigProb (Jeu aGame, String targetFigure){
         String currFig=aGame.fiveDices.figureList;
         int throwNb=aGame.throwNb;
@@ -487,7 +522,7 @@ class MachinePlayTask implements Runnable {
         }
         return 0;
     }
-
+*/
 
     public double getDoubleFigProb (Jeu aGame, String targetFigure){
         String currFig=aGame.fiveDices.figureList;
@@ -641,7 +676,8 @@ class MachinePlayTask implements Runnable {
         aFreeBoxPair.setNextTurnPossiblePoints(getPotentialNextTurnPointsPerBox(aGame, aColor,aBox));
         int figProba = getBoxProbability(aGame, aBox);
         aFreeBoxPair.setProbability(figProba);
-        int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox, figProba) +setEndOfGameBonus(aGame, "blue", aBox, figProba);
+       // int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox, figProba) +setEndOfGameBonus(aGame, "blue", aBox, figProba);
+        int endOfGameBonus = setEndOfGameBonus(aGame, "red", aBox, figProba) ;
         appendOutLog("endOfGameBonus: "+endOfGameBonus+" fig: "+aBox.getFigType()+" figProba: "+figProba);
         aFreeBoxPair.setEndOfGameBonus(endOfGameBonus);
         int bonus=0;
@@ -789,10 +825,10 @@ class MachinePlayTask implements Runnable {
                 if (figProba==0) figProba=1;
                 if (tmpPoints + tmpGame.redPoints > tmpGame.bluePoints) {
                     bonus= bonusWeight*figProba;
-                    appendOutLog("setEndOfGameBonus1 1: "+bonus+" pour la box "+aBox);
+                    appendOutLog("setEndOfGameBonus1 red 1: "+bonus+" pour la red box "+aBox);
                 } else if ((tmpPoints + tmpGame.redPoints < tmpGame.bluePoints)) {
                     bonus= -100; //on marque la case perdante
-                    appendOutLog("setEndOfGameBonus1 2: "+bonus+"pour la box "+aBox);
+                    appendOutLog("setEndOfGameBonus1 red 2: "+bonus+"pour la box "+aBox);
                 }
                 //TODO gérer le cas ou les points sont égaux (else....)
             }
@@ -802,7 +838,7 @@ class MachinePlayTask implements Runnable {
                 if (figProba==0) figProba=1;
                 if (tmpPoints+tmpGame.bluePoints> tmpGame.redPoints){
                     bonus = bonusWeight*figProba;
-                    appendOutLog("setEndOfGameBonus2: "+bonus+" pour la box "+aBox);
+                    appendOutLog("setEndOfGameBonus2 blue: "+bonus+" pour la box "+aBox);
                 }
       /*
                 else if (tmpPoints+tmpGame.bluePoints<tmpGame.redPoints) {
@@ -889,8 +925,8 @@ class MachinePlayTask implements Runnable {
         return aBoxList;
     }
 
-    private ArrayList<Box> getBestUltimateFreeBoxList(Jeu aGame) {
-        appendOutLog("getBestUltimateFreeBoxList: Warrior mode");
+    private ArrayList<Box> getBestWarriorModeFreeBoxList(Jeu aGame) {
+        appendOutLog("getBestWarriorModeFreeBoxList: Warrior mode");
         List<JeuCombinaison> jcRedList = AllCombinationsAvailable("red", aGame);
 
       /*
@@ -912,12 +948,14 @@ class MachinePlayTask implements Runnable {
         }
         //Si pas de listes gagnantes chercher celles qui égalent l'adversaire
         if (bestjclist.isEmpty()) {
+            appendOutLog("getBestWarriorModeFreeBoxList: pas de liste gagnante on cherche les égalisantes");
             for (int i = 0; i < jcRedList.size(); i++)
                 if (jcRedList.get(i).getPoints() + aGame.redPoints == aGame.bluePoints)
                     bestjclist.add(jcRedList.get(i));
         }
         //Sinon on ajoute les perdantes, on prendra celle qui perd le moins
         if (bestjclist.isEmpty()) {
+            appendOutLog("getBestWarriorModeFreeBoxList: on cherche les moins perdantes");
             bestjclist.addAll(jcRedList);
         }
 
@@ -963,7 +1001,7 @@ class MachinePlayTask implements Runnable {
         ArrayList<Box> aFreeBoxList;
         //TODO gérer le cas où il y a beaucoup de possibilités pour les red et que les bleus sont <5
         if (((currentGame.redMarkers < 5) || (currentGame.blueMarkers < 5)) && currentGame.bluePoints>=currentGame.redPoints)
-            aFreeBoxList = getBestUltimateFreeBoxList(currentGame); //Normalement jamais vide
+            aFreeBoxList = getBestWarriorModeFreeBoxList(currentGame); //Normalement jamais vide
         else aFreeBoxList = getListFreeBox(currentGame);//Normalement jamais vide
         //si thrownb==3 alors n'inclure dans la liste que les box ou on a une figure posable
         if (currentGame.throwNb==currentGame.maxThrowNb){
@@ -1205,8 +1243,8 @@ class MachinePlayTask implements Runnable {
             }
             else  if (aGame.fiveDices.figureContainsPair()){
                 if (figureContainsDoublePair(aGame)){
-                    appendOutLog("Select for yam4");
                     selectForBrelan(aGame, getBestBrelanAvailableFromDoublePair(aGame));
+                    appendOutLog("Select for yam4: brelan de "+getBestBrelanAvailableFromDoublePair(aGame));
                 }
                 else {
                     appendOutLog("Select for yam5");
@@ -1235,7 +1273,7 @@ class MachinePlayTask implements Runnable {
         Collections.sort(pairs);
         if (pairs.size()>0)
             return Integer.valueOf(pairs.get(pairs.size()-1).getFigType());
-        else return 0;
+        else return valIdx1;//pas de brelan a privilégier, on relance sur la première paire
     }
 
     private void selectForSmall(Jeu aGame) {

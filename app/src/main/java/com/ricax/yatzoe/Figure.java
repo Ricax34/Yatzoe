@@ -69,6 +69,9 @@ class Figure {
     public int getDiceValue(int i){
         return this.diceSet[i].value;
     }
+    public void  setDiceValue(int i, int val){
+        this.diceSet[i].value=val;
+    }
 
     public void setDiceSet(Dice[] aDiceset){
         this.diceSet=aDiceset;

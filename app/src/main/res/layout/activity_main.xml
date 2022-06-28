@@ -297,41 +297,39 @@
         android:id="@+id/buttonStartNewGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:onClick="startNewGame"
         android:text="@string/StartButton"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/BoutonLancer"
-        app:layout_constraintStart_toEndOf="@+id/skipButton" />
+        app:layout_constraintEnd_toStartOf="@+id/skipButton"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/skipButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="32dp"
         android:onClick="onButtonSkipClicked"
         android:text="@string/skipButton"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/buttonStartNewGame" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.567"
+        app:layout_constraintStart_toEndOf="@+id/buttonStartNewGame"
+        app:layout_constraintTop_toTopOf="@+id/buttonStartNewGame"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/BoutonLancer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
         android:onClick="onButtonClickRollAllSelectedDices"
         android:text="@string/Bouton_Lancer"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStartNewGame"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/buttonStartNewGame" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imViewDiceNb2" />
 
     <TextView
         android:id="@+id/TextViewMessage"

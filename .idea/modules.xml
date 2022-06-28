@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-192322132/AndroidStudioProjects.Yatzoe.iml" filepath="$PROJECT_DIR$/.idea/modules/-192322132/AndroidStudioProjects.Yatzoe.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/551388990/AndroidStudioProjects.Yatzoe.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Yatzoe.iml" filepath="$PROJECT_DIR$/.idea/modules/Yatzoe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.unitTest.iml" />
     </modules>
   </component>
 </project>

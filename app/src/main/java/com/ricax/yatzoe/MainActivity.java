@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     boolean diceCheat = false;
     int diceCheatIdx=0;
     int thrownbCheat=0;
-    boolean logFlag = true;
+    boolean logFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
