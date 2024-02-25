@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Yatzoe.iml" filepath="$PROJECT_DIR$/.idea/modules/Yatzoe.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Yatzoe.app.unitTest.iml" />
     </modules>

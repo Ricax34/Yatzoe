@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     boolean diceCheat = false;
     int diceCheatIdx=0;
     int thrownbCheat=0;
-    boolean logFlag = false;
+    boolean logFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ungrayAppelBoxOrFigAppelBoxToPreviousState(int appelOrFigBoxId){
+        System.out.println("ungrayAppelBoxOrFigAppelBoxToPreviousState\n");
         //Ungray appelFigBoxView
         ImageView appelOrFigBoxView = findViewById(appelOrFigBoxId);
         appelOrFigBoxView.setBackgroundResource(0);
@@ -613,6 +614,7 @@ public class MainActivity extends AppCompatActivity {
                     if ((game.fiveDices.figureList.isEmpty()) || (game.getListFreeBoxPerFigureList(game.fiveDices.figureList).isEmpty())) //pas de figure posables ni appel
                     {
                         if (game.appelClicked) { //appel raté
+                            System.out.println("Appel bleu raté1");
                             game.fiveDices.figureList = "";
                             //Ungray appelFigTypeBox
                             ungrayAppelBoxOrFigAppelBoxToPreviousState(game.appelFigTypeBoxId);

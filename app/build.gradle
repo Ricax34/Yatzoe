@@ -3,25 +3,25 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         debug {
-            storeFile file('/home/eric/Programmation/AndroidStudio/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
+            storeFile file('/home/eric/Programmation/AndroidStudio/AndroidStudioProjects/YatzoeDocs/KEYSSTUFF/yatzoekeystore.jks')
             storePassword 'martinadele'
             keyAlias 'yatzoe1'
             keyPassword 'martinadele'
         }
         release {
-            storeFile file('/home/eric/AndroidStudioProjects/Yatzoe/KEYSSTUFF/yatzoekeystore.jks')
+            storeFile file('/home/eric/Programmation/AndroidStudio/AndroidStudioProjects/YatzoeDocs/KEYSSTUFF/yatzoekeystore.jks')
             storePassword 'martinadele'
             keyAlias 'yatzoe1'
             keyPassword 'martinadele'
         }
     }
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ricax.yatzoe"
         //minSdkVersion 22
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdk 33
         versionCode 21
         versionName '1.4.21'
 

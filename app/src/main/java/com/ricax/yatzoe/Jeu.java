@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,7 +55,7 @@ class Jeu {
 
     //pour logger
     Date aujourdhui = new Date();
-    SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd-HHmmss");
+    SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.FRANCE);
     public String dateFormat = formater.format(aujourdhui);
 
     Jeu(MainActivity mainActivity) {
@@ -205,9 +206,14 @@ class Jeu {
     }
 
     void changeTurnColor(String color) {
-
+        System.out.println("changeTurnColor: "+color);
         this.couleur = color;
         this.throwNb = 0;
+        //remettre les couleurs de box appel à blanc
+        if (appelBoxId>0)
+            mainActivity.ungrayAppelBoxOrFigAppelBoxToPreviousState(this.appelBoxId);
+        if (appelFigTypeBoxId>0)
+            mainActivity.ungrayAppelBoxOrFigAppelBoxToPreviousState(this.appelFigTypeBoxId);
         this.appelBoxId = 0;
         this.appelClicked = false;
         this.appelFigTypeBoxId = 0;
@@ -299,18 +305,18 @@ class Jeu {
 
     public String printSelectedDice() {
         System.out.println("**SelectedDice**");
-        String selectedDiceSet = "\n";
+        StringBuilder selectedDiceSet = new StringBuilder("\n");
         for (int i = 0; i < 5; i++) {
-            selectedDiceSet += this.fiveDices.diceSet[i].value + " ";
+            selectedDiceSet.append(this.fiveDices.diceSet[i].value).append(" ");
         }
-        selectedDiceSet += "\n";
+        selectedDiceSet.append("\n");
         for (int i = 0; i < 5; i++) {
             if (this.fiveDices.diceSet[i].isSelected)
-                selectedDiceSet += "x ";
+                selectedDiceSet.append("x ");
             else
-                selectedDiceSet += "o ";
+                selectedDiceSet.append("o ");
         }
-        return selectedDiceSet;
+        return selectedDiceSet.toString();
     }
 
     void terminate() {

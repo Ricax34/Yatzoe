@@ -150,7 +150,7 @@ class MachinePlayTask implements Runnable {
     }
 
     public int getBoxProbability(Jeu aGame, Box targetBox){
-        String targetFigure=targetBox.getFigType();;
+        String targetFigure=targetBox.getFigType();
         if (aGame.appelClicked)
             targetFigure=aGame.appelRegistered;
         else if (targetBox.getFigType().equals("Appel")&& aGame.throwNb==1){
@@ -228,7 +228,7 @@ class MachinePlayTask implements Runnable {
         }
         //Sort according to the only probability
         Collections.sort(boxPairAppelFigures);
-        appendOutLog("getBestAppelTargetFigureFromDiceSet: "+boxPairAppelFigures.toString());
+        appendOutLog("getBestAppelTargetFigureFromDiceSet: "+boxPairAppelFigures);
         return boxPairAppelFigures.get(boxPairAppelFigures.size()-1);
     }
 
@@ -392,7 +392,11 @@ class MachinePlayTask implements Runnable {
                 if (currFigs.contains("1")||currFigs.contains("2")){
                     if (boxListContains(freeBoxList, "Small")){
                         if (!currFigs.contains("Small"))
-                            if (!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))){
+                            if (!(boxListContains(freeBoxList, "Sec") && currFigs.contains("Sec"))
+                            || !(boxListContains(freeBoxList, "carre")&& currFigs.contains("carre"))
+                            || !(boxListContains(freeBoxList, "yam") && currFigs.contains("yam"))
+                            )
+                            {
                                 appendOutLog("bonus14 +20 pour "+aFreeboxPair.getBox());
                                 return 20;
                             }
@@ -1037,7 +1041,8 @@ class MachinePlayTask implements Runnable {
                 }
             //Ici en cas d'égalité de points entre les 2 premières box, trier en fonction de la proba
             if (freeBoxPairList.size()>1)
-                if (freeBoxPairList.get(freeBoxPairList.size()-1).getBoxWeight()==freeBoxPairList.get(freeBoxPairList.size()-2).getBoxWeight()){
+                //if (freeBoxPairList.get(freeBoxPairList.size()-1).getBoxWeight()==freeBoxPairList.get(freeBoxPairList.size()-2).getBoxWeight()){
+                if (freeBoxPairList.get(freeBoxPairList.size()-1).getBoxWeight().equals(freeBoxPairList.get(freeBoxPairList.size()-2).getBoxWeight())){
                     if (getDoubleFigProb(currentGame, freeBoxPairList.get(freeBoxPairList.size()-1).getFigType())
                             < getDoubleFigProb(currentGame, freeBoxPairList.get(freeBoxPairList.size()-2).getFigType())){
                         freeBoxPairList.get(freeBoxPairList.size()-2).setProbaBonus(1);
@@ -1572,7 +1577,7 @@ class MachinePlayTask implements Runnable {
                 System.out.println(e);
             }
             catch (IOException e) {
-                Log.e("Exception", "File write raté: " + e.toString());
+                Log.e("Exception", "File write raté: " + e);
                 e.printStackTrace();
             }
         }
