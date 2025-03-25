@@ -11,8 +11,8 @@
     <string name="FirstThrow">Premier jet</string>
     <string name="SecondThrow">Second jet</string>
     <string name="ThirdThrow">Troisième jet</string>
-    <string name="blueWin">Gagné!</string>
-    <string name="redWin">Perdu!</string>
+    <string name="blueWin">Tu as gagné!</string>
+    <string name="redWin">Tu as perdu!</string>
     <string name="wrongBox">Mauvaise case</string>
     <string name="selectWhiteBox">Selectionner une case  blanche</string>
     <string name="missedAppel">Appel manqué</string>
