@@ -21,7 +21,7 @@ android {
         applicationId "com.ricax.yatzoe"
         //minSdkVersion 22
         minSdkVersion 23
-        targetSdk 34
+        targetSdk 35
         versionCode 24
         versionName '1.4.24'
 
